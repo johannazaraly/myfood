@@ -1,0 +1,178 @@
+﻿<Page 
+    x:Class="myfoodapp.Views.AdministratorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Grid"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource AppBrush}">
+        <Pivot x:Name="pivot" CanDrag="False">
+            <PivotItem Header="Admin Control Panel" FontSize="8">
+                <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="eraseHistoricalLogsButton" Grid.Row="0" Style="{StaticResource OpenFormButton}" Content="Erase Historical Logs">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Logs and sensors measures older than a years will be erased. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Archive" Click="{x:Bind ViewModel.OnEraseHistoricalRecordsClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="archiveLogsButton" Grid.Row="1" Style="{StaticResource OpenFormButton}" Content="Archive Logs">
+                            <Button.Flyout>
+                                <Flyout Placement="Right">
+                                    <Grid MaxWidth="300">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Logs and sensors measures older than a months will be archived. Are you sure ?"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Archive" Click="{x:Bind ViewModel.OnArchiveLogsClicked}"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                    </Grid>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <Button x:Name="resetToFactorySettingsButton" Grid.Row="2" Style="{StaticResource OpenFormButton}" Content="Reset To Factory Settings" Click="{x:Bind ViewModel.OnResetAllSettingsClicked}">
+                            <Button.Flyout>
+                                <Flyout Placement="Right">
+                                    <Grid MaxWidth="300">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="All your parameters and data will be resetted. This operation cannot be rollbacked. Are you sure ?"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Archive" Click="{x:Bind ViewModel.OnResetAllSettingsClicked}"/>
+                                        <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                    </Grid>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                      <StackPanel Grid.Column="2" Grid.RowSpan="3" Orientation="Vertical">
+                            <TextBlock FontSize="23" FontWeight="Bold" Text="System Information"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="23" Text="Uptime:"/>
+                                <TextBlock FontSize="23" Text="{Binding UptimeSystem, Mode=TwoWay}"/>
+                            </StackPanel>   
+                            <TextBlock FontSize="23" Text="Last Update: 29 august 2016"/>
+                            <TextBlock FontSize="23" Text="Release Version: 0.1.1.20160601"/>
+                            <TextBlock FontSize="23" Text="Free Disk Space: 190Mo (39%)"/>
+                            <TextBlock FontSize="23" Text="Free Memory: 102Mo (13%)"/>
+                        </StackPanel>
+                    </Grid>
+            </PivotItem>
+
+            <PivotItem Header="General Options" FontSize="8">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Language"/>
+                    <ComboBox Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" SelectedIndex="0">
+                        <ComboBoxItem Content="English"/>
+                        <ComboBoxItem Content="French"/>
+                        <ComboBoxItem Content="German"/>
+                    </ComboBox>
+                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="pH Measure Sensor"/>
+                    <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="True"/>
+                    <TextBlock Grid.Row="2" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Oxygen Disolved Measure Sensor"/>
+                    <ToggleSwitch Grid.Row="2" Grid.Column="1" IsOn="True"/>
+                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="ORP Measure Sensor"/>
+                    <ToggleSwitch Grid.Row="1" Grid.Column="4" IsOn="True"/>
+                    <TextBlock Grid.Row="2" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Temperatue Measure Sensor"/>
+                    <ToggleSwitch Grid.Row="2" Grid.Column="4" IsOn="True"/>
+                </Grid>
+            </PivotItem>
+
+            <PivotItem Header="Sensor Calibration" FontSize="8">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Mesure Frequency - Value per hours"/>
+                    <Slider Grid.Column="1" VerticalAlignment="Center" StepFrequency="5" Value="10" Maximum="20" />
+                    <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="pH Sensor initialization"/>
+                    <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Content="Init at 7" HorizontalAlignment="Stretch" />
+                </Grid>
+            </PivotItem>
+
+            <PivotItem Header="Systems Logs" FontSize="8">
+                <telerik:RadDataGrid ItemsSource="{Binding Logs.Result, Mode=TwoWay}" AutoGenerateColumns="False">
+                    <telerik:RadDataGrid.Columns>
+                        <telerik:DataGridDateColumn PropertyName="date" Header="Date"/>
+                        <telerik:DataGridTextColumn PropertyName="type" Header="Type"/>
+                        <telerik:DataGridTextColumn PropertyName="description" Header="Description"/>
+                    </telerik:RadDataGrid.Columns>
+                </telerik:RadDataGrid>
+            </PivotItem>
+
+            <PivotItem Header="Services" FontSize="8">
+                <telerik:RadDataGrid ItemsSource="{Binding Services.Result}" AutoGenerateColumns="False">
+                    <telerik:RadDataGrid.Columns>
+                        <telerik:DataGridTextColumn PropertyName="description" Header="Description"/>
+                        <telerik:DataGridTextColumn PropertyName="status" Header="Status"/>
+                    </telerik:RadDataGrid.Columns>
+                </telerik:RadDataGrid>
+            </PivotItem>
+        </Pivot>
+        <Primitives:RadBusyIndicator IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"/>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
+            <AppBarButton Foreground="White" Icon="Refresh"  Label="Refresh Logs" IsEnabled="True" Click="{x:Bind ViewModel.OnRefreshClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="myfoodapp.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{StaticResource AppBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Uid="aboutPage" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="About"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" Margin="0,10,0,20" BorderThickness="2" BorderBrush="DarkGray" Background="LightGray">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Image Margin="10" Source="/Assets/logoMyFoodapp.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <TextBlock Grid.Column="1" Margin="5" TextWrapping="Wrap" VerticalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                    All copyright, trademarks, design rights, patents and other intellectual property rights (registered and unregistered) in and on myfood app Services and myfood app Content belong to myfood and/or third parties (which may include you or other users.) Nothing in the Terms grants you a right or license to use any trade mark, design right or copyright owned or controlled by myfood or any other third party except as expressly provided in the Terms.
+                </TextBlock>
+            </Grid>
+        </Grid>
+    </Grid>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
+            <AppBarButton Foreground="White" Icon="Admin" Label="Admin" IsEnabled="True" Click="{x:Bind ViewModel.OnAdminModeClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

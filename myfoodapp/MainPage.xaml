@@ -1,0 +1,50 @@
+﻿<Page
+    x:Class="myfoodapp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp"
+    xmlns:views="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid Background="{StaticResource BackgroundAppBrush}">
+        <TextBlock HorizontalAlignment="Right" Margin="0,2,15,2" VerticalAlignment="Bottom" Foreground="White" Text="myfood app® [preview mode] v.0.1.1.20160601"/>
+        <Grid Margin="-5,0,-5,20" Background="{StaticResource AppBrush}" BorderThickness="5" BorderBrush="DarkRed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="8*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Image x:Name="image" Margin="2" Source="Assets/logoMyFoodapp.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+            <TextBlock x:Uid="smartGreenhouseManager" Style="{StaticResource TitleText}" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Smart Greenhouse Manager"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock x:Uid="poweredBy" Margin="5,0,0,5" Grid.Column="1" Style="{StaticResource DetailText}" HorizontalAlignment="Right" Text="powered by"/>
+                <Image Margin="2" Source="Assets/logoACD.png" Width="40" Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <TextBlock x:Uid="and" Margin="5,0,0,5" Grid.Column="1" Style="{StaticResource DetailText}" HorizontalAlignment="Right" Text="and"/>
+                <Image Margin="2" Width="40" Height="40" Source="Assets/logoBrightAgrotech.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </StackPanel>
+
+            <Grid HorizontalAlignment="Stretch" Margin="5" Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="2">
+
+                <Pivot x:Name="pivot">
+                    <PivotItem x:Uid="aquaponics" Header="Aquaponics" FontSize="8">
+                        <views:AquaponicsManagementView/>
+                    </PivotItem>
+                    <!--<PivotItem x:Uid="energyManagement"  Header="Energy Management" FontSize="8">
+                       
+                    </PivotItem>
+                    <PivotItem x:Uid="smartCitizenSensors"  Header="Smart Citizen Sensors" FontSize="8">
+                        
+                    </PivotItem>-->
+                    <PivotItem x:Uid="settings" Header="Settings" FontSize="8">
+                        <views:SettingsView/>
+                    </PivotItem>
+                </Pivot>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

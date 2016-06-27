@@ -1,0 +1,158 @@
+﻿<UserControl
+    x:Class="myfoodapp.Views.AquaponicsManagementView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:class="using:myfoodapp.Business"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <class:Actions x:Key="actions"/>
+        <class:Events x:Key="events"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid Margin="5" Background="WhiteSmoke">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Uid="yourConfiguration" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Your Configuration"/>
+
+                <Image Grid.Row="1" Margin="10" Source="/Assets/Home/gh.jpg"></Image>
+
+                <TextBlock x:Uid="liveCam" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Live-Cam"/>
+                
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Image Margin="5" Source="/Assets/Home/pic_1.jpg"></Image>
+                    <Image Grid.Column="1" Margin="5" Source="/Assets/Home/pic_2.jpg"></Image>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Uid="notifications" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Notifications"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <local:NotificationTile x:Uid="notifSystemHealth" Margin="5" BackgroundColor="DarkRed" NotificationTitle="System Health" Value="99" LastValue="Yesterday : 75%"/>
+                    <local:NotificationTile x:Uid="notifPioneerCitizenNetwork" Grid.Column="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Pioneer Citizen Network" Value="17P.C" LastValue="Yesterday : 16 PC"/>
+                    <local:NotificationTile x:Uid="notifNeuralNetworkConvergence" Grid.Row="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Neural Network Convergence" Value="97%" LastValue="Yesterday : 89%"/>
+                    <local:NotificationTile x:Uid="notifFoodProduction" Grid.Row="1" Grid.Column="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Food Production per Month"  Value="38kg" LastValue="Last month : 26 kg"/>
+                </Grid>
+
+                <TextBlock x:Uid="lastEvents" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Last Events"/>
+                
+                <ListView x:Name="eventListbox" ItemsSource="{StaticResource events}" Grid.Row="3" Margin="5">
+                <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Date}" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="|" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Time}" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="|" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="4" Margin="3,0,0,0" Text="{Binding Description}" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Uid="actions" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Actions"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <local:ActionTile x:Uid="actionShare" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Share" ActionDescription="Show your results to your friends" ImagePath="/Assets/Action/share.png"/>
+                    <local:ActionTile x:Uid="actionFeedback" Grid.Column="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Feedback" ActionDescription="Tell us what you want to improve" ImagePath="/Assets/Action/feedback.png"/>
+                    <local:ActionTile x:Uid="actionSupport" Grid.Row="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Support" ActionDescription="Ask us for advice and tips" ImagePath="/Assets/Action/support.png"/>
+                    <local:ActionTile x:Uid="actionUpgrade" Grid.Row="1" Grid.Column="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Upgrade" ActionDescription="Advance your installation for better performance" ImagePath="/Assets/Action/upgrade.png"/>
+                </Grid>
+
+                <TextBlock x:Uid="nextActions" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Next Actions"/>
+
+                <ListView x:Name="nextActionListbox" ItemsSource="{StaticResource actions}" Grid.Row="3" Margin="5">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="3" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Date}" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="|" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Duration}" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="|" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="4" Margin="3,0,0,0" Text="{Binding Description}" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
