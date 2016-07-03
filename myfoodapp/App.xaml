@@ -5,9 +5,10 @@
     xmlns:local="using:myfoodapp"
     RequestedTheme="Light">
     <Application.Resources>
-        <SolidColorBrush x:Key="AppBrush" Color="WhiteSmoke"/>
-        <SolidColorBrush x:Key="BackgroundAppBrush" Color="Green"/>
-        <Style TargetType="Border" x:Key="PageBackground">
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="AppBrush" Color="WhiteSmoke"/>
+            <SolidColorBrush x:Key="BackgroundAppBrush" Color="Green"/> 
+            <Style TargetType="Border" x:Key="PageBackground">
             <Setter Property="Background" Value="Blue"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="TitleText">
@@ -82,5 +83,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+           
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

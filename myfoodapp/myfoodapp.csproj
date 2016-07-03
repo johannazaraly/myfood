@@ -130,13 +130,25 @@
     <Compile Include="Core\TabHeader.xaml.cs">
       <DependentUpon>TabHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20160701091118_FirstMigration.cs" />
+    <Compile Include="Migrations\20160701091118_FirstMigration.designer.cs">
+      <DependentUpon>20160701091118_FirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\LocalDataContextModelSnapshot.cs" />
+    <Compile Include="Model\LocalDataContext.cs" />
+    <Compile Include="Model\LocalDataContextExtension.cs" />
+    <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\ServiceModel.cs" />
     <Compile Include="Model\LogModel.cs" />
+    <Compile Include="ViewModel\SensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
     <Compile Include="ViewModel\AdministratorViewModel.cs" />
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
+    <Compile Include="Views\SensorsMonitoringPage.xaml.cs">
+      <DependentUpon>SensorsMonitoringPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AdministratorPage.xaml.cs">
       <DependentUpon>AdministratorPage.xaml</DependentUpon>
     </Compile>
@@ -201,6 +213,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SensorsMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\AdministratorPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -235,14 +251,11 @@
     <Folder Include="LocalFiles\UserSettings\" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.NET.Native.Runtime.1.1, Version=1.1">
-      <Name>Microsoft .NET Native Runtime Package for Windows</Name>
-    </SDKReference>
     <SDKReference Include="Microsoft.VCLibs, version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="Telerik UI For Windows Universal, Version=2016.1.113.45">
-      <Name>Telerik UI For Windows 8.1</Name>
+    <SDKReference Include="Telerik UI For Universal Windows Platform, Version=2016.1.113.45">
+      <Name>Telerik UI For Universal Windows Platform</Name>
     </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

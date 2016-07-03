@@ -35,5 +35,6 @@ namespace myfoodapp.Views
         }
 
         public AquaponicsManagementViewModel ViewModel { get; set; }
+
     }
 }

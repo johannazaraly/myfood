@@ -34,8 +34,7 @@ namespace myfoodapp.Model
             }
             catch (FileNotFoundException ex)
             {
-                var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.FailIfExists);
-                
+                var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.FailIfExists);               
             }
            
         }
@@ -75,9 +74,8 @@ namespace myfoodapp.Model
 
                     var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
 
-                
-                        var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.ReplaceExisting);
-                        await FileIO.WriteTextAsync(newFile, str);
+                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.ReplaceExisting);
+                    await FileIO.WriteTextAsync(newFile, str);
                 }
 
                 });

@@ -5,6 +5,8 @@
     xmlns:local="using:myfoodapp.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:telerikDataControls="using:Telerik.UI.Xaml.Controls.Data"
     xmlns:class="using:myfoodapp.Business"
     mc:Ignorable="d"
     d:DesignHeight="300"
@@ -17,123 +19,175 @@
         <Grid Margin="5" Background="WhiteSmoke">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Uid="yourConfiguration" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Your Configuration"/>
-
-                <Image Grid.Row="1" Margin="10" Source="/Assets/Home/gh.jpg"></Image>
-
-                <TextBlock x:Uid="liveCam" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Live-Cam"/>
-                
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Image Margin="5" Source="/Assets/Home/pic_1.jpg"></Image>
-                    <Image Grid.Column="1" Margin="5" Source="/Assets/Home/pic_2.jpg"></Image>
-                </Grid>
-            </Grid>
-
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock x:Uid="notifications" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Notifications"/>
-
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <local:NotificationTile x:Uid="notifSystemHealth" Margin="5" BackgroundColor="DarkRed" NotificationTitle="System Health" Value="99" LastValue="Yesterday : 75%"/>
-                    <local:NotificationTile x:Uid="notifPioneerCitizenNetwork" Grid.Column="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Pioneer Citizen Network" Value="17P.C" LastValue="Yesterday : 16 PC"/>
-                    <local:NotificationTile x:Uid="notifNeuralNetworkConvergence" Grid.Row="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Neural Network Convergence" Value="97%" LastValue="Yesterday : 89%"/>
-                    <local:NotificationTile x:Uid="notifFoodProduction" Grid.Row="1" Grid.Column="1" Margin="5" BackgroundColor="DarkRed" NotificationTitle="Food Production per Month"  Value="38kg" LastValue="Last month : 26 kg"/>
-                </Grid>
-
-                <TextBlock x:Uid="lastEvents" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Last Events"/>
-                
-                <ListView x:Name="eventListbox" ItemsSource="{StaticResource events}" Grid.Row="3" Margin="5">
-                <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
+                <Primitives:RadHubTile Background="Green" Title="Yest : 6.5" Message="pH" Notification="6.6" UpdateInterval="0:0:1" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
+                    <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="90" />
-                                    <ColumnDefinition Width="3" />
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="3" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Date}" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="|" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="2" Text="{Binding Time}" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="3" Text="|" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="4" Margin="3,0,0,0" Text="{Binding Description}" HorizontalAlignment="Left"/>
-                            </Grid>
+                            <TextBlock Text="Yesterday : 6.5" Margin="0,0,0,10" FontSize="15"/>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="6.6" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="pH" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+                
+                <Primitives:RadHubTile Background="Green" Grid.Column="1" Title="Ext : 23°C | Hum : 80%" Message="Temperature" Notification="Water : 20°C" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Ext: 23°C | Hum: 80%" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="20°C" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Temperature" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+                
+                <Primitives:RadHubTile Background="Green" Grid.Row="1" Title="Yest : 159" Message="ORP" Notification="250" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Yesterday : 159" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="250" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="ORP" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+                
+                <Primitives:RadHubTile Background="Green" Grid.Row="1" Grid.Column="1" Title="Yest : 170" Message="Dissolved Oxygen" Notification="180" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Yesterday : 170" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="180" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Dissol. Oxygen" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Title="Connected GH" Message="myfood Network" Notification="15" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Connected GH" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="15" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="PC Network" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+                
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Grid.Row="1" Title="Est Prod (kg/month)" Message="System Health" Notification="30" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Est Prod (kg/month)" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="30" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="System Health" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" Title="Message" Message="Notification" Notification="15" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Message" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="3" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Notification" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" Grid.Row="1" Title="Actions" Message="Maintenance" Notification="30" UpdateInterval="0:0:1">
+                    <Primitives:RadHubTile.TitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Actions" Margin="0,0,0,10" FontSize="15"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.TitleTemplate>
+                    <Primitives:RadHubTile.NotificationTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="4" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.NotificationTemplate>
+                    <Primitives:RadHubTile.MessageTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="Maintenance" FontSize="20" FontWeight="Bold"/>
+                        </DataTemplate>
+                    </Primitives:RadHubTile.MessageTemplate>
+                </Primitives:RadHubTile>
+
             </Grid>
 
-            <Grid Grid.Column="2">
+            <!--<Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="4*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Uid="actions" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Actions"/>
+                --><!--<TextBlock x:Uid="nextActions" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Notifications"/>
 
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <local:ActionTile x:Uid="actionShare" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Share" ActionDescription="Show your results to your friends" ImagePath="/Assets/Action/share.png"/>
-                    <local:ActionTile x:Uid="actionFeedback" Grid.Column="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Feedback" ActionDescription="Tell us what you want to improve" ImagePath="/Assets/Action/feedback.png"/>
-                    <local:ActionTile x:Uid="actionSupport" Grid.Row="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Support" ActionDescription="Ask us for advice and tips" ImagePath="/Assets/Action/support.png"/>
-                    <local:ActionTile x:Uid="actionUpgrade" Grid.Row="1" Grid.Column="1" Margin="5" BackgroundColor="DarkGreen" ActionTitle="Upgrade" ActionDescription="Advance your installation for better performance" ImagePath="/Assets/Action/upgrade.png"/>
-                </Grid>
-
-                <TextBlock x:Uid="nextActions" Grid.Row="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Next Actions"/>
-
-                <ListView x:Name="nextActionListbox" ItemsSource="{StaticResource actions}" Grid.Row="3" Margin="5">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
+                <telerikDataControls:RadListView x:Name="nextActionListbox" ItemsSource="{StaticResource actions}" Grid.Row="1" Margin="5">
+                    <telerikDataControls:RadListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -150,9 +204,9 @@
                                 <TextBlock Grid.Column="4" Margin="3,0,0,0" Text="{Binding Description}" HorizontalAlignment="Left"/>
                             </Grid>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+                    </telerikDataControls:RadListView.ItemTemplate>
+                </telerikDataControls:RadListView>--><!--
+            </Grid>-->
         </Grid>
     </Grid>
 </UserControl>

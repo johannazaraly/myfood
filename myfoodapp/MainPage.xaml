@@ -31,7 +31,7 @@
             <Grid HorizontalAlignment="Stretch" Margin="5" Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="2">
 
                 <Pivot x:Name="pivot">
-                    <PivotItem x:Uid="aquaponics" Header="Aquaponics" FontSize="8">
+                    <PivotItem x:Uid="aquaponics" Header="Aquaponics Monitoring" FontSize="8">
                         <views:AquaponicsManagementView/>
                     </PivotItem>
                     <!--<PivotItem x:Uid="energyManagement"  Header="Energy Management" FontSize="8">

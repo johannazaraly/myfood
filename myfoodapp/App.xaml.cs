@@ -20,6 +20,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using myfoodapp.Model;
+using Microsoft.Data.Entity;
 
 namespace myfoodapp
 {
@@ -37,6 +39,12 @@ namespace myfoodapp
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
+
+            using (var db = new LocalDataContext())
+            {
+                db.Database.Migrate();
+                LocalDataContextExtension.EnsureSeedData(db);
+            }
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;

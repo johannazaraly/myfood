@@ -1,4 +1,5 @@
 ﻿using myfoodapp.Common;
+using myfoodapp.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace myfoodapp.ViewModel
 {
@@ -34,6 +36,11 @@ namespace myfoodapp.ViewModel
             var alea = new Random();
             int var = alea.Next(0, 2);
             SystemHealthValue = String.Format("{0}%", 78 + var);
+        }
+
+        public void OnPHSensorClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<SensorsMonitoringPage>();
         }
 
     }
