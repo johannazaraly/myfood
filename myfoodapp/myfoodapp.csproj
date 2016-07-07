@@ -96,6 +96,9 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\miniLogo.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="LocalFiles\Logs\Current\logs.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -146,6 +149,9 @@
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
+    <Compile Include="Views\HealthMonitoringPage.xaml.cs">
+      <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SensorsMonitoringPage.xaml.cs">
       <DependentUpon>SensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
@@ -212,6 +218,10 @@
     <Page Include="Core\TabHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\HealthMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>

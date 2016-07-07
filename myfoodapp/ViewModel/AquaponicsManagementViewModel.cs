@@ -43,6 +43,10 @@ namespace myfoodapp.ViewModel
             App.TryShowNewWindow<SensorsMonitoringPage>();
         }
 
+        public void OnHealthClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<HealthMonitoringPage>();
+        }
     }
 
 }

@@ -5,20 +5,50 @@
     xmlns:local="using:myfoodapp.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource AppBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Button Content="My Configuration" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnMyConfigClicked}"/>
-        <Button Grid.Column="1" Content="About" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnAboutClicked}"/>
-        <Button Grid.Row="1" Content="My Location" Style="{StaticResource OpenFormButton}" Click="{x:Bind ViewModel.OnMyLocationClicked}" IsEnabled="False"/>
-        <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource OpenFormButton}" Content="Register My Greenhouse" Click="{x:Bind ViewModel.OnRegisterClicked}" IsEnabled="False"/>
+
+        <Primitives:RadHubTile Background="Gray" Notification="My Setup" Tapped="{x:Bind ViewModel.OnMyConfigClicked}">
+            <Primitives:RadHubTile.NotificationTemplate>
+                <DataTemplate>
+                    <TextBlock Text="My Setup" Margin="0,0,0,30" FontSize="25" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+                </DataTemplate>
+            </Primitives:RadHubTile.NotificationTemplate>
+        </Primitives:RadHubTile>
+
+        <Primitives:RadHubTile Grid.Column="1"  Background="Gray" Notification="About" Tapped="{x:Bind ViewModel.OnAboutClicked}">
+            <Primitives:RadHubTile.NotificationTemplate>
+                <DataTemplate>
+                    <TextBlock Text="About" Margin="0,0,0,30" FontSize="25" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+                </DataTemplate>
+            </Primitives:RadHubTile.NotificationTemplate>
+        </Primitives:RadHubTile>
+
+        <Primitives:RadHubTile Grid.Row="1" Background="Gray" Notification="My Location" Tapped="{x:Bind ViewModel.OnMyLocationClicked}">
+            <Primitives:RadHubTile.NotificationTemplate>
+                <DataTemplate>
+                    <TextBlock Text="My Location" Margin="0,0,0,30" FontSize="25" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+                </DataTemplate>
+            </Primitives:RadHubTile.NotificationTemplate>
+        </Primitives:RadHubTile>
+
+        <Primitives:RadHubTile Grid.Row="1" Grid.Column="1"  Background="Gray" Notification="Register" Tapped="{x:Bind ViewModel.OnRegisterClicked}">
+            <Primitives:RadHubTile.NotificationTemplate>
+                <DataTemplate>
+                    <TextBlock Text="Register" Margin="0,0,0,30" FontSize="25" TextWrapping="Wrap" HorizontalAlignment="Right"/>
+                </DataTemplate>
+            </Primitives:RadHubTile.NotificationTemplate>
+        </Primitives:RadHubTile>
+
     </Grid>
 </Page>

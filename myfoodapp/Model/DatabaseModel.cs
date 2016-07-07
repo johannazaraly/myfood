@@ -27,24 +27,16 @@ namespace myfoodapp.Model
             using (var db = new LocalDataContext())
             {
                 return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
-                              select m).Take(12 * 6).ToListAsync();
+                              select m).Take(24 * 6).ToListAsync();
             }          
         }
 
-        public async Task<List<Measure>> GetLastThreeWeeksMesures(SensorTypeEnum sensorType)
+        public async Task<List<Measure>> GetLastWeeksMesures(SensorTypeEnum sensorType)
         {
             using (var db = new LocalDataContext())
             {
-                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate).Take(12 * 6 * 7 * 5)
-                              group m by new { m.captureDate.Year, m.captureDate.DayOfYear } into groupedDay
-                              select new Measure
-                              {
-                                  captureDate = groupedDay.OrderByDescending(m => m.captureDate).FirstOrDefault().captureDate,
-                                  value = groupedDay.Average(x => x.value),
-                                  maximum = groupedDay.Max(x => x.value),
-                                  minimum = groupedDay.Min(x => x.value),
-                              }).ToListAsync();
-
+                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                              select m).Take(7 * 24 * 6).ToListAsync();
             }
         }
 

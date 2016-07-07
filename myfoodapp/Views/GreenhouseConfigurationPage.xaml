@@ -73,6 +73,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.ColumnSpan="2" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Current Greenhouse Configuration"/>
+            <Image Grid.Row="1" Grid.RowSpan="3" Margin="50" Source="/Assets/Home/gh.jpg"/>
+            
         </Grid>
         <Grid x:Name="ghSizeGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>

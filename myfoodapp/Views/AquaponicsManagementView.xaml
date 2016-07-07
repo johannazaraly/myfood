@@ -32,7 +32,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Primitives:RadHubTile Background="Green" Title="Yest : 6.5" Message="pH" Notification="6.6" UpdateInterval="0:0:1" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
+                <Primitives:RadHubTile Background="Green" UpdateInterval="0:0:1" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Yesterday : 6.5" Margin="0,0,0,10" FontSize="15"/>
@@ -50,7 +50,7 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
                 
-                <Primitives:RadHubTile Background="Green" Grid.Column="1" Title="Ext : 23°C | Hum : 80%" Message="Temperature" Notification="Water : 20°C" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="Green" Grid.Column="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Ext: 23°C | Hum: 80%" Margin="0,0,0,10" FontSize="15"/>
@@ -68,7 +68,7 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
                 
-                <Primitives:RadHubTile Background="Green" Grid.Row="1" Title="Yest : 159" Message="ORP" Notification="250" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="Green" Grid.Row="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Yesterday : 159" Margin="0,0,0,10" FontSize="15"/>
@@ -86,7 +86,7 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
                 
-                <Primitives:RadHubTile Background="Green" Grid.Row="1" Grid.Column="1" Title="Yest : 170" Message="Dissolved Oxygen" Notification="180" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="Green" Grid.Row="1" Grid.Column="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Yesterday : 170" Margin="0,0,0,10" FontSize="15"/>
@@ -104,7 +104,7 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
 
-                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Title="Connected GH" Message="myfood Network" Notification="15" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2"  UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Connected GH" Margin="0,0,0,10" FontSize="15"/>
@@ -121,8 +121,8 @@
                         </DataTemplate>
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
-                
-                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Grid.Row="1" Title="Est Prod (kg/month)" Message="System Health" Notification="30" UpdateInterval="0:0:1">
+
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Grid.Row="1" Tapped="{x:Bind ViewModel.OnHealthClicked}" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Est Prod (kg/month)" Margin="0,0,0,10" FontSize="15"/>
@@ -140,10 +140,10 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
 
-                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" Title="Message" Message="Notification" Notification="15" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
-                            <TextBlock Text="Message" Margin="0,0,0,10" FontSize="15"/>
+                            <TextBlock Text="Message(s)" Margin="0,0,0,10" FontSize="15"/>
                         </DataTemplate>
                     </Primitives:RadHubTile.TitleTemplate>
                     <Primitives:RadHubTile.NotificationTemplate>
@@ -158,10 +158,10 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
 
-                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" Grid.Row="1" Title="Actions" Message="Maintenance" Notification="30" UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="3" Grid.Row="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
-                            <TextBlock Text="Actions" Margin="0,0,0,10" FontSize="15"/>
+                            <TextBlock Text="Action(s)" Margin="0,0,0,10" FontSize="15"/>
                         </DataTemplate>
                     </Primitives:RadHubTile.TitleTemplate>
                     <Primitives:RadHubTile.NotificationTemplate>

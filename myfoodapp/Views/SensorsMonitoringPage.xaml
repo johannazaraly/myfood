@@ -11,128 +11,159 @@
     mc:Ignorable="d">
 
     <Grid Background="{StaticResource AppBrush}">
-        <Pivot x:Name="pivot" CanDrag="False">
-            <PivotItem Header="Last Day Measures" FontSize="8">
+        <Pivot x:Name="pivot" SelectionChanged="{x:Bind ViewModel.OnSelectionChanged}">
+            <PivotItem Name="lastDay" Header="Last Day Measures" FontSize="8">
                 <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition Height="60"/>
-                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <Grid>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Text="Current pH :"/>
-                            <TextBlock FontSize="40" FontWeight="ExtraBold" HorizontalAlignment="Left" Text="6.6"/>
-                            <TextBlock FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Text="Average Last 24h : 6.5"/>
-                            <TextBlock FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Text="Min Last 24h : 6.2"/>
-                            <TextBlock FontSize="15" FontWeight="Bold" HorizontalAlignment="Left" Text="Max Last 24h : 6.9"/>
-                        </StackPanel>
-                        <telerik:RadLinearGauge Grid.Row="1" LabelStep="7" TickStep="1" MaxValue="10">
-                            <telerik:SegmentedLinearGaugeIndicator Value="10">
-                                <telerik:BarIndicatorSegment Stroke="Red" Length="4" />
-                                <telerik:BarIndicatorSegment Stroke="Yellow" Length="1" />
-                                <telerik:BarIndicatorSegment Stroke="Green" Length="2" />
-                                <telerik:BarIndicatorSegment Stroke="Yellow" Length="1" />
-                                <telerik:BarIndicatorSegment Stroke="Red" Length="2" />
-                            </telerik:SegmentedLinearGaugeIndicator>
-                            <telerik:MarkerGaugeIndicator Value="6.6">
-                                <telerik:MarkerGaugeIndicator.Content>
-                                    <TextBlock Foreground="Gray" Margin="0,50,0,0">
-                                <Run Text="6.6"/>
-                                    </TextBlock>
-                                </telerik:MarkerGaugeIndicator.Content>
-                            </telerik:MarkerGaugeIndicator>
-                            <telerik:MarkerGaugeIndicator Value="6.6">
-                                <telerik:MarkerGaugeIndicator.Content>
-                                    <Rectangle Fill="Gray" Width="10" Height="10"/>
-                                </telerik:MarkerGaugeIndicator.Content>
-                            </telerik:MarkerGaugeIndicator>
-                        </telerik:RadLinearGauge>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Primitives:RadHubTile Background="Green" IsFrozen="True" IsHitTestVisible="False">
+                            <Primitives:RadHubTile.TitleTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Yesterday : 6.5" Margin="0,0,0,10" FontSize="15"/>
+                                </DataTemplate>
+                            </Primitives:RadHubTile.TitleTemplate>
+                            <Primitives:RadHubTile.NotificationTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="6.6" Margin="0,0,0,50" FontSize="40" FontWeight="Bold" />
+                                </DataTemplate>
+                            </Primitives:RadHubTile.NotificationTemplate>
+                            <Primitives:RadHubTile.MessageTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="pH" FontSize="20" FontWeight="Bold"/>
+                                </DataTemplate>
+                            </Primitives:RadHubTile.MessageTemplate>
+                        </Primitives:RadHubTile>
+
+                        <Primitives:RadHubTile Grid.Row="1" Background="Green" IsFrozen="True" IsHitTestVisible="False">
+                            <Primitives:RadHubTile.TitleTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Average : 6.7" Margin="0,0,0,10" FontSize="15"/>
+                                </DataTemplate>
+                            </Primitives:RadHubTile.TitleTemplate>
+                            <Primitives:RadHubTile.NotificationTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,50" >
+                                        <TextBlock Text="Min: 5.6" FontSize="20" FontWeight="Bold"/>
+                                        <TextBlock Text="Max: 6.9" FontSize="20" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Primitives:RadHubTile.NotificationTemplate>
+                            <Primitives:RadHubTile.MessageTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Last 24h" FontSize="20" FontWeight="Bold"/>
+                                </DataTemplate>
+                            </Primitives:RadHubTile.MessageTemplate>
+                        </Primitives:RadHubTile>
+                        
                     </Grid>
 
-                    <telerikChart:RadCartesianChart Grid.Column="2" x:Name="chart" PaletteName="DefaultLight">
+                    <Grid Grid.Column="3">
+                        <telerikChart:RadCartesianChart Grid.Column="3" PaletteName="None">
+                            <telerikChart:RadCartesianChart.Grid>
+                                <telerikChart:CartesianChartGrid StripLinesVisibility="XY" MajorLinesVisibility="XY">
+                                    <telerikChart:CartesianChartGrid.MajorXLineStyle>
+                                        <Style TargetType="Line">
+                                            <Setter Property="StrokeDashArray" Value="10, 2"/>
+                                        </Style>
+                                    </telerikChart:CartesianChartGrid.MajorXLineStyle>
+                                    <telerikChart:CartesianChartGrid.YStripeBrushes>
+                                        <SolidColorBrush Color="#11CACACA"/>
+                                        <SolidColorBrush Color="Transparent"/>
+                                    </telerikChart:CartesianChartGrid.YStripeBrushes>
 
-                        <telerikChart:RadCartesianChart.Grid>
-                            <telerikChart:CartesianChartGrid StripLinesVisibility="XY" MajorLinesVisibility="XY">
-                                <telerikChart:CartesianChartGrid.MajorXLineStyle>
-                                    <Style TargetType="Line">
-                                        <Setter Property="Stroke" Value="Red"/>
-                                        <Setter Property="StrokeDashArray" Value="10, 2"/>
-                                    </Style>
-                                </telerikChart:CartesianChartGrid.MajorXLineStyle>
-                                <telerikChart:CartesianChartGrid.YStripeBrushes>
-                                    <SolidColorBrush Color="#11CACACA"/>
-                                    <SolidColorBrush Color="Transparent"/>
-                                </telerikChart:CartesianChartGrid.YStripeBrushes>
+                                </telerikChart:CartesianChartGrid>
+                            </telerikChart:RadCartesianChart.Grid>
 
-                            </telerikChart:CartesianChartGrid>
-                        </telerikChart:RadCartesianChart.Grid>
+                            <telerikChart:RadCartesianChart.Behaviors>
+                                <telerikChart:ChartPanAndZoomBehavior ZoomMode="Both" PanMode="Horizontal"/>
+                            </telerikChart:RadCartesianChart.Behaviors>
 
-                        <telerikChart:RadCartesianChart.Behaviors>
-                            <telerikChart:ChartPanAndZoomBehavior ZoomMode="Both" PanMode="Horizontal"/>
-                        </telerikChart:RadCartesianChart.Behaviors>
+                            <telerikChart:RadCartesianChart.VerticalAxis>
+                                <telerikChart:LinearAxis Title="pH (°)"/>
+                            </telerikChart:RadCartesianChart.VerticalAxis>
+                            <telerikChart:RadCartesianChart.HorizontalAxis>
+                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
+                            </telerikChart:RadCartesianChart.HorizontalAxis>
 
-                        <telerikChart:RadCartesianChart.VerticalAxis>
-                            <telerikChart:LinearAxis/>
-                        </telerikChart:RadCartesianChart.VerticalAxis>
-                        <telerikChart:RadCartesianChart.HorizontalAxis>
-                            <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
-                        </telerikChart:RadCartesianChart.HorizontalAxis>
+                            <telerikChart:SplineAreaSeries LegendTitle="pH Sensor" Stroke="Black" Fill="DarkRed" ItemsSource="{Binding PHMeasures.Result}">
+                                <telerikChart:SplineAreaSeries.CategoryBinding>
+                                    <telerikChart:PropertyNameDataPointBinding PropertyName="captureDate"/>
+                                </telerikChart:SplineAreaSeries.CategoryBinding>
+                                <telerikChart:SplineAreaSeries.ValueBinding>
+                                    <telerikChart:PropertyNameDataPointBinding PropertyName="value"/>
+                                </telerikChart:SplineAreaSeries.ValueBinding>
+                            </telerikChart:SplineAreaSeries>
 
-                        <telerikChart:SplineAreaSeries LegendTitle="Water Temperature" ItemsSource="{Binding WaterTemperatureMeasures.Result}">
-                            <telerikChart:SplineAreaSeries.VerticalAxis>
-                                <telerikChart:LinearAxis HorizontalLocation="Right" Foreground="#1E98E4"/>
-                            </telerikChart:SplineAreaSeries.VerticalAxis>
-                            <telerikChart:SplineAreaSeries.CategoryBinding>
-                                <telerikChart:PropertyNameDataPointBinding PropertyName="captureDate"/>
-                            </telerikChart:SplineAreaSeries.CategoryBinding>
-                            <telerikChart:SplineAreaSeries.ValueBinding>
-                                <telerikChart:PropertyNameDataPointBinding PropertyName="value"/>
-                            </telerikChart:SplineAreaSeries.ValueBinding>
-                        </telerikChart:SplineAreaSeries>
+                        </telerikChart:RadCartesianChart>
 
-                        <telerikChart:SplineAreaSeries LegendTitle="pH Sensor" ItemsSource="{Binding PHMeasures.Result}">
-                            <telerikChart:SplineAreaSeries.CategoryBinding>
-                                <telerikChart:PropertyNameDataPointBinding PropertyName="captureDate"/>
-                            </telerikChart:SplineAreaSeries.CategoryBinding>
-                            <telerikChart:SplineAreaSeries.ValueBinding>
-                                <telerikChart:PropertyNameDataPointBinding PropertyName="value"/>
-                            </telerikChart:SplineAreaSeries.ValueBinding>
-                        </telerikChart:SplineAreaSeries>
-
-                    </telerikChart:RadCartesianChart>
-
-                    <Primitives:RadLegendControl Grid.Column="2" Grid.Row="1" LegendProvider="{Binding ElementName=chart}">
-                        <Primitives:RadLegendControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Fill="{Binding Fill}" Stroke="{Binding Stroke}" StrokeThickness="1" Width="10" Height="10"/>
-                                    <TextBlock Text="{Binding Title}" FontSize="15" Foreground="Black" Margin="10" VerticalAlignment="Center">
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </Primitives:RadLegendControl.ItemTemplate>
-                        <Primitives:RadLegendControl.LegendItems>
-                            <Primitives:LegendItem Stroke="Red" Fill="Black"/>
-                            <Primitives:LegendItem Stroke="Yellow" Fill="Black"/>
-                        </Primitives:RadLegendControl.LegendItems>
-                    </Primitives:RadLegendControl>
+                    </Grid>
 
                 </Grid>
             </PivotItem>
-            <PivotItem Header="Last Two Weeks Measures" FontSize="8">
-                
-            </PivotItem>
-            <PivotItem Header="Last Months Measures" FontSize="8">
+            <PivotItem Name="lastWeek" Header="Last Week Measures" FontSize="8">
+                <Grid Margin="10">
 
+                    <Grid>
+                        <telerikChart:RadCartesianChart Grid.Column="3" PaletteName="None">
+                            <telerikChart:RadCartesianChart.Grid>
+                                <telerikChart:CartesianChartGrid StripLinesVisibility="XY" MajorLinesVisibility="XY">
+                                    <telerikChart:CartesianChartGrid.MajorXLineStyle>
+                                        <Style TargetType="Line">
+                                            <Setter Property="StrokeDashArray" Value="10, 2"/>
+                                        </Style>
+                                    </telerikChart:CartesianChartGrid.MajorXLineStyle>
+                                    <telerikChart:CartesianChartGrid.YStripeBrushes>
+                                        <SolidColorBrush Color="#11CACACA"/>
+                                        <SolidColorBrush Color="Transparent"/>
+                                    </telerikChart:CartesianChartGrid.YStripeBrushes>
+
+                                </telerikChart:CartesianChartGrid>
+                            </telerikChart:RadCartesianChart.Grid>
+
+                            <telerikChart:RadCartesianChart.Behaviors>
+                                <telerikChart:ChartPanAndZoomBehavior ZoomMode="Both" PanMode="Horizontal"/>
+                            </telerikChart:RadCartesianChart.Behaviors>
+
+                            <telerikChart:RadCartesianChart.VerticalAxis>
+                                <telerikChart:LinearAxis Title="pH (°)"/>
+                            </telerikChart:RadCartesianChart.VerticalAxis>
+                            <telerikChart:RadCartesianChart.HorizontalAxis>
+                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Day" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:dd/MM}"/>
+                            </telerikChart:RadCartesianChart.HorizontalAxis>
+
+                            <telerikChart:SplineAreaSeries LegendTitle="pH Sensor" Stroke="Black" Fill="DarkRed" ItemsSource="{Binding PHMeasures.Result}">
+                                <telerikChart:SplineAreaSeries.CategoryBinding>
+                                    <telerikChart:PropertyNameDataPointBinding PropertyName="captureDate"/>
+                                </telerikChart:SplineAreaSeries.CategoryBinding>
+                                <telerikChart:SplineAreaSeries.ValueBinding>
+                                    <telerikChart:PropertyNameDataPointBinding PropertyName="value"/>
+                                </telerikChart:SplineAreaSeries.ValueBinding>
+                            </telerikChart:SplineAreaSeries>
+
+                        </telerikChart:RadCartesianChart>
+
+                    </Grid>
+
+                </Grid>
             </PivotItem>
         </Pivot>
-        <Primitives:RadBusyIndicator IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"/>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+                    
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
