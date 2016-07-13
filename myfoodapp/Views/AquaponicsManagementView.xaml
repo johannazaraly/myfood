@@ -104,7 +104,7 @@
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
 
-                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2"  UpdateInterval="0:0:1">
+                <Primitives:RadHubTile Background="DarkRed" Grid.Column="2" Tapped="{x:Bind ViewModel.OnNetworkClicked}" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Connected GH" Margin="0,0,0,10" FontSize="15"/>

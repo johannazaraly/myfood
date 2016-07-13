@@ -47,6 +47,12 @@ namespace myfoodapp.ViewModel
         {
             App.TryShowNewWindow<HealthMonitoringPage>();
         }
+
+        public void OnNetworkClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<NetworkPage>();
+        }
+
     }
 
 }

@@ -25,9 +25,9 @@ namespace myfoodapp.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HealthMonitoringPage : Page
+    public sealed partial class NetworkPage : Page
     {
-        public HealthMonitoringPage()
+        public NetworkPage()
         {
             this.ViewModel = new HealthMonitoringViewModel();
             this.InitializeComponent();

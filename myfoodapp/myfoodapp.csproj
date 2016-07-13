@@ -97,6 +97,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\miniLogo.png" />
+    <Content Include="Assets\pioneerCitizenNetwork.png" />
     <Content Include="Assets\Square150x150Logo.scale-400.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="LocalFiles\Logs\Current\logs.json">
@@ -143,12 +144,16 @@
     <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\ServiceModel.cs" />
     <Compile Include="Model\LogModel.cs" />
+    <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
     <Compile Include="ViewModel\SensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
     <Compile Include="ViewModel\AdministratorViewModel.cs" />
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
+    <Compile Include="Views\NetworkPage.xaml.cs">
+      <DependentUpon>NetworkPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
     </Compile>
@@ -218,6 +223,10 @@
     <Page Include="Core\TabHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NetworkPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HealthMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
