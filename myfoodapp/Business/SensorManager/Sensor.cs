@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
+using Windows.Storage.Streams;
 
 namespace myfoodapp.Business.SensorManager
 {
@@ -12,5 +13,7 @@ namespace myfoodapp.Business.SensorManager
     {
         public SerialDevice serialDevice;
         public SensorTypeEnum sensorType;
+        public DataWriter dataWriteObject;
+        public DataReader dataReaderObject;
     }
 }

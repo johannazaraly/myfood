@@ -55,5 +55,25 @@ namespace myfoodapp.Model
             }
         }
 
+        public bool AddMesure(DateTime currentDate, Decimal capturedValue, SensorTypeEnum sensorType)
+        {
+            using (var db = new LocalDataContext())
+            {
+                try
+                {
+                    var currentSensor = db.SensorTypes.Where(s => s.Id == (int)sensorType).FirstOrDefault();
+
+                    db.Measures.Add(new Measure() { value = capturedValue, captureDate = currentDate, sensor = currentSensor });
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+
+            return true;
+        }
+
     }
 }

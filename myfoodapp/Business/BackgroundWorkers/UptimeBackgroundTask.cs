@@ -116,7 +116,6 @@ bw.RunWorkerAsync();
 
                     logModel.AppendLog(Log.CreateLog(logDescription, Log.LogType.Information));
 #endif
-
                 }
             }
 

@@ -25,7 +25,6 @@ namespace myfoodapp.Business
             bw.WorkerReportsProgress = true;
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += Bw_DoWork;
-            bw.ProgressChanged += Bw_ProgressChanged;
             bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
         }
 
@@ -46,10 +45,6 @@ namespace myfoodapp.Business
             logModel.AppendLog(Log.CreateLog("Measure Service stopping...", Log.LogType.System));
         }
 
-        private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-        }
-
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var watch = Stopwatch.StartNew();
@@ -57,26 +52,33 @@ namespace myfoodapp.Business
             while (!bw.CancellationPending)
             {
                 var elapsedMs = watch.ElapsedMilliseconds;
-                var db = new LocalDataContext();
+                var databaseModel = new DatabaseModel();
+                var clockManager = ClockManager.ClockManager.GetInstance;
 
                 if (elapsedMs % 10000 == 0)
                 {
-                    var oo = String.Empty;
-                    var task = Task.Run(async () => { oo = await sensorManager.RecordPhTempMeasure(); });
-                    task.Wait();
-                    
-                    try
-                    {
-                        var currentSensor = db.SensorTypes.Where(s => s.Id == 1).FirstOrDefault();
-                        decimal captureValue = 0;
-                        var capturedMeasure = Decimal.TryParse(oo.Replace("\r", ""), out captureValue);
-                        db.Measures.Add(new Measure() { value = captureValue, captureDate = DateTime.Now, sensor = currentSensor });
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
+                    var captureDateTime = DateTime.Now;
 
-                        throw;
+                    if (clockManager != null && clockManager.IsConnected)
+                    {
+                        captureDateTime = clockManager.ReadDate();
+                    }
+
+                    if (sensorManager.isSensorOnline(SensorTypeEnum.waterTemperature))
+                    {
+                        decimal capturedValue = 0;
+                        capturedValue = sensorManager.RecordWaterTemperatureMeasure();
+                        sensorManager.SetWaterTemperatureForSensors(capturedValue);
+
+                        databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.waterTemperature);
+                    }
+
+                    if (sensorManager.isSensorOnline(SensorTypeEnum.ph))
+                    {
+                        decimal capturedValue = 0;
+                        capturedValue = sensorManager.RecordPhMeasure();
+
+                        databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.ph);
                     }
                 }
             }

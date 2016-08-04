@@ -16,8 +16,6 @@ namespace myfoodapp.Business.SensorManager
     public class SensorManager
     {
         private LogModel logModel = new LogModel();
-        DataWriter dataWriteObject = null;
-        DataReader dataReaderObject = null;
         private List<Sensor> sensorsList = new List<Sensor>();
 
         private LocalDataContext db = new LocalDataContext();
@@ -38,20 +36,25 @@ namespace myfoodapp.Business.SensorManager
             }
         }
 
-        //pH Sensors command
-        private string informationCommand = "I\r";
+        //pH Sensors Commands
         private string queryCalibrationCommand = "Cal,?\r";
         private string clearCalibrationCommand = "Cal,clear\r";
         private string midCalibrationCommand = "Cal,mid,7.00\r";
         private string lowCalibrationCommand = "Cal,low,4.00\r";
         private string highCalibrationCommand = "Cal,high,10.00\r";
 
+        //Water Temperature Sensors commands
+        private string setCelsiusTemperatureCommand = "S,C\r";
+        private string setFahrenheitTemperatureCommand = "S,F\r";
+        private string setKelvinTemperatureCommand = "S,K\r";
+
+        private string informationCommand = "I\r";
         private string resetFactoryCommand = "Factory\r";
         private string getStatusCommand = "Status\r";
         private string sleepModeCommand = "Sleep\r";
         private string readValueCommand = "R\r";
         private string setWaterTemperatureCommand = "T,{0}\r";
-        private string wakeupCommand = "WakeUpNeo\r";
+        private string wakeupCommand = "W";
         private string disableContinuousModeCommand = "C,0\r";
         private string disableAutomaticAnswerCommand = "RESPONSE,0\r";
         
@@ -81,66 +84,71 @@ namespace myfoodapp.Business.SensorManager
                     try
                     {
                         if(dis[i].Id.Contains(@"\\?\FTDIBUS"))
-                        { 
-
-                            DeviceInformation entry = (DeviceInformation)dis[i];
-                            var serialPort = await SerialDevice.FromIdAsync(entry.Id);
-
-                            // Configure serial settings
-                            serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
-                            serialPort.ReadTimeout = TimeSpan.FromMilliseconds(1000);
-                            serialPort.BaudRate = 9600;
-                            serialPort.Parity = SerialParity.None;
-                            serialPort.StopBits = SerialStopBitCount.One;
-                            serialPort.DataBits = 8;
-                            serialPort.Handshake = SerialHandshake.None;
-
-                            // Create cancellation token object to close I/O operations when closing the device
-                            ReadCancellationTokenSource = new CancellationTokenSource();
-
-                            var newSensor = new Sensor() { serialDevice = serialPort };
-
-                            dataWriteObject = new DataWriter(serialPort.OutputStream);
-                            dataReaderObject = new DataReader(serialPort.InputStream);
-  
-                            var a = await WriteAsync(disableAutomaticAnswerCommand);
-                            var v = await WriteAsync(disableContinuousModeCommand);
-
-                            var w = await WriteAsync(getStatusCommand);
-                            var s = await ReadAsync(ReadCancellationTokenSource.Token);
-
-                            var t = await WriteAsync(informationCommand);
-                            var r = await ReadAsync(ReadCancellationTokenSource.Token);
-
-                            if (r.Contains("RTD"))
+                        {
+                            var task = Task.Run(async () =>
                             {
-                                newSensor.sensorType = SensorTypeEnum.waterTemperature;
-                                logModel.AppendLog(Log.CreateLog("Water Temperature online", Log.LogType.Information));
-                                logModel.AppendLog(Log.CreateLog(String.Format("Water Temperature status - {0}", s), Log.LogType.System));
-                            }
 
-                            if (r.Contains("pH"))
-                            {
-                                newSensor.sensorType = SensorTypeEnum.ph;
-                                logModel.AppendLog(Log.CreateLog("pH online", Log.LogType.Information));
-                                logModel.AppendLog(Log.CreateLog(String.Format("pH status - {0}", s), Log.LogType.System));
-                            }
+                                DeviceInformation entry = (DeviceInformation)dis[i];
+                                var serialPort = await SerialDevice.FromIdAsync(entry.Id);
 
-                            if (r.Contains("ORP"))
-                            {
-                                newSensor.sensorType = SensorTypeEnum.orp;
-                                logModel.AppendLog(Log.CreateLog("ORP online", Log.LogType.Information));
-                                logModel.AppendLog(Log.CreateLog(String.Format("ORP status - {0}", s), Log.LogType.System));
-                            }
+                                // Configure serial settings
+                                serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
+                                serialPort.ReadTimeout = TimeSpan.FromMilliseconds(1000);
+                                serialPort.BaudRate = 9600;
+                                serialPort.Parity = SerialParity.None;
+                                serialPort.StopBits = SerialStopBitCount.One;
+                                serialPort.DataBits = 8;
+                                serialPort.Handshake = SerialHandshake.None;
 
-                            if (r.Contains("DO"))
-                            {
-                                newSensor.sensorType = SensorTypeEnum.dissolvedOxygen;
-                                logModel.AppendLog(Log.CreateLog("Dissolved Oxygen online", Log.LogType.Information));
-                                logModel.AppendLog(Log.CreateLog(String.Format("Dissolved Oxygen status - {0}", s), Log.LogType.System));
-                            }
+                                // Create cancellation token object to close I/O operations when closing the device
+                                ReadCancellationTokenSource = new CancellationTokenSource();
 
-                            sensorsList.Add(newSensor);
+                                var newSensor = new Sensor() { serialDevice = serialPort };
+
+                                newSensor.dataWriteObject = new DataWriter(serialPort.OutputStream);
+                                newSensor.dataReaderObject = new DataReader(serialPort.InputStream);
+
+                                var a = await WriteAsync(disableAutomaticAnswerCommand, newSensor);
+                                var v = await WriteAsync(disableContinuousModeCommand, newSensor);
+
+                                var w = await WriteAsync(getStatusCommand, newSensor);
+                                var s = await ReadAsync(ReadCancellationTokenSource.Token, newSensor);
+
+                                var t = await WriteAsync(informationCommand, newSensor);
+                                var r = await ReadAsync(ReadCancellationTokenSource.Token, newSensor);
+
+                                if (r.Contains("RTD"))
+                                {
+                                    newSensor.sensorType = SensorTypeEnum.waterTemperature;
+                                    logModel.AppendLog(Log.CreateLog("Water Temperature online", Log.LogType.Information));
+                                    logModel.AppendLog(Log.CreateLog(String.Format("Water Temperature status - {0}", s), Log.LogType.System));
+                                }
+
+                                if (r.Contains("pH"))
+                                {
+                                    newSensor.sensorType = SensorTypeEnum.ph;
+                                    logModel.AppendLog(Log.CreateLog("pH online", Log.LogType.Information));
+                                    logModel.AppendLog(Log.CreateLog(String.Format("pH status - {0}", s), Log.LogType.System));
+                                }
+
+                                if (r.Contains("ORP"))
+                                {
+                                    newSensor.sensorType = SensorTypeEnum.orp;
+                                    logModel.AppendLog(Log.CreateLog("ORP online", Log.LogType.Information));
+                                    logModel.AppendLog(Log.CreateLog(String.Format("ORP status - {0}", s), Log.LogType.System));
+                                }
+
+                                if (r.Contains("DO"))
+                                {
+                                    newSensor.sensorType = SensorTypeEnum.dissolvedOxygen;
+                                    logModel.AppendLog(Log.CreateLog("Dissolved Oxygen online", Log.LogType.Information));
+                                    logModel.AppendLog(Log.CreateLog(String.Format("Dissolved Oxygen status - {0}", s), Log.LogType.System));
+                                }
+
+                                sensorsList.Add(newSensor);
+                            });
+
+                            task.Wait();
                         }
 
                     }
@@ -166,32 +174,122 @@ namespace myfoodapp.Business.SensorManager
             return sensorsList.Where(s => s.sensorType == currentSensorType).FirstOrDefault();
         }
 
-        public async Task<string> RecordPhTempMeasure()
+        public bool SetWaterTemperatureForSensors(decimal waterTemperature)
         {
             var phSensor = this.GetSensor(SensorTypeEnum.ph);
 
             if (phSensor != null)
-            { 
-                //dataWriteObject = new DataWriter(phSensor.serialDevice.OutputStream);
-                //dataReaderObject = new DataReader(phSensor.serialDevice.InputStream);
+            {
+                var taskWakeUp = Task.Run(async () =>
+                {
+                    await WriteAsync(wakeupCommand, phSensor);
+                });
 
-                string oo = String.Empty;
+                taskWakeUp.Wait();
 
-                var t = await WriteAsync(readValueCommand).ContinueWith((a) => oo = ReadAsync(ReadCancellationTokenSource.Token).Result);
+                var taskSetTemp = Task.Run(async () =>
+                {
+                    await WriteAsync(String.Format(setWaterTemperatureCommand, waterTemperature), phSensor);
 
-                return oo;
+                });
+
+                taskSetTemp.Wait();
+
+                return true;
             }
 
-            return String.Empty;
+            return false;
         }
 
-        private async Task<string> WriteAsync(string command)
+        public decimal RecordWaterTemperatureMeasure()
+        {
+            var currentSensor = this.GetSensor(SensorTypeEnum.waterTemperature);
+
+            if (currentSensor != null)
+            {
+                StringBuilder strResult = new StringBuilder();
+                decimal sumCapturedMesure = 0;
+
+                var taskWakeUp = Task.Run(async () => {
+                    await WriteAsync(wakeupCommand, currentSensor);
+                });
+
+                taskWakeUp.Wait();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var taskSumMeasure = Task.Run(async () => {
+                        await WriteAsync(readValueCommand, currentSensor)
+                             .ContinueWith((a) => strResult.Append(ReadAsync(ReadCancellationTokenSource.Token, currentSensor).Result));
+                        decimal capturedMesure = 0;
+                        var boolMeasure_1 = Decimal.TryParse(strResult.ToString().Replace("\r", ""), out capturedMesure);
+                        sumCapturedMesure += capturedMesure;
+                        strResult.Clear();
+                    });
+
+                    taskSumMeasure.Wait();
+
+                }
+
+                var taskSleep = Task.Run(async () => {
+                    await WriteAsync(sleepModeCommand, currentSensor);
+                });
+
+                taskSleep.Wait();
+
+                return sumCapturedMesure / 4;
+            }
+
+            return 0;
+        }
+
+        public decimal RecordPhMeasure()
+        {
+            var phSensor = this.GetSensor(SensorTypeEnum.ph);
+
+            if (phSensor != null)
+            {
+                StringBuilder strResult = new StringBuilder();
+                decimal sumCapturedMesure = 0;
+
+                var taskWakeUp = Task.Run(async () => {
+                    await WriteAsync(wakeupCommand, phSensor);
+                });
+
+                taskWakeUp.Wait();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var taskSumMeasure = Task.Run(async () => {
+                        await WriteAsync(readValueCommand, phSensor)
+                        .ContinueWith((a) => strResult.Append(ReadAsync(ReadCancellationTokenSource.Token, phSensor).Result));
+                        decimal capturedMesure = 0;
+                        var boolMeasure_1 = Decimal.TryParse(strResult.ToString().Replace("\r", ""), out capturedMesure);
+                        sumCapturedMesure += capturedMesure;
+                        strResult.Clear();          });
+
+                    taskSumMeasure.Wait();
+                }
+
+                var taskSleep = Task.Run(async () => {
+                    await WriteAsync(sleepModeCommand, phSensor);
+                });
+
+                taskSleep.Wait();            
+
+                return sumCapturedMesure / 4;
+            }
+
+            return 0;
+        }
+
+        private async Task<string> WriteAsync(string command, Sensor currentSensor)
         {
             Task<UInt32> storeAsyncTask;
 
-            dataWriteObject.WriteString(command);
+            currentSensor.dataWriteObject.WriteString(command);
 
-            storeAsyncTask = dataWriteObject.StoreAsync().AsTask();
+            storeAsyncTask = currentSensor.dataWriteObject.StoreAsync().AsTask();
 
                 UInt32 bytesWritten = await storeAsyncTask;
                 if (bytesWritten > 0)
@@ -201,7 +299,7 @@ namespace myfoodapp.Business.SensorManager
             return String.Empty;
         }
 
-        private async Task<string> ReadAsync(CancellationToken cancellationToken)
+        private async Task<string> ReadAsync(CancellationToken cancellationToken, Sensor currentSensor)
         {
             Task<UInt32> loadAsyncTask;
 
@@ -211,16 +309,16 @@ namespace myfoodapp.Business.SensorManager
             cancellationToken.ThrowIfCancellationRequested();
 
             // Set InputStreamOptions to complete the asynchronous read operation when one or more bytes is available
-            dataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
+            currentSensor.dataReaderObject.InputStreamOptions = InputStreamOptions.Partial;
 
             // Create a task object to wait for data on the serialPort.InputStream
-            loadAsyncTask = dataReaderObject.LoadAsync(ReadBufferLength).AsTask(cancellationToken);
+            loadAsyncTask = currentSensor.dataReaderObject.LoadAsync(ReadBufferLength).AsTask(cancellationToken);
 
             // Launch the task and wait
             UInt32 bytesRead = await loadAsyncTask;
             if (bytesRead > 0)
             {
-                return dataReaderObject.ReadString(bytesRead);
+                return currentSensor.dataReaderObject.ReadString(bytesRead);
             }
 
             return String.Empty;
