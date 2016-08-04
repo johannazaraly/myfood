@@ -16,7 +16,7 @@ namespace myfoodapp.Model
 {
     public class DatabaseModel
     {
-        private static readonly AsyncLock asyncLock = new AsyncLock();
+        //private static readonly AsyncLock asyncLock = new AsyncLock();
 
         public DatabaseModel()
         {

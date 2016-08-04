@@ -48,7 +48,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;CODE_ANALYSIS;ARM</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -116,6 +116,10 @@
     </Compile>
     <Compile Include="Business\Actions.cs" />
     <Compile Include="Business\BackgroundWorkers\ServicesManager.cs" />
+    <Compile Include="Business\BackgroundWorkers\MeasureBackgroundTask.cs" />
+    <Compile Include="Business\ClockManager\ClockManager.cs" />
+    <Compile Include="Business\SensorManager\Sensor.cs" />
+    <Compile Include="Business\SensorManager\SensorManager.cs" />
     <Compile Include="Common\AsyncLock.cs" />
     <Compile Include="Business\BackgroundWorkers\UptimeBackgroundTask.cs" />
     <Compile Include="Business\Event.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="Common\CloseFlyoutMessage.cs" />
     <Compile Include="Common\FlyoutHelper.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
+    <Compile Include="Business\ClockManager\RTCPiHelper.cs" />
     <Compile Include="Core\ActionTile.xaml.cs">
       <DependentUpon>ActionTile.xaml</DependentUpon>
     </Compile>
@@ -262,10 +267,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="LocalFiles\Data\Sensor_001\" />
-    <Folder Include="LocalFiles\Data\Sensor_002\" />
-    <Folder Include="LocalFiles\Data\Sensor_003\" />
-    <Folder Include="LocalFiles\Data\Sensor_004\" />
+    <Folder Include="Business\NetworkManager\" />
     <Folder Include="LocalFiles\Logs\Archive\" />
     <Folder Include="LocalFiles\UserSettings\" />
   </ItemGroup>
@@ -275,6 +277,9 @@
     </SDKReference>
     <SDKReference Include="Telerik UI For Universal Windows Platform, Version=2016.1.113.45">
       <Name>Telerik UI For Universal Windows Platform</Name>
+    </SDKReference>
+    <SDKReference Include="WindowsIoT, Version=10.0.10586.0">
+      <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

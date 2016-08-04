@@ -10,9 +10,10 @@ namespace myfoodapp.Business.BackgroundWorkers
     {
         private static ServicesManager instance;
         public UptimeBackgroundTask UptimeService;
+        public MeasureBackgroundTask MeasureService;
 
         public static ServicesManager GetInstance
-        {
+        {   
             get
             {
                 if (instance == null)
@@ -26,11 +27,13 @@ namespace myfoodapp.Business.BackgroundWorkers
         private ServicesManager()
         {
             UptimeService = new UptimeBackgroundTask();
+            MeasureService = new MeasureBackgroundTask();
         }
 
         public void RunAllServices()
         {
             UptimeService.Run();
+            MeasureService.Run();
         }
 
         public void StopAllServices()

@@ -12,8 +12,8 @@ namespace myfoodapp.Model
         {
             if (context.Measures.Any())
             {
-               // context.RemoveRange(context.Measures);
-               // context.SaveChanges();
+                context.RemoveRange(context.Measures);
+                context.SaveChanges();
             }
 
             if (!context.SensorTypes.Any())
@@ -40,39 +40,39 @@ namespace myfoodapp.Model
                 context.SaveChanges();
             }
 
-            if (!context.Measures.Any())
-            {
-                var phSensor = context.SensorTypes.Where(s => s.Id == 1).FirstOrDefault();
-                var waterTemperatureSensor = context.SensorTypes.Where(s => s.Id == 2).FirstOrDefault();
-                var dissolvedOxySensor = context.SensorTypes.Where(s => s.Id == 3).FirstOrDefault();
-                var ORPSensor = context.SensorTypes.Where(s => s.Id == 4).FirstOrDefault();
-                var airTemperatureSensor = context.SensorTypes.Where(s => s.Id == 5).FirstOrDefault();
+            //if (!context.Measures.Any())
+            //{
+            //    var phSensor = context.SensorTypes.Where(s => s.Id == 1).FirstOrDefault();
+            //    var waterTemperatureSensor = context.SensorTypes.Where(s => s.Id == 2).FirstOrDefault();
+            //    var dissolvedOxySensor = context.SensorTypes.Where(s => s.Id == 3).FirstOrDefault();
+            //    var ORPSensor = context.SensorTypes.Where(s => s.Id == 4).FirstOrDefault();
+            //    var airTemperatureSensor = context.SensorTypes.Where(s => s.Id == 5).FirstOrDefault();
 
-                for (int i = 0; i < 100; i++)
-                {
-                    Random rnd = new Random();
-                    var currentDate = DateTime.Now;
-                    currentDate = currentDate.AddTicks(-(currentDate.Ticks % TimeSpan.TicksPerSecond)).AddMinutes(-10 * i);
+            //    for (int i = 0; i < 100; i++)
+            //    {
+            //        Random rnd = new Random();
+            //        var currentDate = DateTime.Now;
+            //        currentDate = currentDate.AddTicks(-(currentDate.Ticks % TimeSpan.TicksPerSecond)).AddMinutes(-10 * i);
 
-                    decimal phValue = Convert.ToDecimal(Math.Round(7 + Math.Sin(0.5 * i) + 0.1 * rnd.Next(-1, 1),3));
-                    context.Measures.Add(new Measure() { captureDate = currentDate, value = phValue, sensor = phSensor });
+            //        decimal phValue = Convert.ToDecimal(Math.Round(7 + Math.Sin(0.5 * i) + 0.1 * rnd.Next(-1, 1),3));
+            //        context.Measures.Add(new Measure() { captureDate = currentDate, value = phValue, sensor = phSensor });
 
-                    decimal waterTemperatureValue = Convert.ToDecimal(Math.Round(15 + Math.Sin(0.1 * i) + 0.5 * rnd.Next(-1, 1), 3));
-                    context.Measures.Add(new Measure() { captureDate = currentDate, value = waterTemperatureValue, sensor = waterTemperatureSensor });
+            //        decimal waterTemperatureValue = Convert.ToDecimal(Math.Round(15 + Math.Sin(0.1 * i) + 0.5 * rnd.Next(-1, 1), 3));
+            //        context.Measures.Add(new Measure() { captureDate = currentDate, value = waterTemperatureValue, sensor = waterTemperatureSensor });
 
-                    decimal dissolvedOxyValue = Convert.ToDecimal(Math.Round(250 + Math.Sin(0.01 * i) + 0.5 * rnd.Next(-1, 1), 3));
-                    context.Measures.Add(new Measure() { captureDate = currentDate, value = dissolvedOxyValue, sensor = dissolvedOxySensor });
+            //        decimal dissolvedOxyValue = Convert.ToDecimal(Math.Round(250 + Math.Sin(0.01 * i) + 0.5 * rnd.Next(-1, 1), 3));
+            //        context.Measures.Add(new Measure() { captureDate = currentDate, value = dissolvedOxyValue, sensor = dissolvedOxySensor });
 
-                    decimal ORPValue = Convert.ToDecimal(Math.Round(150 + Math.Sin(0.01 * i) + 0.7 * rnd.Next(-1, 1), 3));
-                    context.Measures.Add(new Measure() { captureDate = currentDate, value = ORPValue, sensor = ORPSensor });
+            //        decimal ORPValue = Convert.ToDecimal(Math.Round(150 + Math.Sin(0.01 * i) + 0.7 * rnd.Next(-1, 1), 3));
+            //        context.Measures.Add(new Measure() { captureDate = currentDate, value = ORPValue, sensor = ORPSensor });
 
-                    decimal airTemperatureValue = Convert.ToDecimal(Math.Round(20 + Math.Sin(0.001 * i) + 0.5 * rnd.Next(-1, 1), 3));
-                    context.Measures.Add(new Measure() { captureDate = currentDate, value = airTemperatureValue, sensor = airTemperatureSensor });
-                };
+            //        decimal airTemperatureValue = Convert.ToDecimal(Math.Round(20 + Math.Sin(0.001 * i) + 0.5 * rnd.Next(-1, 1), 3));
+            //        context.Measures.Add(new Measure() { captureDate = currentDate, value = airTemperatureValue, sensor = airTemperatureSensor });
+            //    };
 
-                context.SaveChanges();
-            }
-
+            //    context.SaveChanges();
         }
+
+    
     }
 }
