@@ -55,5 +55,20 @@ namespace myfoodapp.Business
                                description = _description,
                                type = logTypeDesc };
         }
+
+        public static Log CreateErrorLog(string _description, Exception exception)
+        {
+            string logTypeDesc = string.Empty;
+
+            return new Log()
+            {
+                correlationId = Guid.NewGuid().ToString(),
+                date = DateTime.Now,
+                description = String.Format("Exception {0} - {1} - {2}", _description, exception.Message, exception.InnerException),
+                stackCall = exception.StackTrace,
+                type = "ERROR"
+            };
+        }
+
     }
 }

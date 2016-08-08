@@ -17,13 +17,25 @@ namespace myfoodapp.Model
     {
         private static readonly AsyncLock asyncLock = new AsyncLock();
 
-        public LogModel()
+        private static LogModel instance;
+
+        public static LogModel GetInstance
         {
-            var task = Task.Run(async () => { await InitFileFolder(); });
-            task.Wait();
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new LogModel();
+                }
+                return instance;
+            }
         }
 
-        private async Task InitFileFolder()
+        private LogModel()
+        {         
+        }
+
+        public async Task InitFileFolder()
         {
             var local = ApplicationData.Current.LocalFolder;
             try
@@ -36,7 +48,6 @@ namespace myfoodapp.Model
             {
                 var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.FailIfExists);               
             }
-           
         }
 
         public async Task<ObservableCollection<Log>> GetLogsAsync()
@@ -76,6 +87,7 @@ namespace myfoodapp.Model
 
                     var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(newFile, str);
+
                 }
 
                 });

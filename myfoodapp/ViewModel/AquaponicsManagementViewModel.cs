@@ -40,7 +40,7 @@ namespace myfoodapp.ViewModel
 
         public void OnPHSensorClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<SensorsMonitoringPage>();
+            App.TryShowNewWindow<PhSensorsMonitoringPage>();
         }
 
         public void OnHealthClicked(object sender, RoutedEventArgs args)

@@ -47,10 +47,6 @@ namespace myfoodapp.Model
             public DateTime captureDate { get; set; }
             public decimal value { get; set; }
             public SensorType sensor { get; set; }
-            [NotMapped]
-            public decimal maximum { get; set; }
-            [NotMapped]
-            public decimal minimum { get; set; }
         }
 
         public class SensorType

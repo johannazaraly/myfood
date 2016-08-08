@@ -1,2 +1,2 @@
-MainPackage=C:\Dev\myfoodapp\myfoodapp\bin\ARM\Release\myfoodapp_1.0.1.0_ARM.appx
-ResourcePack=C:\Dev\myfoodapp\myfoodapp\bin\ARM\Release\myfoodapp_1.0.1.0_language-fr.appx
+MainPackage=C:\Dev\myfoodapp\myfoodapp\bin\ARM\Release\myfoodapp_1.0.7.0_ARM.appx
+ResourcePack=C:\Dev\myfoodapp\myfoodapp\bin\ARM\Release\myfoodapp_1.0.7.0_language-fr.appx

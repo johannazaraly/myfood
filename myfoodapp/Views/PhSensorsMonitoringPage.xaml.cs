@@ -25,11 +25,11 @@ namespace myfoodapp.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SensorsMonitoringPage : Page
+    public sealed partial class PhSensorsMonitoringPage : Page
     {
-        public SensorsMonitoringPage()
+        public PhSensorsMonitoringPage()
         {
-            this.ViewModel = new SensorsMonitoringViewModel();
+            this.ViewModel = new PhSensorsMonitoringViewModel();
             this.InitializeComponent();
             this.Loaded += SensorsMonitoringPage_Loaded;
         }
@@ -39,6 +39,6 @@ namespace myfoodapp.Views
             this.DataContext = ViewModel;
         }
 
-        public SensorsMonitoringViewModel ViewModel { get; set; }
+        public PhSensorsMonitoringViewModel ViewModel { get; set; }
     }
 }

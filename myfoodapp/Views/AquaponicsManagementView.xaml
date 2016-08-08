@@ -35,12 +35,15 @@
                 <Primitives:RadHubTile Background="Green" UpdateInterval="0:0:1" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
-                            <TextBlock Text="Yesterday : 6.5" Margin="0,0,0,10" FontSize="15"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="Yesterday:" FontSize="15"/>
+                                <TextBlock Text="{Binding LastDayValue.Result}" Margin="10,0,0,0" FontSize="15"/>
+                            </StackPanel>
                         </DataTemplate>
                     </Primitives:RadHubTile.TitleTemplate>
                     <Primitives:RadHubTile.NotificationTemplate>
                         <DataTemplate>
-                            <TextBlock Text="6.6" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding CurrentValue.Result}" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
                         </DataTemplate>
                     </Primitives:RadHubTile.NotificationTemplate>
                     <Primitives:RadHubTile.MessageTemplate>

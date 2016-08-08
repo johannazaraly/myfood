@@ -98,14 +98,6 @@
     </Content>
     <Content Include="Assets\miniLogo.png" />
     <Content Include="Assets\pioneerCitizenNetwork.png" />
-    <Content Include="Assets\Square150x150Logo.scale-400.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="LocalFiles\Logs\Current\logs.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="LocalFiles\Services\services.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="project.json" />
     <PRIResource Include="Strings\fr-FR\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
@@ -127,6 +119,7 @@
     <Compile Include="Business\Service.cs" />
     <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\CloseFlyoutMessage.cs" />
+    <Compile Include="Common\EventLogHelper.cs" />
     <Compile Include="Common\FlyoutHelper.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
     <Compile Include="Business\ClockManager\RTCPiHelper.cs" />
@@ -147,10 +140,9 @@
     <Compile Include="Model\LocalDataContext.cs" />
     <Compile Include="Model\LocalDataContextExtension.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
-    <Compile Include="Model\ServiceModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\SensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\PhSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
     <Compile Include="ViewModel\AdministratorViewModel.cs" />
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
@@ -162,8 +154,8 @@
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SensorsMonitoringPage.xaml.cs">
-      <DependentUpon>SensorsMonitoringPage.xaml</DependentUpon>
+    <Compile Include="Views\PhSensorsMonitoringPage.xaml.cs">
+      <DependentUpon>PhSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AdministratorPage.xaml.cs">
       <DependentUpon>AdministratorPage.xaml</DependentUpon>
@@ -237,7 +229,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SensorsMonitoringPage.xaml">
+    <Page Include="Views\PhSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -268,8 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\NetworkManager\" />
-    <Folder Include="LocalFiles\Logs\Archive\" />
-    <Folder Include="LocalFiles\UserSettings\" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.VCLibs, version=14.0">

@@ -16,10 +16,106 @@ namespace myfoodapp.Model
 {
     public class DatabaseModel
     {
-        //private static readonly AsyncLock asyncLock = new AsyncLock();
+        private static readonly AsyncLock asyncLock = new AsyncLock();
+        private LogModel logModel = LogModel.GetInstance;
 
-        public DatabaseModel()
+        private static DatabaseModel instance;
+
+        public static DatabaseModel GetInstance
         {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new DatabaseModel();
+                }
+                return instance;
+            }
+        }
+
+        private DatabaseModel()
+        {
+        }
+
+        public async Task<Decimal> GetLastMesure(SensorTypeEnum sensorType)
+        {
+            using (var db = new LocalDataContext())
+            {
+                var rslt = await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                                  select m).Take(1).FirstOrDefaultAsync();
+
+                if (rslt != null)
+                    return Math.Round(rslt.value,1);
+                else
+                    return 0;
+            }
+        }
+
+        public async Task<Decimal> GetYesterdayMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
+        {
+            using (var db = new LocalDataContext())
+            {
+
+                var rslt = await (from m in db.Measures
+                                  .Where(m => m.sensor.Id == (int)sensorType 
+                                  && m.captureDate > currentDateTime.AddDays(-1) 
+                                  && m.captureDate < currentDateTime)
+                                  .OrderByDescending(m => m.captureDate)
+                                  select m).Take(1).FirstOrDefaultAsync();
+
+                if (rslt != null)
+                    return Math.Round(rslt.value, 1);
+                else
+                    return 0;
+            }
+        }
+
+        public async Task<Decimal> GetLastDayMinMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
+        {
+            using (var db = new LocalDataContext())
+            {
+
+                var rslt = await (from m in db.Measures
+                                  .Where(m => m.sensor.Id == (int)sensorType
+                                  && m.captureDate > currentDateTime.AddDays(-1))
+                                  .OrderByDescending(m => m.captureDate)
+                                  select m).MinAsync(m => m.value);
+
+                return Math.Round(rslt, 1);
+
+            }
+        }
+
+        public async Task<Decimal> GetLastDayMaxMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
+        {
+            using (var db = new LocalDataContext())
+            {
+
+                var rslt = await (from m in db.Measures
+                                  .Where(m => m.sensor.Id == (int)sensorType
+                                  && m.captureDate > currentDateTime.AddDays(-1))
+                                  .OrderByDescending(m => m.captureDate)
+                                  select m).MaxAsync(m => m.value);
+
+                return Math.Round(rslt, 1);
+
+            }
+        }
+
+        public async Task<Decimal> GetLastDayAverageMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
+        {
+            using (var db = new LocalDataContext())
+            {
+
+                var rslt = await (from m in db.Measures
+                                  .Where(m => m.sensor.Id == (int)sensorType
+                                  && m.captureDate > currentDateTime.AddDays(-1))
+                                  .OrderByDescending(m => m.captureDate)
+                                  select m).AverageAsync(m => m.value);
+
+                return Math.Round(rslt, 1);
+
+            }
         }
 
         public async Task<List<Measure>> GetLastDayMesures(SensorTypeEnum sensorType)
@@ -35,7 +131,7 @@ namespace myfoodapp.Model
         {
             using (var db = new LocalDataContext())
             {
-                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                return await(from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
                               select m).Take(7 * 24 * 6).ToListAsync();
             }
         }
@@ -55,23 +151,29 @@ namespace myfoodapp.Model
             }
         }
 
-        public bool AddMesure(DateTime currentDate, Decimal capturedValue, SensorTypeEnum sensorType)
+        public async Task<bool> AddMesure(DateTime currentDate, decimal capturedValue, SensorTypeEnum sensorType)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
-                try
+                var task = Task.Run(async () =>
                 {
-                    var currentSensor = db.SensorTypes.Where(s => s.Id == (int)sensorType).FirstOrDefault();
+                    using (var db = new LocalDataContext())
+                    {
+                        try
+                        {
+                            var currentSensor = db.SensorTypes.Where(s => s.Id == (int)sensorType).FirstOrDefault();
 
-                    db.Measures.Add(new Measure() { value = capturedValue, captureDate = currentDate, sensor = currentSensor });
-                    db.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                            db.Measures.Add(new Measure() { value = capturedValue, captureDate = currentDate, sensor = currentSensor });
+                            await db.SaveChangesAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            logModel.AppendLog(Log.CreateErrorLog("Exception on Database", ex));
+                        }
+                    }  
+                });
+                task.Wait();
             }
-
             return true;
         }
 

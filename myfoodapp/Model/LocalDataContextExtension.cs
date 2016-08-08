@@ -10,11 +10,11 @@ namespace myfoodapp.Model
     {
         public static void EnsureSeedData(this LocalDataContext context)
         {
-            if (context.Measures.Any())
-            {
-                context.RemoveRange(context.Measures);
-                context.SaveChanges();
-            }
+            //if (context.Measures.Any())
+            //{
+            //    context.RemoveRange(context.Measures);
+            //    context.SaveChanges();
+            //}
 
             if (!context.SensorTypes.Any())
             {

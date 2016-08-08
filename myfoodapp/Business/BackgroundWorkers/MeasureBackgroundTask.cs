@@ -13,8 +13,8 @@ namespace myfoodapp.Business
     public sealed class MeasureBackgroundTask
     {
         private BackgroundWorker bw = new BackgroundWorker();
-        private LogModel logModel = new LogModel();
-        private DatabaseModel databaseModel = new DatabaseModel();
+        private LogModel logModel = LogModel.GetInstance;
+        private DatabaseModel databaseModel = DatabaseModel.GetInstance;
         private SensorManager.SensorManager sensorManager;
 
 
@@ -32,6 +32,12 @@ namespace myfoodapp.Business
         {
             logModel.AppendLog(Log.CreateLog("Measure Service running...", Log.LogType.System));
             sensorManager = SensorManager.SensorManager.GetInstance;
+            sensorManager.Initialized += SensorManager_Initialized;
+            sensorManager.Connect();
+        }
+
+        private void SensorManager_Initialized(object sender, EventArgs e)
+        {
             bw.RunWorkerAsync();
         }
 
@@ -52,38 +58,84 @@ namespace myfoodapp.Business
             while (!bw.CancellationPending)
             {
                 var elapsedMs = watch.ElapsedMilliseconds;
-                var databaseModel = new DatabaseModel();
-                var clockManager = ClockManager.ClockManager.GetInstance;
 
-                if (elapsedMs % 10000 == 0)
+                try
                 {
-                    var captureDateTime = DateTime.Now;
-
-                    if (clockManager != null && clockManager.IsConnected)
+                    if (elapsedMs % 20000 == 0)
                     {
-                        captureDateTime = clockManager.ReadDate();
-                    }
+                        var captureDateTime = DateTime.Now;
 
-                    if (sensorManager.isSensorOnline(SensorTypeEnum.waterTemperature))
-                    {
-                        decimal capturedValue = 0;
-                        capturedValue = sensorManager.RecordWaterTemperatureMeasure();
-                        sensorManager.SetWaterTemperatureForSensors(capturedValue);
+#if ARM
+                        var clockManager = ClockManager.ClockManager.GetInstance;
 
-                        databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.waterTemperature);
-                    }
+                        if (clockManager.IsConnected)
+                        {
+                            var watchMesures = Stopwatch.StartNew();
 
-                    if (sensorManager.isSensorOnline(SensorTypeEnum.ph))
-                    {
-                        decimal capturedValue = 0;
-                        capturedValue = sensorManager.RecordPhMeasure();
+                            captureDateTime = clockManager.ReadDate();
 
-                        databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.ph);
+                            if (sensorManager.isSensorOnline(SensorTypeEnum.waterTemperature))
+                            {
+                                decimal capturedValue = 0;
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature);
+                                sensorManager.SetWaterTemperatureForSensors(capturedValue);
+
+                                var task = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.waterTemperature);
+                                });
+                                task.Wait();
+                            }
+
+                            if (sensorManager.isSensorOnline(SensorTypeEnum.ph))
+                            {
+                                decimal capturedValue = 0;
+                                capturedValue = sensorManager.RecordPhMeasure();
+
+                                var task = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.ph);
+                                });
+                                task.Wait();
+                            }
+
+                            if (sensorManager.isSensorOnline(SensorTypeEnum.orp))
+                            {
+                                decimal capturedValue = 0;
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp);
+
+                                var task = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.orp);
+                                });
+                                task.Wait();
+                            }
+
+                            if (sensorManager.isSensorOnline(SensorTypeEnum.dissolvedOxygen))
+                            {
+                                decimal capturedValue = 0;
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.dissolvedOxygen);
+
+                                var task = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.dissolvedOxygen);
+                                });
+                                task.Wait();
+                            }
+
+                            logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
+
+                        }
+#endif
                     }
                 }
+                catch (Exception ex)
+                {
+                    logModel.AppendLog(Log.CreateErrorLog("Exception on Measures", ex));
+                    throw;
+                }
             }
-
-            watch.Stop();      
+            watch.Stop();
         }
     }
 }

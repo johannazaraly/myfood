@@ -22,6 +22,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
 using Microsoft.Data.Entity;
+using myfoodapp.Business.ClockManager;
+using System.Threading.Tasks;
 
 namespace myfoodapp
 {
@@ -45,6 +47,12 @@ namespace myfoodapp
                 db.Database.Migrate();
                 LocalDataContextExtension.EnsureSeedData(db);
             }
+
+            var task = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
+            task.Wait();
+
+            var clockManager = ClockManager.GetInstance;
+            clockManager.Connected += ClockManager_Connected;
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -95,6 +103,10 @@ namespace myfoodapp
             // Ensure the current window is active
             Window.Current.Activate();
 
+        }
+
+        private void ClockManager_Connected(object sender, EventArgs e)
+        {
             var servicesManager = ServicesManager.GetInstance;
             servicesManager.RunAllServices();
         }

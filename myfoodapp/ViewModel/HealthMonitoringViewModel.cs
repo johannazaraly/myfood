@@ -22,7 +22,7 @@ namespace myfoodapp.ViewModel
 {
     public class HealthMonitoringViewModel : BindableBase
     {
-        private DatabaseModel databaseModel = new DatabaseModel();
+        private DatabaseModel databaseModel = DatabaseModel.GetInstance;
         private PivotItem currentPivotItem;
 
         private bool isBusy = false;

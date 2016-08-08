@@ -21,8 +21,7 @@ namespace myfoodapp.ViewModel
 {
     public class AdministratorViewModel : BindableBase
     {
-        private LogModel logModel = new LogModel();
-        private ServiceModel serviceModel = new ServiceModel();
+        private LogModel logModel = LogModel.GetInstance;
 
         private bool isBusy = false;
         public bool IsBusy
@@ -52,8 +51,8 @@ namespace myfoodapp.ViewModel
         public AdministratorViewModel()
         {
             Logs = new NotifyTaskCompletion<ObservableCollection<Log>>(logModel.GetLogsAsync());
-            Services = new NotifyTaskCompletion<ObservableCollection<Service>>(serviceModel.GetServicesAsync());
-            UptimeSystem = ServicesManager.GetInstance.UptimeService.UptimeSystem;
+           // Services = new NotifyTaskCompletion<ObservableCollection<Service>>(serviceModel.GetServicesAsync());
+            //UptimeSystem = ServicesManager.GetInstance.UptimeService.UptimeSystem;
         }
 
         public void OnBackClicked(object sender, RoutedEventArgs args)
@@ -83,8 +82,8 @@ namespace myfoodapp.ViewModel
         {
             IsBusy = false;
             Logs = new NotifyTaskCompletion<ObservableCollection<Log>>(logModel.GetLogsAsync());
-            Services = new NotifyTaskCompletion<ObservableCollection<Service>>(serviceModel.GetServicesAsync());
-            UptimeSystem = ServicesManager.GetInstance.UptimeService.UptimeSystem;
+            //Services = new NotifyTaskCompletion<ObservableCollection<Service>>(serviceModel.GetServicesAsync());
+            //UptimeSystem = ServicesManager.GetInstance.UptimeService.UptimeSystem;
         }
 
         public void OnOpenPaneClicked(object sender, RoutedEventArgs args)
