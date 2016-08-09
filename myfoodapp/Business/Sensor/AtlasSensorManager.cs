@@ -11,26 +11,26 @@ using Windows.Devices.I2c;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
-namespace myfoodapp.Business.SensorManager
+namespace myfoodapp.Business.Sensor
 {
-    public class SensorManager
+    public class AtlasSensorManager
     {
         private LogModel logModel = LogModel.GetInstance;
-        private List<Sensor> sensorsList = new List<Sensor>();
+        private List<AtlasSensor> sensorsList = new List<AtlasSensor>();
 
         public event EventHandler Initialized;
 
         private CancellationTokenSource ReadCancellationTokenSource;
 
-        private static SensorManager instance;
+        private static AtlasSensorManager instance;
 
-        public static SensorManager GetInstance
+        public static AtlasSensorManager GetInstance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new SensorManager();
+                    instance = new AtlasSensorManager();
                 }
                 return instance;
             }
@@ -67,7 +67,7 @@ namespace myfoodapp.Business.SensorManager
         private string answersSleepMode = "*SL";
         private string answersWakeUpMode = "*WA";
 
-        private SensorManager()
+        private AtlasSensorManager()
         {
            
         }
@@ -117,7 +117,7 @@ namespace myfoodapp.Business.SensorManager
                                     // Create cancellation token object to close I/O operations when closing the device
                                     ReadCancellationTokenSource = new CancellationTokenSource();
 
-                                    var newSensor = new Sensor() { serialDevice = serialPort };
+                                    var newSensor = new AtlasSensor() { serialDevice = serialPort };
 
                                     newSensor.dataWriteObject = new DataWriter(serialPort.OutputStream);
                                     newSensor.dataReaderObject = new DataReader(serialPort.InputStream);
@@ -219,7 +219,7 @@ namespace myfoodapp.Business.SensorManager
             return (sensorsList.Where(s => s.sensorType == currentSensorType).FirstOrDefault() != null) ? true: false;
         }
 
-        public Sensor GetSensor(SensorTypeEnum currentSensorType)
+        public AtlasSensor GetSensor(SensorTypeEnum currentSensorType)
         {
             return sensorsList.Where(s => s.sensorType == currentSensorType).FirstOrDefault();
         }
@@ -327,7 +327,7 @@ namespace myfoodapp.Business.SensorManager
             return 0;
         }
 
-        private async Task<string> WriteAsync(string command, Sensor currentSensor)
+        private async Task<string> WriteAsync(string command, AtlasSensor currentSensor)
         {
             Task<UInt32> storeAsyncTask;
 
@@ -343,7 +343,7 @@ namespace myfoodapp.Business.SensorManager
             return String.Empty;
         }
 
-        private async Task<string> ReadAsync(CancellationToken cancellationToken, Sensor currentSensor)
+        private async Task<string> ReadAsync(CancellationToken cancellationToken, AtlasSensor currentSensor)
         {
             Task<UInt32> loadAsyncTask;
 
@@ -368,7 +368,7 @@ namespace myfoodapp.Business.SensorManager
             return String.Empty;
         }
 
-        private void CloseDevice(Sensor sensor)
+        private void CloseDevice(AtlasSensor sensor)
         {
             if (sensor.serialDevice != null)
             {

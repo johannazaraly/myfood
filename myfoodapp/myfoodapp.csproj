@@ -107,13 +107,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Business\Actions.cs" />
-    <Compile Include="Business\BackgroundWorkers\ServicesManager.cs" />
     <Compile Include="Business\BackgroundWorkers\MeasureBackgroundTask.cs" />
-    <Compile Include="Business\ClockManager\ClockManager.cs" />
-    <Compile Include="Business\SensorManager\Sensor.cs" />
-    <Compile Include="Business\SensorManager\SensorManager.cs" />
+    <Compile Include="Business\Clock\ClockManager.cs" />
+    <Compile Include="Business\HumidityTemperature\HumidityTemperatureManager.cs" />
+    <Compile Include="Business\Sensor\AtlasSensor.cs" />
+    <Compile Include="Business\Sensor\AtlasSensorManager.cs" />
     <Compile Include="Common\AsyncLock.cs" />
-    <Compile Include="Business\BackgroundWorkers\UptimeBackgroundTask.cs" />
     <Compile Include="Business\Event.cs" />
     <Compile Include="Business\Log.cs" />
     <Compile Include="Business\Service.cs" />
@@ -122,7 +121,7 @@
     <Compile Include="Common\EventLogHelper.cs" />
     <Compile Include="Common\FlyoutHelper.cs" />
     <Compile Include="Common\NotifyTaskCompletion.cs" />
-    <Compile Include="Business\ClockManager\RTCPiHelper.cs" />
+    <Compile Include="Business\Clock\RTCPiHelper.cs" />
     <Compile Include="Core\ActionTile.xaml.cs">
       <DependentUpon>ActionTile.xaml</DependentUpon>
     </Compile>
@@ -259,7 +258,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Business\NetworkManager\" />
+    <Folder Include="Business\Network\" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.VCLibs, version=14.0">

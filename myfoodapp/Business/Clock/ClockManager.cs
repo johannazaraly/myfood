@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 
-namespace myfoodapp.Business.ClockManager
+namespace myfoodapp.Business.Clock
 {
     class ClockManager
     {
@@ -46,6 +46,11 @@ namespace myfoodapp.Business.ClockManager
 
         private bool isConnected;
 
+        /// <summary>
+        /// Event occurs when connection is made
+        /// </summary>
+        public event EventHandler Connected;
+
         // Register addresses for the DS1307 IC
         private const byte SECONDS = 0x00;
         private const byte MINUTES = 0x01;
@@ -69,10 +74,10 @@ namespace myfoodapp.Business.ClockManager
         public ClockManager()
         {
             IsConnected = false;
-            InitClock();
+            this.InitClock();
         }
 
-        private async void InitClock()
+        public async void InitClock()
         {
             await this.Connect();
         }
@@ -116,12 +121,6 @@ namespace myfoodapp.Business.ClockManager
                 throw e;
             }
         }
-
-        /// <summary>
-        /// Event occurs when connection is made
-        /// </summary>
-        public event EventHandler Connected;
-
 
         /// <summary>
         /// Converts BCD format to integer

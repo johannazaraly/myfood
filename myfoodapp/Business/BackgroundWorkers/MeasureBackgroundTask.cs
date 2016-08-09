@@ -1,4 +1,7 @@
-﻿using myfoodapp.Model;
+﻿using myfoodapp.Business.Clock;
+using myfoodapp.Business.HumidityTemperature;
+using myfoodapp.Business.Sensor;
+using myfoodapp.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,8 +18,15 @@ namespace myfoodapp.Business
         private BackgroundWorker bw = new BackgroundWorker();
         private LogModel logModel = LogModel.GetInstance;
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
-        private SensorManager.SensorManager sensorManager;
+        private AtlasSensorManager sensorManager;
 
+#if DEBUG
+        private int TICKSPERCYCLE = 30000;
+#endif
+
+#if RELEASE
+        private int TICKSPERCYCLE = 600000;
+#endif
 
         public MeasureBackgroundTask()
         {
@@ -31,7 +41,7 @@ namespace myfoodapp.Business
         public void Run()
         {
             logModel.AppendLog(Log.CreateLog("Measure Service running...", Log.LogType.System));
-            sensorManager = SensorManager.SensorManager.GetInstance;
+            sensorManager = AtlasSensorManager.GetInstance;
             sensorManager.Initialized += SensorManager_Initialized;
             sensorManager.Connect();
         }
@@ -61,12 +71,12 @@ namespace myfoodapp.Business
 
                 try
                 {
-                    if (elapsedMs % 20000 == 0)
+                    if (elapsedMs % TICKSPERCYCLE == 0)
                     {
                         var captureDateTime = DateTime.Now;
 
 #if ARM
-                        var clockManager = ClockManager.ClockManager.GetInstance;
+                        var clockManager = ClockManager.GetInstance;
 
                         if (clockManager.IsConnected)
                         {
@@ -123,7 +133,38 @@ namespace myfoodapp.Business
                                 task.Wait();
                             }
 
+                            if (HumidityTemperatureManager.GetInstance.IsConnected)
+                            {
+                                var humTempManager = HumidityTemperatureManager.GetInstance;
+
+                                decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
+                                decimal capturedHumidity = (decimal)humTempManager.Humidity;
+
+                                var taskTemp = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
+                                });
+                                taskTemp.Wait();
+
+                                var taskHum = Task.Run(async () =>
+                                {
+                                    await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
+                                });
+                                taskHum.Wait();
+                            }
+
                             logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
+
+                            TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
+
+                            string logDescription = string.Format("[ {0:d} | {0:t} ] App running since {1:D2}h:{2:D2}m:{3:D2}s",
+                                                    captureDateTime,
+                                                    t.Hours,
+                                                    t.Minutes,
+                                                    t.Seconds,
+                                                    t.Milliseconds);
+
+                            logModel.AppendLog(Log.CreateLog(logDescription, Log.LogType.Information));
 
                         }
 #endif

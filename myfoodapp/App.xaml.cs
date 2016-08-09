@@ -1,5 +1,4 @@
 ﻿using myfoodapp.Business;
-using myfoodapp.Business.BackgroundWorkers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,8 +21,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
 using Microsoft.Data.Entity;
-using myfoodapp.Business.ClockManager;
+using myfoodapp.Business.Clock;
 using System.Threading.Tasks;
+using myfoodapp.Business.HumidityTemperature;
 
 namespace myfoodapp
 {
@@ -51,11 +51,17 @@ namespace myfoodapp
             var task = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
             task.Wait();
 
-            var clockManager = ClockManager.GetInstance;
-            clockManager.Connected += ClockManager_Connected;
+            var humidityManager = HumidityTemperatureManager.GetInstance;
+            humidityManager.Connected += HumidityManager_Connected;
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+        }
+
+        private void HumidityManager_Connected(object sender, EventArgs e)
+        {
+            var clockManager = ClockManager.GetInstance;
+            clockManager.Connected += ClockManager_Connected;
         }
 
         /// <summary>
@@ -107,8 +113,8 @@ namespace myfoodapp
 
         private void ClockManager_Connected(object sender, EventArgs e)
         {
-            var servicesManager = ServicesManager.GetInstance;
-            servicesManager.RunAllServices();
+            var mesureBackgroundTask = new MeasureBackgroundTask();
+            mesureBackgroundTask.Run();
         }
 
         public static void TryShowNewWindow<TView>()

@@ -33,13 +33,16 @@ namespace myfoodapp.Model
             }
         }
 
+        private LocalDataContext db;
+
         private DatabaseModel()
         {
+            db = new LocalDataContext();
         }
 
         public async Task<Decimal> GetLastMesure(SensorTypeEnum sensorType)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
                 var rslt = await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
                                   select m).Take(1).FirstOrDefaultAsync();
@@ -53,7 +56,7 @@ namespace myfoodapp.Model
 
         public async Task<Decimal> GetYesterdayMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
 
                 var rslt = await (from m in db.Measures
@@ -72,7 +75,7 @@ namespace myfoodapp.Model
 
         public async Task<Decimal> GetLastDayMinMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
 
                 var rslt = await (from m in db.Measures
@@ -88,7 +91,7 @@ namespace myfoodapp.Model
 
         public async Task<Decimal> GetLastDayMaxMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
 
                 var rslt = await (from m in db.Measures
@@ -104,7 +107,7 @@ namespace myfoodapp.Model
 
         public async Task<Decimal> GetLastDayAverageMesure(SensorTypeEnum sensorType, DateTime currentDateTime)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
 
                 var rslt = await (from m in db.Measures
@@ -120,7 +123,7 @@ namespace myfoodapp.Model
 
         public async Task<List<Measure>> GetLastDayMesures(SensorTypeEnum sensorType)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
                 return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
                               select m).Take(24 * 6).ToListAsync();
@@ -129,7 +132,7 @@ namespace myfoodapp.Model
 
         public async Task<List<Measure>> GetLastWeeksMesures(SensorTypeEnum sensorType)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
                 return await(from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
                               select m).Take(7 * 24 * 6).ToListAsync();
@@ -138,7 +141,7 @@ namespace myfoodapp.Model
 
         public async Task<List<Measure>> GetLastTwoMonthsMesures(SensorTypeEnum sensorType)
         {
-            using (var db = new LocalDataContext())
+            using (await asyncLock.LockAsync())
             {
                 return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType)
                               group m by new { m.captureDate.Year, m.captureDate.DayOfYear} into groupedDay

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.I2c;
 
-namespace myfoodapp.Business.ClockManager
+namespace myfoodapp.Business.Clock
 {
     class RTCPiHelper
     {

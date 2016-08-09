@@ -80,7 +80,8 @@ namespace myfoodapp.Model
             waterTemperature = 2,
             dissolvedOxygen = 3,
             orp = 4,
-            airTemperature = 5
-        }
+            airTemperature = 5,
+            humidity = 6
+    }
 
 }

@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using myfoodapp.Business;
-using myfoodapp.Business.BackgroundWorkers;
 using myfoodapp.Common;
 using myfoodapp.Model;
 using myfoodapp.Views;

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
-namespace myfoodapp.Business.SensorManager
+namespace myfoodapp.Business.Sensor
 {
-    public class Sensor
+    public class AtlasSensor
     {
         public SerialDevice serialDevice;
         public SensorTypeEnum sensorType;
