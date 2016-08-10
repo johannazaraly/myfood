@@ -7,14 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
     xmlns:telerikDataControls="using:Telerik.UI.Xaml.Controls.Data"
+    xmlns:core="using:myfoodapp.Core"
     xmlns:class="using:myfoodapp.Business"
     mc:Ignorable="d"
+    x:Name="myUserControl"
     d:DesignHeight="300"
     d:DesignWidth="400">
-    <UserControl.Resources>
-        <class:Actions x:Key="actions"/>
-        <class:Events x:Key="events"/>
-    </UserControl.Resources>
     <Grid>
         <Grid Margin="5" Background="WhiteSmoke">
             <Grid.ColumnDefinitions>
@@ -32,7 +30,8 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Primitives:RadHubTile Background="Green" UpdateInterval="0:0:1" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
+                <TextBlock Text="{Binding CurrentPhValue.Result}" Margin="10,0,0,0" FontSize="15"/>
+                <Primitives:RadHubTile Background="Green" IsFrozen="True" Tapped="{x:Bind ViewModel.OnPHSensorClicked}">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -43,7 +42,7 @@
                     </Primitives:RadHubTile.TitleTemplate>
                     <Primitives:RadHubTile.NotificationTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding CurrentValue.Result}" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding CurrentPhValue.Result}" Margin="0,0,0,50" FontSize="40" FontWeight="Bold"/>
                         </DataTemplate>
                     </Primitives:RadHubTile.NotificationTemplate>
                     <Primitives:RadHubTile.MessageTemplate>
@@ -52,8 +51,8 @@
                         </DataTemplate>
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
-                
-                <Primitives:RadHubTile Background="Green" Grid.Column="1" UpdateInterval="0:0:1">
+
+                <Primitives:RadHubTile Background="Green" Grid.Column="1" IsFrozen="True" Tapped="{x:Bind ViewModel.OnTempSensorClicked}">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
                             <TextBlock Text="Ext: 23°C | Hum: 80%" Margin="0,0,0,10" FontSize="15"/>
@@ -70,7 +69,7 @@
                         </DataTemplate>
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
-                
+
                 <Primitives:RadHubTile Background="Green" Grid.Row="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
@@ -88,7 +87,7 @@
                         </DataTemplate>
                     </Primitives:RadHubTile.MessageTemplate>
                 </Primitives:RadHubTile>
-                
+
                 <Primitives:RadHubTile Background="Green" Grid.Row="1" Grid.Column="1" UpdateInterval="0:0:1">
                     <Primitives:RadHubTile.TitleTemplate>
                         <DataTemplate>
@@ -180,36 +179,6 @@
                 </Primitives:RadHubTile>
 
             </Grid>
-
-            <!--<Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="4*"/>
-                </Grid.RowDefinitions>
-
-                --><!--<TextBlock x:Uid="nextActions" Style="{StaticResource ModuleTitleText}" HorizontalAlignment="Left" Text="Notifications"/>
-
-                <telerikDataControls:RadListView x:Name="nextActionListbox" ItemsSource="{StaticResource actions}" Grid.Row="1" Margin="5">
-                    <telerikDataControls:RadListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="90" />
-                                    <ColumnDefinition Width="3" />
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="3" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Date}" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="|" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="2" Text="{Binding Duration}" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="3" Text="|" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="4" Margin="3,0,0,0" Text="{Binding Description}" HorizontalAlignment="Left"/>
-                            </Grid>
-                        </DataTemplate>
-                    </telerikDataControls:RadListView.ItemTemplate>
-                </telerikDataControls:RadListView>--><!--
-            </Grid>-->
         </Grid>
     </Grid>
 </UserControl>

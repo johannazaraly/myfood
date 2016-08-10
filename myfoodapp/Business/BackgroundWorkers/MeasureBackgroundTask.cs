@@ -80,9 +80,22 @@ namespace myfoodapp.Business
 
                         if (clockManager.IsConnected)
                         {
+                            captureDateTime = clockManager.ReadDate();
+
+                            TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
+
+                            string logDescription = string.Format("[ {0:d} | {0:t} ] App running since {1:D2}h:{2:D2}m:{3:D2}s",
+                                                    captureDateTime,
+                                                    t.Hours,
+                                                    t.Minutes,
+                                                    t.Seconds,
+                                                    t.Milliseconds);
+
+                            logModel.AppendLog(Log.CreateLog(logDescription, Log.LogType.Information));
+
                             var watchMesures = Stopwatch.StartNew();
 
-                            captureDateTime = clockManager.ReadDate();
+                            
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.waterTemperature))
                             {
@@ -133,38 +146,27 @@ namespace myfoodapp.Business
                                 task.Wait();
                             }
 
-                            if (HumidityTemperatureManager.GetInstance.IsConnected)
-                            {
-                                var humTempManager = HumidityTemperatureManager.GetInstance;
+                            //if (HumidityTemperatureManager.GetInstance.IsConnected)
+                            //{
+                            //    var humTempManager = HumidityTemperatureManager.GetInstance;
 
-                                decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
-                                decimal capturedHumidity = (decimal)humTempManager.Humidity;
+                            //    decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
+                            //    decimal capturedHumidity = (decimal)humTempManager.Humidity;
 
-                                var taskTemp = Task.Run(async () =>
-                                {
-                                    await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
-                                });
-                                taskTemp.Wait();
+                            //    var taskTemp = Task.Run(async () =>
+                            //    {
+                            //        await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
+                            //    });
+                            //    taskTemp.Wait();
 
-                                var taskHum = Task.Run(async () =>
-                                {
-                                    await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
-                                });
-                                taskHum.Wait();
-                            }
+                            //    var taskHum = Task.Run(async () =>
+                            //    {
+                            //        await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
+                            //    });
+                            //    taskHum.Wait();
+                            //}
 
                             logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
-
-                            TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
-
-                            string logDescription = string.Format("[ {0:d} | {0:t} ] App running since {1:D2}h:{2:D2}m:{3:D2}s",
-                                                    captureDateTime,
-                                                    t.Hours,
-                                                    t.Minutes,
-                                                    t.Seconds,
-                                                    t.Milliseconds);
-
-                            logModel.AppendLog(Log.CreateLog(logDescription, Log.LogType.Information));
 
                         }
 #endif
@@ -173,7 +175,6 @@ namespace myfoodapp.Business
                 catch (Exception ex)
                 {
                     logModel.AppendLog(Log.CreateErrorLog("Exception on Measures", ex));
-                    throw;
                 }
             }
             watch.Stop();

@@ -63,7 +63,7 @@ namespace myfoodapp.Model
                                   .Where(m => m.sensor.Id == (int)sensorType 
                                   && m.captureDate > currentDateTime.AddDays(-1) 
                                   && m.captureDate < currentDateTime)
-                                  .OrderByDescending(m => m.captureDate)
+                                  .OrderBy(m => m.captureDate)
                                   select m).Take(1).FirstOrDefaultAsync();
 
                 if (rslt != null)

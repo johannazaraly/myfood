@@ -51,8 +51,11 @@ namespace myfoodapp
             var task = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
             task.Wait();
 
-            var humidityManager = HumidityTemperatureManager.GetInstance;
-            humidityManager.Connected += HumidityManager_Connected;
+            //var humidityManager = HumidityTemperatureManager.GetInstance;
+            //humidityManager.Connected += HumidityManager_Connected;
+
+            var clockManager = ClockManager.GetInstance;
+            clockManager.Connected += ClockManager_Connected;
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -62,6 +65,13 @@ namespace myfoodapp
         {
             var clockManager = ClockManager.GetInstance;
             clockManager.Connected += ClockManager_Connected;
+        }
+
+        private void ClockManager_Connected(object sender, EventArgs e)
+        {
+            ClockManager.GetInstance.SetDate(new DateTime(2016, 8, 10, 15, 0, 0));
+            var mesureBackgroundTask = new MeasureBackgroundTask();
+            mesureBackgroundTask.Run();
         }
 
         /// <summary>
@@ -109,12 +119,6 @@ namespace myfoodapp
             // Ensure the current window is active
             Window.Current.Activate();
 
-        }
-
-        private void ClockManager_Connected(object sender, EventArgs e)
-        {
-            var mesureBackgroundTask = new MeasureBackgroundTask();
-            mesureBackgroundTask.Run();
         }
 
         public static void TryShowNewWindow<TView>()

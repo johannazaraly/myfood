@@ -125,6 +125,9 @@
     <Compile Include="Core\ActionTile.xaml.cs">
       <DependentUpon>ActionTile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\AdvancedTextBlock.xaml.cs">
+      <DependentUpon>AdvancedTextBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Core\NotificationTile.xaml.cs">
       <DependentUpon>NotificationTile.xaml</DependentUpon>
     </Compile>
@@ -141,6 +144,9 @@
     <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\DOSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\ORPSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\TempSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\PhSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
     <Compile Include="ViewModel\AdministratorViewModel.cs" />
@@ -152,6 +158,15 @@
     </Compile>
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DOSensorsMonitoringPage.xaml.cs">
+      <DependentUpon>DOSensorsMonitoringPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ORPSensorsMonitoringPage.xaml.cs">
+      <DependentUpon>ORPSensorsMonitoringPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TempSensorsMonitoringPage.xaml.cs">
+      <DependentUpon>TempSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PhSensorsMonitoringPage.xaml.cs">
       <DependentUpon>PhSensorsMonitoringPage.xaml</DependentUpon>
@@ -212,6 +227,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Core\AdvancedTextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Core\NotificationTile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -225,6 +244,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HealthMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DOSensorsMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ORPSensorsMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TempSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

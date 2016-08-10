@@ -1,4 +1,5 @@
-﻿using myfoodapp.Common;
+﻿using myfoodapp.Business.Clock;
+using myfoodapp.Common;
 using myfoodapp.Model;
 using myfoodapp.Views;
 using System;
@@ -16,17 +17,62 @@ namespace myfoodapp.ViewModel
     {
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
 
-        public NotifyTaskCompletion<Decimal> CurrentValue { get; private set; }
-        public NotifyTaskCompletion<Decimal> LastDayValue { get; private set; }
+        public NotifyTaskCompletion<Decimal> CurrentPhValue { get; private set; }
+        public NotifyTaskCompletion<Decimal> LastDayPhValue { get; private set; }
+
+        public NotifyTaskCompletion<Decimal> CurrentTempValue { get; private set; }
+        public NotifyTaskCompletion<Decimal> CurrentExtTemp { get; private set; }
+        public NotifyTaskCompletion<Decimal> CurrentHumidity { get; private set; }
+
+        public NotifyTaskCompletion<Decimal> CurrentORPValue { get; private set; }
+        public NotifyTaskCompletion<Decimal> LastDayORPValue { get; private set; }
+
+        public NotifyTaskCompletion<Decimal> CurrentDOValue { get; private set; }
+        public NotifyTaskCompletion<Decimal> LastDayDOValue { get; private set; }
 
         public AquaponicsManagementViewModel()
         {
-           
+            GetMesures();
+        }
+
+        private void GetMesures()
+        {
+            var clockManager = ClockManager.GetInstance;
+            DateTime currentDateTime = clockManager.ReadDate();
+
+            CurrentPhValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.ph));
+            LastDayPhValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.ph, currentDateTime));
+
+            CurrentTempValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.waterTemperature));
+
+            CurrentExtTemp = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.airTemperature));
+            CurrentHumidity = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.humidity));
+
+            CurrentORPValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.orp));
+            LastDayORPValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.orp, currentDateTime));
+
+            CurrentDOValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.dissolvedOxygen));
+            LastDayDOValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.dissolvedOxygen, currentDateTime));
         }
 
         public void OnPHSensorClicked(object sender, RoutedEventArgs args)
         {
             App.TryShowNewWindow<PhSensorsMonitoringPage>();
+        }
+
+        public void OnTempSensorClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<TempSensorsMonitoringPage>();
+        }
+
+        public void OnORPSensorClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<ORPSensorsMonitoringPage>();
+        }
+
+        public void OnDOSensorClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<DOSensorsMonitoringPage>();
         }
 
         public void OnHealthClicked(object sender, RoutedEventArgs args)

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
+using myfoodapp.ViewModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -25,13 +26,17 @@ namespace myfoodapp
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            this.ViewModel = new AquaponicsManagementViewModel();
             this.Loaded += MainPage_Loaded;
+            this.InitializeComponent();
+
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-
+            this.DataContext = ViewModel;
         }
+
+        public AquaponicsManagementViewModel ViewModel { get; set; }
     }
 }
