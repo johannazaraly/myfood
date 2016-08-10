@@ -96,6 +96,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Action\about.png" />
+    <Content Include="Assets\Action\advanced.png" />
+    <Content Include="Assets\Action\clock.png" />
+    <Content Include="Assets\Action\log.png" />
     <Content Include="Assets\miniLogo.png" />
     <Content Include="Assets\pioneerCitizenNetwork.png" />
     <None Include="project.json" />
@@ -199,16 +203,10 @@
     <None Include="myfoodapp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Action\feedback.png" />
-    <Content Include="Assets\Action\share.png" />
-    <Content Include="Assets\Action\support.png" />
-    <Content Include="Assets\Action\upgrade.png" />
     <Content Include="Assets\logoACD.png" />
     <Content Include="Assets\logoBrightAgrotech.png" />
     <Content Include="Assets\logoMyFoodapp.png" />
-    <Content Include="Assets\Home\gh.jpg" />
-    <Content Include="Assets\Home\pic_1.jpg" />
-    <Content Include="Assets\Home\pic_2.JPG" />
+    <Content Include="Assets\Action\settingGear.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

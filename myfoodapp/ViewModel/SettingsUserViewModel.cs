@@ -15,27 +15,26 @@ namespace myfoodapp.ViewModel
     {
         public SettingsViewModel()
         {
-
         }
 
-        public void OnMyConfigClicked(object sender, RoutedEventArgs args)
-        {
-            App.TryShowNewWindow<GreenhouseConfigurationPage>();
-        }
-
-        public void OnAboutClicked(object sender, RoutedEventArgs args)
+        public void OnPHSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
             App.TryShowNewWindow<AboutPage>();
         }
 
-        public void OnMyLocationClicked(object sender, RoutedEventArgs args)
+        public void OnTempSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-           
+            App.TryShowNewWindow<AboutPage>();
         }
 
-        public void OnRegisterClicked(object sender, RoutedEventArgs args)
+        public void OnORPSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            
+            App.TryShowNewWindow<AboutPage>();
+        }
+
+        public void OnDOSensorSettingsClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<AboutPage>();
         }
 
     }
