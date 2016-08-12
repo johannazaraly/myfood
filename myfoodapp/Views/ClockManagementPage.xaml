@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="myfoodapp.Views.ClockManagementPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:myfoodapp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Pivot x:Name="pivot">
+            <PivotItem Name="lastDay" Header="Set Internal Clock" FontSize="8">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Date:" VerticalAlignment="Top" FontSize="32"/>
+                    <TextBlock HorizontalAlignment="Left" Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.CurrentDate, Mode=TwoWay}" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="32"/>
+
+                    <TextBlock HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Set Date:" VerticalAlignment="Top" FontSize="32"/>
+                    <DatePicker HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Date="{x:Bind ViewModel.SetDate, Mode=TwoWay}" VerticalAlignment="Top"/>
+                    <TimePicker HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="2" Time="{x:Bind ViewModel.SetTime, Mode=TwoWay}" VerticalAlignment="Top" ClockIdentifier="12HourClock"/>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
+            <AppBarButton Foreground="White" Icon="NewWindow" Label="Set Date" IsEnabled="True" Click="{x:Bind ViewModel.OnSetDateClicked}"/>
+            <AppBarButton Foreground="White" Icon="Back" Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

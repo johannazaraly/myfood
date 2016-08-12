@@ -31,9 +31,9 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                         <TextBlock Text="Ext:" FontSize="15"/>
-                                        <TextBlock Text="{Binding CurrentExtTemp.Result}" Margin="10,0,0,0" FontSize="15"/>
+                                        <TextBlock Text="{Binding CurrentExtTemp.Result}" Margin="2,0,0,0" FontSize="15"/>
                                         <TextBlock Text="| Hum:" FontSize="15"/>
-                                        <TextBlock Text="{Binding CurrentHumidity.Result}" Margin="10,0,0,0" FontSize="15"/>
+                                        <TextBlock Text="{Binding CurrentHumidity.Result}" Margin="2,0,0,0" FontSize="15"/>
                                         <TextBlock Text="%" FontSize="15"/>
                                     </StackPanel>
                                 </DataTemplate>

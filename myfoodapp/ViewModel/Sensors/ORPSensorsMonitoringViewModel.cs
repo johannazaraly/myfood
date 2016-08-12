@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace myfoodapp.ViewModel
 {
-    public class TempSensorsMonitoringViewModel : BindableBase
+    public class ORPSensorsMonitoringViewModel : BindableBase
     {
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
         private PivotItem currentPivotItem;
@@ -43,11 +43,8 @@ namespace myfoodapp.ViewModel
         public NotifyTaskCompletion<Decimal> LastDayMaxValue { get; private set; }
         public NotifyTaskCompletion<Decimal> LastDayAverageValue { get; private set; }
 
-        public NotifyTaskCompletion<Decimal> CurrentExtTemp { get; private set; }
-        public NotifyTaskCompletion<Decimal> CurrentHumidity { get; private set; }
-
-        public TempSensorsMonitoringViewModel()
-        {            
+        public ORPSensorsMonitoringViewModel()
+        {          
         }
 
         private void Measures_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -74,30 +71,24 @@ namespace myfoodapp.ViewModel
             IsBusy = true;
 
             if (currentPivotItem.Name == "lastDay")
-                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastDayMesures(SensorTypeEnum.waterTemperature));
+                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastDayMesures(SensorTypeEnum.orp));
 
             if (currentPivotItem.Name == "lastWeek")
-                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastWeeksMesures(SensorTypeEnum.waterTemperature));
+               Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastWeeksMesures(SensorTypeEnum.orp));
 
-            var clockManager = ClockManager.GetInstance;
-            DateTime currentDateTime = clockManager.ReadDate();
+            CurrentValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.orp));
+            LastDayValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.orp));
 
-            CurrentValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.waterTemperature));
-            LastDayValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.waterTemperature, currentDateTime));
-
-            LastDayMinValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMinMesure(SensorTypeEnum.waterTemperature, currentDateTime));
-            LastDayMaxValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMaxMesure(SensorTypeEnum.waterTemperature, currentDateTime));
-            LastDayAverageValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayAverageMesure(SensorTypeEnum.waterTemperature, currentDateTime));
-
-            CurrentExtTemp = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.airTemperature));
-            CurrentHumidity = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.humidity));
+            LastDayMinValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMinMesure(SensorTypeEnum.orp));
+            LastDayMaxValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMaxMesure(SensorTypeEnum.orp));
+            LastDayAverageValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayAverageMesure(SensorTypeEnum.orp));
 
             Measures.PropertyChanged += Measures_PropertyChanged;
         }
 
         public void OnRefreshClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<TempSensorsMonitoringPage>();
+            App.TryShowNewWindow<ORPSensorsMonitoringPage>();
         }
     }
 }

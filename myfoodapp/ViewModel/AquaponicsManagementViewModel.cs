@@ -37,11 +37,8 @@ namespace myfoodapp.ViewModel
 
         private void GetMesures()
         {
-            var clockManager = ClockManager.GetInstance;
-            DateTime currentDateTime = clockManager.ReadDate();
-
             CurrentPhValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.ph));
-            LastDayPhValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.ph, currentDateTime));
+            LastDayPhValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.ph));
 
             CurrentTempValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.waterTemperature));
 
@@ -49,10 +46,10 @@ namespace myfoodapp.ViewModel
             CurrentHumidity = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.humidity));
 
             CurrentORPValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.orp));
-            LastDayORPValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.orp, currentDateTime));
+            LastDayORPValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.orp));
 
             CurrentDOValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.dissolvedOxygen));
-            LastDayDOValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.dissolvedOxygen, currentDateTime));
+            LastDayDOValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.dissolvedOxygen));
         }
 
         public void OnPHSensorClicked(object sender, RoutedEventArgs args)

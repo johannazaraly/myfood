@@ -48,30 +48,11 @@ namespace myfoodapp
                 LocalDataContextExtension.EnsureSeedData(db);
             }
 
-            var task = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            task.Wait();
-
-            //var humidityManager = HumidityTemperatureManager.GetInstance;
-            //humidityManager.Connected += HumidityManager_Connected;
-
-            var clockManager = ClockManager.GetInstance;
-            clockManager.Connected += ClockManager_Connected;
+            var taskFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
+            taskFile.Wait();
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-        }
-
-        private void HumidityManager_Connected(object sender, EventArgs e)
-        {
-            var clockManager = ClockManager.GetInstance;
-            clockManager.Connected += ClockManager_Connected;
-        }
-
-        private void ClockManager_Connected(object sender, EventArgs e)
-        {
-            ClockManager.GetInstance.SetDate(new DateTime(2016, 8, 10, 15, 0, 0));
-            var mesureBackgroundTask = new MeasureBackgroundTask();
-            mesureBackgroundTask.Run();
         }
 
         /// <summary>
@@ -118,6 +99,9 @@ namespace myfoodapp
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            mesureBackgroundTask.Run();
 
         }
 

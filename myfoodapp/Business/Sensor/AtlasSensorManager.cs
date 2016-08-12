@@ -68,8 +68,7 @@ namespace myfoodapp.Business.Sensor
         private string answersWakeUpMode = "*WA";
 
         private AtlasSensorManager()
-        {
-           
+        {         
         }
 
         public void Connect()
@@ -78,7 +77,7 @@ namespace myfoodapp.Business.Sensor
             task.Wait();
         }
 
-        private async Task InitSensors()
+        public async Task InitSensors()
         {
             var watch = Stopwatch.StartNew();
 

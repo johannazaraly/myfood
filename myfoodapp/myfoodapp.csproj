@@ -147,32 +147,40 @@
     <Compile Include="Model\LocalDataContextExtension.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\LogModel.cs" />
+    <Compile Include="ViewModel\LogManagementViewModel.cs" />
+    <Compile Include="ViewModel\ClockManagementViewModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\DOSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\ORPSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\TempSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\PhSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\DOSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\ORPSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\TempSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\PhSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
     <Compile Include="ViewModel\AdministratorViewModel.cs" />
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
+    <Compile Include="Views\LogManagementPage.xaml.cs">
+      <DependentUpon>LogManagementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClockManagementPage.xaml.cs">
+      <DependentUpon>ClockManagementPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NetworkPage.xaml.cs">
       <DependentUpon>NetworkPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DOSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\DOSensorsMonitoringPage.xaml.cs">
       <DependentUpon>DOSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ORPSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\ORPSensorsMonitoringPage.xaml.cs">
       <DependentUpon>ORPSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TempSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\TempSensorsMonitoringPage.xaml.cs">
       <DependentUpon>TempSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PhSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\PhSensorsMonitoringPage.xaml.cs">
       <DependentUpon>PhSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AdministratorPage.xaml.cs">
@@ -237,6 +245,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\LogManagementPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ClockManagementPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\NetworkPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -245,19 +261,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DOSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\DOSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ORPSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\ORPSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TempSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\TempSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PhSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\PhSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

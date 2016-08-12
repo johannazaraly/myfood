@@ -1,5 +1,10 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using myfoodapp.Business;
+using myfoodapp.Common;
+using myfoodapp.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -12,31 +17,28 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using myfoodapp.Model;
-using myfoodapp.ViewModel;
-using myfoodapp.Business;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace myfoodapp
+namespace myfoodapp.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class LogManagementPage : Page
     {
-        public MainPage()
+        public LogManagementPage()
         {
-            this.ViewModel = new AquaponicsManagementViewModel();
-            this.Loaded += MainPage_Loaded;
+            this.ViewModel = new LogManagementViewModel();
             this.InitializeComponent();
+            this.Loaded += LogManagementPage_Loaded;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private void LogManagementPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = ViewModel;
         }
 
-        public AquaponicsManagementViewModel ViewModel { get; set; }
+        public LogManagementViewModel ViewModel { get; set; }
     }
 }

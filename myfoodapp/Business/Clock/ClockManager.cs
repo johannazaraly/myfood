@@ -10,6 +10,7 @@ namespace myfoodapp.Business.Clock
 {
     class ClockManager
     {
+
         private static ClockManager instance;
 
         public static ClockManager GetInstance
@@ -26,7 +27,7 @@ namespace myfoodapp.Business.Clock
 
         private RTCPiHelper helper = new RTCPiHelper();
 
-        private I2cDevice i2cbus;  // create an instance of the i2c bus.
+        private I2cDevice i2cbus;
 
         /// <summary>
         /// Shows if there is a connection with the RTC Pi
@@ -74,7 +75,7 @@ namespace myfoodapp.Business.Clock
         public ClockManager()
         {
             IsConnected = false;
-            this.InitClock();
+            //this.InitClock();
         }
 
         public async void InitClock()
@@ -180,7 +181,7 @@ namespace myfoodapp.Business.Clock
             }
             catch
             {
-                DateTime date = new DateTime(1990, 01, 01, 01, 01, 01);
+                DateTime date = new DateTime(2016, 08, 01, 01, 01, 01);
                 return date;
             }
         }

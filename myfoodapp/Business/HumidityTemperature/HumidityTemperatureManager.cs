@@ -83,7 +83,7 @@ namespace myfoodapp.Business.HumidityTemperature
         public HumidityTemperatureManager()
         {
             IsConnected = false;
-            this.InitSensor();
+         //   this.InitSensor();
         }
 
         public async void InitSensor()
@@ -188,7 +188,7 @@ namespace myfoodapp.Business.HumidityTemperature
         /// <returns>
         /// Task object.
         /// </returns>
-        private async Task Connect()
+        public async Task Connect()
         {
             // Acquire the I2C device
             // MSDN I2C Reference: https://msdn.microsoft.com/en-us/library/windows/apps/windows.devices.i2c.aspx
@@ -359,18 +359,6 @@ namespace myfoodapp.Business.HumidityTemperature
             }
         }
 
-        /// <summary>
-        /// Validates a CRC value for a data set.
-        /// </summary>
-        /// <param name="data">
-        /// Data that is checked by the CRC value
-        /// </param>
-        /// <param name="crc">
-        /// CRC value.
-        /// </param>
-        /// <returns>
-        /// Returns true for success; false otherwise.
-        /// </returns>
         private bool ValidCyclicRedundancyCheck(ushort data, byte crc)
         {
             // Validate the 8-bit cyclic redundancy check (CRC) byte
@@ -393,6 +381,12 @@ namespace myfoodapp.Business.HumidityTemperature
             }
 
             return crc == crcData;
+        }
+
+        public void Dispose()
+        {
+            IsConnected = false;
+            i2c.Dispose();
         }
     }
 }

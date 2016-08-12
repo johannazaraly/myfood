@@ -1,4 +1,5 @@
-﻿using System;
+﻿using myfoodapp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,31 +13,28 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using myfoodapp.Model;
-using myfoodapp.ViewModel;
-using myfoodapp.Business;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace myfoodapp
+namespace myfoodapp.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class ClockManagementPage : Page
     {
-        public MainPage()
+        public ClockManagementPage()
         {
-            this.ViewModel = new AquaponicsManagementViewModel();
-            this.Loaded += MainPage_Loaded;
+            this.ViewModel = new ClockManagementViewModel();
             this.InitializeComponent();
+            this.Loaded += ClockManagementPage_Loaded;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private void ClockManagementPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = ViewModel;
         }
 
-        public AquaponicsManagementViewModel ViewModel { get; set; }
+        public ClockManagementViewModel ViewModel { get; set; }
     }
 }

@@ -37,5 +37,15 @@ namespace myfoodapp.ViewModel
             App.TryShowNewWindow<AboutPage>();
         }
 
+        public void OnClockSettingsClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<ClockManagementPage>();
+        }
+
+        public void OnLogManagementClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<LogManagementPage>();
+        }
+
     }
 }

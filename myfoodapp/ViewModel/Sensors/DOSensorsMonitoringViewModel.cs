@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace myfoodapp.ViewModel
 {
-    public class PhSensorsMonitoringViewModel : BindableBase
+    public class DOSensorsMonitoringViewModel : BindableBase
     {
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
         private PivotItem currentPivotItem;
@@ -43,9 +43,8 @@ namespace myfoodapp.ViewModel
         public NotifyTaskCompletion<Decimal> LastDayMaxValue { get; private set; }
         public NotifyTaskCompletion<Decimal> LastDayAverageValue { get; private set; }
 
-        public PhSensorsMonitoringViewModel()
-        {
-            
+        public DOSensorsMonitoringViewModel()
+        {           
         }
 
         private void Measures_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -72,27 +71,24 @@ namespace myfoodapp.ViewModel
             IsBusy = true;
 
             if (currentPivotItem.Name == "lastDay")
-                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastDayMesures(SensorTypeEnum.ph));
+                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastDayMesures(SensorTypeEnum.dissolvedOxygen));
 
             if (currentPivotItem.Name == "lastWeek")
-                Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastWeeksMesures(SensorTypeEnum.ph));
+               Measures = new NotifyTaskCompletion<List<Measure>>(databaseModel.GetLastWeeksMesures(SensorTypeEnum.dissolvedOxygen));
 
-            var clockManager = ClockManager.GetInstance;
-            DateTime currentDateTime = clockManager.ReadDate();
+            CurrentValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.dissolvedOxygen));
+            LastDayValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.dissolvedOxygen));
 
-            CurrentValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastMesure(SensorTypeEnum.ph));
-            LastDayValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetYesterdayMesure(SensorTypeEnum.ph, currentDateTime));
-
-            LastDayMinValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMinMesure(SensorTypeEnum.ph, currentDateTime));
-            LastDayMaxValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMaxMesure(SensorTypeEnum.ph, currentDateTime));
-            LastDayAverageValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayAverageMesure(SensorTypeEnum.ph, currentDateTime));
+            LastDayMinValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMinMesure(SensorTypeEnum.dissolvedOxygen));
+            LastDayMaxValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayMaxMesure(SensorTypeEnum.dissolvedOxygen));
+            LastDayAverageValue = new NotifyTaskCompletion<Decimal>(databaseModel.GetLastDayAverageMesure(SensorTypeEnum.dissolvedOxygen));
 
             Measures.PropertyChanged += Measures_PropertyChanged;
         }
 
         public void OnRefreshClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<PhSensorsMonitoringPage>();
+            App.TryShowNewWindow<ORPSensorsMonitoringPage>();
         }
     }
 }

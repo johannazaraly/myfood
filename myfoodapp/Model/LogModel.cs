@@ -16,6 +16,7 @@ namespace myfoodapp.Model
     public class LogModel
     {
         private static readonly AsyncLock asyncLock = new AsyncLock();
+        private string FILE_NAME = "logs.json";
 
         private static LogModel instance;
 
@@ -37,32 +38,37 @@ namespace myfoodapp.Model
 
         public async Task InitFileFolder()
         {
-            var local = ApplicationData.Current.LocalFolder;
             try
             {
-                var folder = await local.GetFolderAsync(@"LocalFiles\Logs\Current\");
-                var files = await folder.GetFilesAsync();
-                var currentFile = files.ToList().Where(t => t.Name == "logs.json").FirstOrDefault();
+                var localfolder = ApplicationData.Current.LocalFolder;
+
+                if (await localfolder.TryGetItemAsync(FILE_NAME) == null)
+                {
+                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);
+                }
             }
             catch (FileNotFoundException ex)
             {
-                var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.FailIfExists);               
+                var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);               
             }
         }
 
         public async Task<ObservableCollection<Log>> GetLogsAsync()
         {
-            var file = await ApplicationData.Current.LocalFolder.GetFileAsync(@"LocalFiles\Logs\Current\logs.json");
-
-            if (file != null)
+            using (await asyncLock.LockAsync())
             {
-                var read = await FileIO.ReadTextAsync(file);
-                ObservableCollection<Log> logs = JsonConvert.DeserializeObject<ObservableCollection<Log>>(read);
+                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
 
-                return logs;
+                if (file != null)
+                {
+                    var read = await FileIO.ReadTextAsync(file);
+                    ObservableCollection<Log> logs = JsonConvert.DeserializeObject<ObservableCollection<Log>>(read);
+
+                    return logs;
+                }
+
+                return null;
             }
-
-            return null;
         }
 
         public async void AppendLog(Log newLog)
@@ -71,7 +77,7 @@ namespace myfoodapp.Model
             {
                 var task = Task.Run(async () => { 
                 
-                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(@"LocalFiles\Logs\Current\logs.json");
+                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
 
                 if (file != null)
                 {
@@ -85,7 +91,7 @@ namespace myfoodapp.Model
 
                     var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
 
-                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(@"LocalFiles\Logs\Current\logs.json", CreationCollisionOption.ReplaceExisting);
+                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(newFile, str);
 
                 }

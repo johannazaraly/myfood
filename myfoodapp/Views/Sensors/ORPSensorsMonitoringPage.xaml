@@ -42,7 +42,7 @@
                             </Primitives:RadHubTile.NotificationTemplate>
                             <Primitives:RadHubTile.MessageTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="pH" FontSize="20" FontWeight="Bold"/>
+                                    <TextBlock Text="ORP" FontSize="20" FontWeight="Bold"/>
                                 </DataTemplate>
                             </Primitives:RadHubTile.MessageTemplate>
                         </Primitives:RadHubTile>
