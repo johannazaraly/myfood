@@ -47,5 +47,10 @@ namespace myfoodapp.ViewModel
             App.TryShowNewWindow<LogManagementPage>();
         }
 
+        public void OnAdvancedSettingsClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<AdvancedSettingsPage>();
+        }
+
     }
 }

@@ -147,6 +147,7 @@
     <Compile Include="Model\LocalDataContextExtension.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\LogModel.cs" />
+    <Compile Include="ViewModel\AdvancedSettingsViewModel.cs" />
     <Compile Include="ViewModel\LogManagementViewModel.cs" />
     <Compile Include="ViewModel\ClockManagementViewModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
@@ -159,6 +160,9 @@
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
+    <Compile Include="Views\AdvancedSettingsPage.xaml.cs">
+      <DependentUpon>AdvancedSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LogManagementPage.xaml.cs">
       <DependentUpon>LogManagementPage.xaml</DependentUpon>
     </Compile>
@@ -244,6 +248,10 @@
     <Page Include="Core\TabHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AdvancedSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LogManagementPage.xaml">
       <Generator>MSBuild:Compile</Generator>

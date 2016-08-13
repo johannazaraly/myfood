@@ -93,8 +93,37 @@ namespace myfoodapp.Model
 
                     var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(newFile, str);
-
                 }
+
+                });
+
+                task.Wait();
+            }
+        }
+
+        public async Task ClearLog()
+        {
+            using (await asyncLock.LockAsync())
+            {
+                var task = Task.Run(async () => {
+
+                    var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
+
+                    if (file != null)
+                    {
+                        var read = await FileIO.ReadTextAsync(file);
+                        ObservableCollection<Log> currentLogs = JsonConvert.DeserializeObject<ObservableCollection<Log>>(read);
+
+                        if (currentLogs == null)
+                            currentLogs = new ObservableCollection<Log>();
+
+                        currentLogs.Clear();
+
+                        var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
+
+                        var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                        await FileIO.WriteTextAsync(newFile, str);
+                    }
 
                 });
 

@@ -26,7 +26,7 @@
 
                     <TextBlock HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Set Date:" VerticalAlignment="Top" FontSize="32"/>
                     <DatePicker HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Date="{x:Bind ViewModel.SetDate, Mode=TwoWay}" VerticalAlignment="Top"/>
-                    <TimePicker HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="2" Time="{x:Bind ViewModel.SetTime, Mode=TwoWay}" VerticalAlignment="Top" ClockIdentifier="12HourClock"/>
+                    <TimePicker HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="2" Time="{x:Bind ViewModel.SetTime}" VerticalAlignment="Top" ClockIdentifier="12HourClock"/>
                 </Grid>
             </PivotItem>
         </Pivot>

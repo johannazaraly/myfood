@@ -80,7 +80,7 @@ namespace myfoodapp.ViewModel
             CurrentDate = currentDate.ToString();
 
             SetDate = new DateTimeOffset(currentDate);
-            SetTime = new TimeSpan(currentDate.Hour, currentDate.Minute, currentDate.Second);
+            //SetTime = new TimeSpan(currentDate.Hour, currentDate.Minute, currentDate.Second);
         }
 
         public void OnBackClicked(object sender, RoutedEventArgs args)
@@ -94,18 +94,14 @@ namespace myfoodapp.ViewModel
 
             try
             {
-                if (clockManager != null)
-                {
-                    var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-                    mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
-                    mesureBackgroundTask.Stop();       
-                }
+                 var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+                 mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
+                 mesureBackgroundTask.Stop();       
             }
             catch (Exception ex)
             {
                 logModel.AppendLog(Log.CreateErrorLog("Exception on Stopping Measure Service", ex));
             }
-
         }
 
         private void MesureBackgroundTask_Completed(object sender, EventArgs e)

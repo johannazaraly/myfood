@@ -83,13 +83,9 @@ namespace myfoodapp.Business.HumidityTemperature
         public HumidityTemperatureManager()
         {
             IsConnected = false;
-         //   this.InitSensor();
         }
 
-        public async void InitSensor()
-        {
-            await this.Connect();
-        }
+
 
         /// <summary>
         /// Calculates the dew point temperature

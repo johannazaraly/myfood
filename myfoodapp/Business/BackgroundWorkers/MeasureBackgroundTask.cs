@@ -68,12 +68,7 @@ namespace myfoodapp.Business
         {
             logModel.AppendLog(Log.CreateLog("Measure Service stopping...", Log.LogType.System));
 
-            EventHandler handler = Completed;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-
+            Completed?.Invoke(this, EventArgs.Empty);
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
@@ -88,6 +83,23 @@ namespace myfoodapp.Business
             var taskSensor = Task.Run(async () => { await sensorManager.InitSensors(); });
             taskSensor.Wait();
 
+            var clockManager = ClockManager.GetInstance;
+
+            var captureDateTime = DateTime.Now;
+
+            if (clockManager != null)
+            {
+                var taskClock = Task.Run(async () =>
+                {
+                    await clockManager.Connect();
+                });
+                taskClock.Wait();
+
+                captureDateTime = clockManager.ReadDate();
+
+                clockManager.Dispose();
+            }
+
             while (!bw.CancellationPending)
             {
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -96,20 +108,8 @@ namespace myfoodapp.Business
                 {
                     if (elapsedMs % TICKSPERCYCLE == 0)
                     {
-                        var captureDateTime = DateTime.Now;
-
 #if ARM
-                        var clockManager = ClockManager.GetInstance;
-
-                        if (clockManager != null)
-                        {                           
-                            var taskClock = Task.Run(async () =>
-                            {
-                                await clockManager.Connect();
-                            });
-                            taskClock.Wait();
-
-                            captureDateTime = clockManager.ReadDate();
+                            captureDateTime = captureDateTime.AddMilliseconds(elapsedMs);
 
                             TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
 
@@ -121,8 +121,6 @@ namespace myfoodapp.Business
                                                     t.Milliseconds);
 
                             logModel.AppendLog(Log.CreateLog(logDescription, Log.LogType.Information));
-
-                            clockManager.Dispose();
 
                             var watchMesures = Stopwatch.StartNew();     
 
@@ -175,38 +173,38 @@ namespace myfoodapp.Business
                                 task.Wait();
                             }
 
-                            var humTempManager = HumidityTemperatureManager.GetInstance;
+                            //var humTempManager = HumidityTemperatureManager.GetInstance;
 
-                            if (humTempManager != null)
-                            {
+                            //if (humTempManager != null)
+                            //{
+                            //    var taskHumManager = Task.Run(async () =>
+                            //    {
+                            //        await humTempManager.Connect();
+                            //    });
+                            //    taskHumManager.Wait();
 
-                                var taskHumManager = Task.Run(async () =>
-                                {
-                                    await humTempManager.Connect();
-                                });
-                                taskHumManager.Wait();
+                            //    decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
 
-                                decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
-                                decimal capturedHumidity = (decimal)humTempManager.Humidity;
+                            //    var taskTemp = Task.Run(async () =>
+                            //    {
+                            //        await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
+                            //    });
+                            //    taskTemp.Wait();
 
-                                var taskTemp = Task.Run(async () =>
-                                {
-                                    await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
-                                });
-                                taskTemp.Wait();
+                            //    decimal capturedHumidity = (decimal)humTempManager.Humidity;
 
-                                var taskHum = Task.Run(async () =>
-                                {
-                                    await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
-                                });
-                                taskHum.Wait();
+                            //    var taskHum = Task.Run(async () =>
+                            //    {
+                            //        await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
+                            //    });
+                            //    taskHum.Wait();
 
-                                humTempManager.Dispose();
-                            }
+                            //    humTempManager.Dispose();
+                            //}
 
                             logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
 
-                        }
+                       
 #endif
                     }
                 }

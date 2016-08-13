@@ -19,6 +19,7 @@ namespace myfoodapp.Business.Sensor
         private List<AtlasSensor> sensorsList = new List<AtlasSensor>();
 
         public event EventHandler Initialized;
+        public bool isInitialized = false;
 
         private CancellationTokenSource ReadCancellationTokenSource;
 
@@ -71,14 +72,12 @@ namespace myfoodapp.Business.Sensor
         {         
         }
 
-        public void Connect()
-        {
-            var task = Task.Run(async () => { await InitSensors(); });
-            task.Wait();
-        }
 
         public async Task InitSensors()
         {
+            if (isInitialized)
+                return;
+
             var watch = Stopwatch.StartNew();
 
             try
@@ -120,16 +119,6 @@ namespace myfoodapp.Business.Sensor
 
                                     newSensor.dataWriteObject = new DataWriter(serialPort.OutputStream);
                                     newSensor.dataReaderObject = new DataReader(serialPort.InputStream);
-
-                                    //var a = await WriteAsync(disableAutomaticAnswerCommand, newSensor);                
-                                    //// var l = await WriteAsync(disableLedDebugCommand, newSensor);
-                                    //var v = await WriteAsync(disableContinuousModeCommand, newSensor);
-
-                                    //var w = await WriteAsync(getStatusCommand, newSensor);
-                                    //var s = await ReadAsync(ReadCancellationTokenSource.Token, newSensor);
-
-                                    //var t = await WriteAsync(informationCommand, newSensor);
-                                    //var r = await ReadAsync(ReadCancellationTokenSource.Token, newSensor);
 
                                     string s = String.Empty;
                                     string r = String.Empty;
@@ -202,11 +191,7 @@ namespace myfoodapp.Business.Sensor
             }
             finally
             {
-                EventHandler handler = Initialized;
-                if (handler != null)
-                {
-                    handler(this, EventArgs.Empty);
-                }
+                Initialized?.Invoke(this, EventArgs.Empty);
 
                 logModel.AppendLog(Log.CreateLog(String.Format("Sensors online in {0} sec.", watch.ElapsedMilliseconds / 1000), Log.LogType.System));
                 watch.Stop();
