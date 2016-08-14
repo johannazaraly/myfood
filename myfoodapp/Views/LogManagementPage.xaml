@@ -21,7 +21,13 @@
                 </telerik:RadDataGrid>
             </PivotItem>
         </Pivot>
-        <Primitives:RadBusyIndicator IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"/>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">

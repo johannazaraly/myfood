@@ -17,6 +17,7 @@ namespace myfoodapp.Model
     {
         private static readonly AsyncLock asyncLock = new AsyncLock();
         private string FILE_NAME = "logs.json";
+        private StorageFolder folder = ApplicationData.Current.LocalFolder;
 
         private static LogModel instance;
 
@@ -40,16 +41,14 @@ namespace myfoodapp.Model
         {
             try
             {
-                var localfolder = ApplicationData.Current.LocalFolder;
-
-                if (await localfolder.TryGetItemAsync(FILE_NAME) == null)
+                if (await folder.TryGetItemAsync(FILE_NAME) == null)
                 {
-                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);
+                    var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);
                 }
             }
             catch (FileNotFoundException ex)
             {
-                var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);               
+                var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.FailIfExists);               
             }
         }
 
@@ -57,7 +56,7 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
+                var file = await folder.GetFileAsync(FILE_NAME);
 
                 if (file != null)
                 {
@@ -77,7 +76,7 @@ namespace myfoodapp.Model
             {
                 var task = Task.Run(async () => { 
                 
-                var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
+                var file = await folder.GetFileAsync(FILE_NAME);
 
                 if (file != null)
                 {
@@ -91,7 +90,7 @@ namespace myfoodapp.Model
 
                     var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
 
-                    var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
+                    var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
                     await FileIO.WriteTextAsync(newFile, str);
                 }
 
@@ -107,24 +106,12 @@ namespace myfoodapp.Model
             {
                 var task = Task.Run(async () => {
 
-                    var file = await ApplicationData.Current.LocalFolder.GetFileAsync(FILE_NAME);
+                    var file = await folder.GetFileAsync(FILE_NAME);
 
                     if (file != null)
                     {
-                        var read = await FileIO.ReadTextAsync(file);
-                        ObservableCollection<Log> currentLogs = JsonConvert.DeserializeObject<ObservableCollection<Log>>(read);
-
-                        if (currentLogs == null)
-                            currentLogs = new ObservableCollection<Log>();
-
-                        currentLogs.Clear();
-
-                        var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
-
-                        var newFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                        await FileIO.WriteTextAsync(newFile, str);
+                        var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
                     }
-
                 });
 
                 task.Wait();

@@ -102,17 +102,35 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Temp/Hum Sensors"/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="True"/>
+                        
+                        <TextBlock Grid.Row="0" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Debug Led"/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1" IsOn="{x:Bind ViewModel.IsDebugLedEnable, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Sleep Mode"/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="4" IsOn="{x:Bind ViewModel.IsSleepModeEnable, Mode=TwoWay}"/>
+
                         <TextBlock Grid.Row="2" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Sigfox Com"/>
-                        <ToggleSwitch Grid.Row="2" Grid.Column="1" IsOn="True"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="{x:Bind ViewModel.IsSigFoxComEnable, Mode=TwoWay}"/>
+
                         <TextBlock Grid.Row="1" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Enable Verbose Logs"/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="4" IsOn="True"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="4" IsOn="{x:Bind ViewModel.IsVerboseLogEnable, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Temp/Hum Sensors"/>
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1" IsOn="{x:Bind ViewModel.IsTempHumiditySensorEnable, Mode=TwoWay}"/>
+                                              
+                        <TextBlock Grid.Row="2" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Enable Screensaver"/>
+                        <ToggleSwitch Grid.Row="2" Grid.Column="4" IsOn="{x:Bind ViewModel.IsScreenSaverEnable, Mode=TwoWay}"/>
                     </Grid>
                 </Grid>
             </PivotItem>
         </Pivot>
-        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}"/>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">

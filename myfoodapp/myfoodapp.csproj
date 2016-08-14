@@ -116,10 +116,10 @@
     <Compile Include="Business\HumidityTemperature\HumidityTemperatureManager.cs" />
     <Compile Include="Business\Sensor\AtlasSensor.cs" />
     <Compile Include="Business\Sensor\AtlasSensorManager.cs" />
+    <Compile Include="Business\UserSettings.cs" />
     <Compile Include="Common\AsyncLock.cs" />
     <Compile Include="Business\Event.cs" />
     <Compile Include="Business\Log.cs" />
-    <Compile Include="Business\Service.cs" />
     <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\CloseFlyoutMessage.cs" />
     <Compile Include="Common\EventLogHelper.cs" />
@@ -146,6 +146,7 @@
     <Compile Include="Model\LocalDataContext.cs" />
     <Compile Include="Model\LocalDataContextExtension.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
+    <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="ViewModel\AdvancedSettingsViewModel.cs" />
     <Compile Include="ViewModel\LogManagementViewModel.cs" />
@@ -186,9 +187,6 @@
     </Compile>
     <Compile Include="Views\Sensors\PhSensorsMonitoringPage.xaml.cs">
       <DependentUpon>PhSensorsMonitoringPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AdministratorPage.xaml.cs">
-      <DependentUpon>AdministratorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AquaponicsManagementView.xaml.cs">
       <DependentUpon>AquaponicsManagementView.xaml</DependentUpon>
@@ -282,10 +280,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Sensors\PhSensorsMonitoringPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\AdministratorPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

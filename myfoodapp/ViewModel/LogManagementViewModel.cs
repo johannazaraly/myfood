@@ -44,12 +44,10 @@ namespace myfoodapp.ViewModel
         {
             App.TryShowNewWindow<MainPage>();
         }
-
-       
+   
         public void OnRefreshClicked(object sender, RoutedEventArgs args)
         {
-            IsBusy = false;
-            Logs = new NotifyTaskCompletion<ObservableCollection<Log>>(logModel.GetLogsAsync());
+            App.TryShowNewWindow<LogManagementPage>();
         }
 
     }

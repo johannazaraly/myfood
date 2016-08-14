@@ -5,6 +5,7 @@
     xmlns:local="using:myfoodapp.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -30,7 +31,13 @@
                 </Grid>
             </PivotItem>
         </Pivot>
+        <Primitives:RadBusyIndicator IndicatorAnimationStyle="{StaticResource DefaultIndicatorAnimation}" IsActive="{x:Bind ViewModel.IsBusy, Mode=TwoWay}">
+            <Primitives:RadBusyIndicator.ContentTemplate>
+                <DataTemplate>
 
+                </DataTemplate>
+            </Primitives:RadBusyIndicator.ContentTemplate>
+        </Primitives:RadBusyIndicator>
     </Grid>
 
     <Page.BottomAppBar>

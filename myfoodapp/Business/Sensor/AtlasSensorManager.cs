@@ -13,12 +13,11 @@ using Windows.Storage.Streams;
 
 namespace myfoodapp.Business.Sensor
 {
-    public class AtlasSensorManager
+    public sealed class AtlasSensorManager
     {
         private LogModel logModel = LogModel.GetInstance;
         private List<AtlasSensor> sensorsList = new List<AtlasSensor>();
 
-        public event EventHandler Initialized;
         public bool isInitialized = false;
 
         private CancellationTokenSource ReadCancellationTokenSource;
@@ -71,7 +70,6 @@ namespace myfoodapp.Business.Sensor
         private AtlasSensorManager()
         {         
         }
-
 
         public async Task InitSensors()
         {
@@ -191,9 +189,9 @@ namespace myfoodapp.Business.Sensor
             }
             finally
             {
-                Initialized?.Invoke(this, EventArgs.Empty);
+                isInitialized = true;
 
-                logModel.AppendLog(Log.CreateLog(String.Format("Sensors online in {0} sec.", watch.ElapsedMilliseconds / 1000), Log.LogType.System));
+                logModel.AppendLog(Log.CreateLog(String.Format("Atlas Sensors online in {0} sec.", watch.ElapsedMilliseconds / 1000), Log.LogType.System));
                 watch.Stop();
             }
         }

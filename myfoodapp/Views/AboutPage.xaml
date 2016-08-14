@@ -33,7 +33,6 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
-            <AppBarButton Foreground="White" Icon="Admin" Label="Admin" IsEnabled="True" Click="{x:Bind ViewModel.OnAdminModeClicked}"/>
             <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
         </CommandBar>
     </Page.BottomAppBar>

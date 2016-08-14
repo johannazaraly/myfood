@@ -17,12 +17,14 @@ using Windows.Data.Xml.Dom;
 using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
+using static myfoodapp.Business.Log;
 
 namespace myfoodapp.ViewModel
 {
     public class AdvancedSettingsViewModel : BindableBase
     {
         private LogModel logModel = LogModel.GetInstance;
+        private UserSettingsModel userSettingsModel = UserSettingsModel.GetInstance;
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
 
         private bool isBusy = false;
@@ -58,6 +60,72 @@ namespace myfoodapp.ViewModel
             }
         }
 
+        private bool isDebugLedEnable = false;
+        public bool IsDebugLedEnable
+        {
+            get { return isDebugLedEnable; }
+            set
+            {
+                isDebugLedEnable = value;
+                OnPropertyChanged("IsDebugLedEnable");
+            }
+        }
+
+        private bool isScreenSaverEnable = false;
+        public bool IsScreenSaverEnable
+        {
+            get { return isScreenSaverEnable; }
+            set
+            {
+                isScreenSaverEnable = value;
+                OnPropertyChanged("IsScreenSaverEnable");
+            }
+        }
+
+        private bool isSleepModeEnable = false;
+        public bool IsSleepModeEnable
+        {
+            get { return isSleepModeEnable; }
+            set
+            {
+                isSleepModeEnable = value;
+                OnPropertyChanged("IsSleepModeEnable");
+            }
+        }
+
+        private bool isSigFoxComEnable = false;
+        public bool IsSigFoxComEnable
+        {
+            get { return isSigFoxComEnable; }
+            set
+            {
+                isSigFoxComEnable = value;
+                OnPropertyChanged("IsSigFoxComEnable");
+            }
+        }
+
+        private bool isVerboseLogEnable = false;
+        public bool IsVerboseLogEnable
+        {
+            get { return isVerboseLogEnable; }
+            set
+            {
+                isVerboseLogEnable = value;
+                OnPropertyChanged("IsVerboseLogEnable");
+            }
+        }
+
+        private bool isTempHumiditySensorEnable = false;
+        public bool IsTempHumiditySensorEnable
+        {
+            get { return isTempHumiditySensorEnable; }
+            set
+            {
+                isTempHumiditySensorEnable = value;
+                OnPropertyChanged("IsTempHumiditySensorEnable");
+            }
+        }
+
         public AdvancedSettingsViewModel()
         {
             Package package = Package.Current;
@@ -68,10 +136,23 @@ namespace myfoodapp.ViewModel
 
             UInt64 intfreeDisk = 0;
 
-            var taskFile = Task.Run(async () => { intfreeDisk = await GetFreeSpace(); });
-            taskFile.Wait();
+            var taskInfo = Task.Run(async () => { intfreeDisk = await GetFreeSpace(); });
+            taskInfo.Wait();
 
             FreeDiskSpace = String.Format("Free Disk Space: {0}Mo", intfreeDisk / 10000000);
+
+            UserSettings currentUserSettings = new UserSettings();
+
+            var taskFile = Task.Run(async () => { currentUserSettings = await userSettingsModel.GetUserSettingsAsync(); });
+            taskFile.Wait();
+
+            IsScreenSaverEnable = currentUserSettings.isScreenSaverEnable;
+            IsSigFoxComEnable = currentUserSettings.isSigFoxComEnable;
+            IsSleepModeEnable = currentUserSettings.isSleepModeEnable;
+            IsTempHumiditySensorEnable = currentUserSettings.isTempHumiditySensorEnable;
+            IsVerboseLogEnable = currentUserSettings.isVerboseLogEnable;
+            IsDebugLedEnable = currentUserSettings.isDebugLedEnable;
+            
         }
 
         public async Task<UInt64> GetFreeSpace()
@@ -105,11 +186,17 @@ namespace myfoodapp.ViewModel
             var task = Task.Run(async () => { await databaseModel.DeleteAllMesures(); });
             task.Wait();
 
+            logModel.AppendLog(Log.CreateLog("Measures erased", LogType.Information));
+
             IsBusy = false;
         }
 
         public void OnRestartAppClicked(object sender, RoutedEventArgs args)
         {
+            IsBusy = true;
+
+            logModel.AppendLog(Log.CreateLog("Restart from user", LogType.Information));
+
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
             mesureBackgroundTask.Stop();            
@@ -117,6 +204,8 @@ namespace myfoodapp.ViewModel
 
         public void OnSaveClicked(object sender, RoutedEventArgs args)
         {
+            IsBusy = true;
+
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Completed += SaveSettingMesureBackgroundTask_Completed;
             mesureBackgroundTask.Stop();
@@ -149,17 +238,31 @@ namespace myfoodapp.ViewModel
 
             try
             {
-                //var taskDb = Task.Run(async () =>
-                //    {
-                //        await databaseModel.DeleteAllMesures();
-                //    });
-                //taskDb.Wait();
+                var newUserSettings = new UserSettings();
+
+                newUserSettings.isScreenSaverEnable = IsScreenSaverEnable;
+                newUserSettings.isSigFoxComEnable = IsSigFoxComEnable;
+                newUserSettings.isSleepModeEnable = isSleepModeEnable;
+                newUserSettings.isTempHumiditySensorEnable = IsTempHumiditySensorEnable;
+                newUserSettings.isVerboseLogEnable = IsVerboseLogEnable;
+                newUserSettings.isDebugLedEnable = IsDebugLedEnable;
+
+                var taskUserSync = Task.Run(async () =>
+                    {
+                        await userSettingsModel.SyncUserSettings(newUserSettings);
+                    });
+                taskUserSync.Wait();
 
                 mesureBackgroundTask.Run();               
             }
             catch (Exception ex)
             {
                 logModel.AppendLog(Log.CreateErrorLog("Exception on Save Settings", ex));
+            }
+            finally
+            {
+                logModel.AppendLog(Log.CreateLog("Settings saved", LogType.Information));
+                IsBusy = false;
             }
         }
     }

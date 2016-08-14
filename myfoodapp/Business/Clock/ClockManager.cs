@@ -1,4 +1,5 @@
-﻿using System;
+﻿using myfoodapp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace myfoodapp.Business.Clock
 {
     class ClockManager
     {
+        private LogModel logModel = LogModel.GetInstance;
 
         private static ClockManager instance;
 
@@ -103,6 +105,7 @@ namespace myfoodapp.Business.Clock
                     // i2c bus is connected so set IsConnected to true and fire the Connected event handler
                     IsConnected = true;
 
+                    logModel.AppendLog(Log.CreateLog("Clock Service online", Log.LogType.System));
                     EventHandler handler = Connected;
                     if (handler != null)
                     {
@@ -116,10 +119,10 @@ namespace myfoodapp.Business.Clock
                 return;
             }
             /* If initialization fails, display the exception and stop running */
-            catch (Exception e)
+            catch (Exception ex)
             {
+                logModel.AppendLog(Log.CreateErrorLog("Exception on Clock init", ex));
                 IsConnected = false;
-                throw e;
             }
         }
 
@@ -179,8 +182,9 @@ namespace myfoodapp.Business.Clock
                 DateTime date = new DateTime(year, month, day, hours, minutes, seconds);
                 return date;
             }
-            catch
+            catch(Exception ex)
             {
+                logModel.AppendLog(Log.CreateErrorLog("Exception on Clock read", ex));
                 DateTime date = new DateTime(2016, 08, 01, 01, 01, 01);
                 return date;
             }

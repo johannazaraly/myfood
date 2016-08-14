@@ -45,7 +45,6 @@ namespace myfoodapp.ViewModel
         }
 
         public NotifyTaskCompletion<ObservableCollection<Log>> Logs { get; private set; }
-        public NotifyTaskCompletion<ObservableCollection<Service>> Services { get; private set; } 
 
         public AdministratorViewModel()
         {

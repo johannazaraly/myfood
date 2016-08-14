@@ -42,15 +42,6 @@ namespace myfoodapp
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
 
-            using (var db = new LocalDataContext())
-            {
-                db.Database.Migrate();
-                LocalDataContextExtension.EnsureSeedData(db);
-            }
-
-            var taskFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            taskFile.Wait();
-
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
@@ -99,6 +90,18 @@ namespace myfoodapp
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            using (var db = new LocalDataContext())
+            {
+                db.Database.Migrate();
+                LocalDataContextExtension.EnsureSeedData(db);
+            }
+
+            var taskLogFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
+            taskLogFile.Wait();
+
+            var taskUserFile = Task.Run(async () => { await UserSettingsModel.GetInstance.InitFileFolder(); });
+            taskUserFile.Wait();
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Run();

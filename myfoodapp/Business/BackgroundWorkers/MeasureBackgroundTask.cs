@@ -16,10 +16,12 @@ namespace myfoodapp.Business
     public sealed class MeasureBackgroundTask
     {
         private BackgroundWorker bw = new BackgroundWorker();
-        private LogModel logModel = LogModel.GetInstance;
-        private DatabaseModel databaseModel = DatabaseModel.GetInstance;
         private AtlasSensorManager sensorManager;
 
+        private UserSettingsModel userSettingsModel = UserSettingsModel.GetInstance;
+        private LogModel logModel = LogModel.GetInstance;
+        private DatabaseModel databaseModel = DatabaseModel.GetInstance;
+        
         public event EventHandler Completed;
 
         private static MeasureBackgroundTask instance;
@@ -67,7 +69,6 @@ namespace myfoodapp.Business
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             logModel.AppendLog(Log.CreateLog("Measure Service stopping...", Log.LogType.System));
-
             Completed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -75,8 +76,10 @@ namespace myfoodapp.Business
         {
             var watch = Stopwatch.StartNew();
 
-            var taskFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            taskFile.Wait();
+            var userSettings = new UserSettings();
+
+            var taskUser = Task.Run(async () => { userSettings = await userSettingsModel.GetUserSettingsAsync(); });
+            taskUser.Wait();
 
             sensorManager = AtlasSensorManager.GetInstance;
 
@@ -100,6 +103,18 @@ namespace myfoodapp.Business
                 clockManager.Dispose();
             }
 
+            var humTempManager = HumidityTemperatureManager.GetInstance;
+
+            if (userSettings.isTempHumiditySensorEnable)
+            {
+                var taskHumManager = Task.Run(async () =>
+                {
+                    await humTempManager.Connect();
+                });
+                taskHumManager.Wait();
+            }
+
+
             while (!bw.CancellationPending)
             {
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -109,11 +124,11 @@ namespace myfoodapp.Business
                     if (elapsedMs % TICKSPERCYCLE == 0)
                     {
 #if ARM
-                            captureDateTime = captureDateTime.AddMilliseconds(elapsedMs);
+                            captureDateTime = captureDateTime.AddMilliseconds(TICKSPERCYCLE);
 
                             TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
 
-                            string logDescription = string.Format("[ {0:d} | {0:t} ] App running since {1:D2}h:{2:D2}m:{3:D2}s",
+                            string logDescription = string.Format("[ {0:d} | {0:t} ] Service running since {1:D2}h:{2:D2}m:{3:D2}s",
                                                     captureDateTime,
                                                     t.Hours,
                                                     t.Minutes,
@@ -126,6 +141,9 @@ namespace myfoodapp.Business
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.waterTemperature))
                             {
+                                if (userSettings.isVerboseLogEnable)
+                                    logModel.AppendLog(Log.CreateLog("Water Temperature capturing", Log.LogType.Information));
+
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature);
                                 sensorManager.SetWaterTemperatureForSensors(capturedValue);
@@ -135,10 +153,16 @@ namespace myfoodapp.Business
                                     await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.waterTemperature);
                                 });
                                 task.Wait();
+
+                                if (userSettings.isVerboseLogEnable)
+                                    logModel.AppendLog(Log.CreateLog("Water Temperature captured", Log.LogType.Information));
                             }
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.ph))
                             {
+                                if (userSettings.isVerboseLogEnable)
+                                    logModel.AppendLog(Log.CreateLog("pH capturing", Log.LogType.Information));
+
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordPhMeasure();
 
@@ -147,10 +171,16 @@ namespace myfoodapp.Business
                                     await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.ph);
                                 });
                                 task.Wait();
+
+                                if (userSettings.isVerboseLogEnable)
+                                logModel.AppendLog(Log.CreateLog("pH captured", Log.LogType.Information));
                             }
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.orp))
                             {
+                                if (userSettings.isVerboseLogEnable)
+                                   logModel.AppendLog(Log.CreateLog("ORP capturing", Log.LogType.Information));
+
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp);
 
@@ -159,10 +189,16 @@ namespace myfoodapp.Business
                                     await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.orp);
                                 });
                                 task.Wait();
+
+                                if (userSettings.isVerboseLogEnable)
+                                   logModel.AppendLog(Log.CreateLog("ORP captured", Log.LogType.Information));
                             }
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.dissolvedOxygen))
                             {
+                                if (userSettings.isVerboseLogEnable)
+                                  logModel.AppendLog(Log.CreateLog("DO capturing", Log.LogType.Information));
+
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.dissolvedOxygen);
 
@@ -171,40 +207,43 @@ namespace myfoodapp.Business
                                     await databaseModel.AddMesure(captureDateTime, capturedValue, SensorTypeEnum.dissolvedOxygen);
                                 });
                                 task.Wait();
+
+                                if (userSettings.isVerboseLogEnable)
+                                   logModel.AppendLog(Log.CreateLog("DO captured", Log.LogType.Information));
                             }
 
-                            //var humTempManager = HumidityTemperatureManager.GetInstance;
+                        if (userSettings.isTempHumiditySensorEnable)
+                        {
+                            if (userSettings.isVerboseLogEnable)
+                                logModel.AppendLog(Log.CreateLog("Air Temperature capturing", Log.LogType.Information));
 
-                            //if (humTempManager != null)
-                            //{
-                            //    var taskHumManager = Task.Run(async () =>
-                            //    {
-                            //        await humTempManager.Connect();
-                            //    });
-                            //    taskHumManager.Wait();
+                            decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
 
-                            //    decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
+                            var taskTemp = Task.Run(async () =>
+                            {
+                                await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
+                            });
+                            taskTemp.Wait();
 
-                            //    var taskTemp = Task.Run(async () =>
-                            //    {
-                            //        await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
-                            //    });
-                            //    taskTemp.Wait();
+                            if (userSettings.isVerboseLogEnable)
+                                logModel.AppendLog(Log.CreateLog("Air Temperature captured", Log.LogType.Information));
 
-                            //    decimal capturedHumidity = (decimal)humTempManager.Humidity;
+                            if (userSettings.isVerboseLogEnable)
+                                logModel.AppendLog(Log.CreateLog("Humidity capturing", Log.LogType.Information));
 
-                            //    var taskHum = Task.Run(async () =>
-                            //    {
-                            //        await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
-                            //    });
-                            //    taskHum.Wait();
+                            decimal capturedHumidity = (decimal)humTempManager.Humidity;
 
-                            //    humTempManager.Dispose();
-                            //}
+                            var taskHum = Task.Run(async () =>
+                            {
+                                await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
+                            });
+                            taskHum.Wait();
 
-                            logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
+                            if (userSettings.isVerboseLogEnable)
+                                logModel.AppendLog(Log.CreateLog("Humidity captured", Log.LogType.Information));
+                        }
 
-                       
+                        logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));                   
 #endif
                     }
                 }

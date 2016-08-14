@@ -23,10 +23,5 @@ namespace myfoodapp.ViewModel
             App.TryShowNewWindow<MainPage>();
         }
 
-        public void OnAdminModeClicked(object sender, RoutedEventArgs args)
-        {
-            App.TryShowNewWindow<AdministratorPage>();
-        }
-
     }
 }

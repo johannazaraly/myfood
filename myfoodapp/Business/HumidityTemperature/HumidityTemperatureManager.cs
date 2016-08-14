@@ -1,4 +1,5 @@
-﻿using System;
+﻿using myfoodapp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace myfoodapp.Business.HumidityTemperature
     /// </summary>
     public sealed class HumidityTemperatureManager
     {
+        private LogModel logModel = LogModel.GetInstance;
+
         private static HumidityTemperatureManager instance;
 
         public static HumidityTemperatureManager GetInstance
@@ -85,7 +88,62 @@ namespace myfoodapp.Business.HumidityTemperature
             IsConnected = false;
         }
 
+        public async Task Connect()
+        {
+            // Acquire the I2C device
+            // MSDN I2C Reference: https://msdn.microsoft.com/en-us/library/windows/apps/windows.devices.i2c.aspx
+            //
+            // Use the I2cDevice device selector to create an advanced query syntax string
+            // Use the Windows.Devices.Enumeration.DeviceInformation class to create a collection using the advanced query syntax string
+            // Take the device id of the first device in the collection
+            string advancedQuerySyntax = I2cDevice.GetDeviceSelector(i2cBusName);
+            DeviceInformationCollection deviceInformationCollection = await DeviceInformation.FindAllAsync(advancedQuerySyntax);
+            string deviceId = deviceInformationCollection[0].Id;
 
+            // Establish an I2C connection to the HTU21D
+            //
+            // Instantiate the I2cConnectionSettings using the device address of the HTU21D
+            // - Set the I2C bus speed of connection to fast mode
+            // - Set the I2C sharing mode of the connection to shared
+            //
+            // Instantiate the the HTU21D I2C device using the device id and the I2cConnectionSettings
+            I2cConnectionSettings htu21dConnection = new I2cConnectionSettings(Htu21dI2cAddress);
+            htu21dConnection.BusSpeed = I2cBusSpeed.FastMode;
+            htu21dConnection.SharingMode = I2cSharingMode.Shared;
+
+            this.i2c = await I2cDevice.FromIdAsync(deviceId, htu21dConnection);
+
+            // Test to see if the I2C devices are available.
+            //
+            // If the I2C devices are not available, this is
+            // a good indicator the weather shield is either
+            // missing or configured incorrectly. Therefore we
+            // will disable the weather shield functionality to
+            // handle the failure case gracefully. This allows
+            // the invoking application to remain deployable
+            // across the Universal Windows Platform.
+            if (null == this.i2c)
+            {
+                this.isConnected = false;
+            }
+            else
+            {
+                byte[] i2cTemperatureData = new byte[3];
+
+                try
+                {
+                    this.i2c.WriteRead(new byte[] { SampleTemperatureHold }, i2cTemperatureData);
+                    this.isConnected = true;
+
+                    Connected?.Invoke(this, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    logModel.AppendLog(Log.CreateErrorLog("Exception on Temp/Hum init", ex));
+                    this.isConnected = false;
+                }
+            }
+        }
 
         /// <summary>
         /// Calculates the dew point temperature
@@ -131,12 +189,6 @@ namespace myfoodapp.Business.HumidityTemperature
             }
         }
 
-        /// <summary>
-        /// Gets the relative humidity value.
-        /// </summary>
-        /// <returns>
-        /// The relative humidity
-        /// </returns>
         public float Humidity
         {
             get
@@ -153,12 +205,6 @@ namespace myfoodapp.Business.HumidityTemperature
             }
         }
 
-        /// <summary>
-        /// Gets the current temperature
-        /// </summary>
-        /// <returns>
-        /// The temperature in Celcius (C)
-        /// </returns>
         public float Temperature
         {
             get
@@ -173,76 +219,6 @@ namespace myfoodapp.Business.HumidityTemperature
 
                 return Convert.ToSingle(temperatureCelsius);
             }
-        }
-
-        /// <summary>
-        /// Private helper to initialize the HTU21D device.
-        /// </summary>
-        /// <remarks>
-        /// Setup and instantiate the I2C device object for the HTU21D.
-        /// </remarks>
-        /// <returns>
-        /// Task object.
-        /// </returns>
-        public async Task Connect()
-        {
-            // Acquire the I2C device
-            // MSDN I2C Reference: https://msdn.microsoft.com/en-us/library/windows/apps/windows.devices.i2c.aspx
-            //
-            // Use the I2cDevice device selector to create an advanced query syntax string
-            // Use the Windows.Devices.Enumeration.DeviceInformation class to create a collection using the advanced query syntax string
-            // Take the device id of the first device in the collection
-            string advancedQuerySyntax = I2cDevice.GetDeviceSelector(i2cBusName);
-            DeviceInformationCollection deviceInformationCollection = await DeviceInformation.FindAllAsync(advancedQuerySyntax);
-            string deviceId = deviceInformationCollection[0].Id;
-
-            // Establish an I2C connection to the HTU21D
-            //
-            // Instantiate the I2cConnectionSettings using the device address of the HTU21D
-            // - Set the I2C bus speed of connection to fast mode
-            // - Set the I2C sharing mode of the connection to shared
-            //
-            // Instantiate the the HTU21D I2C device using the device id and the I2cConnectionSettings
-            I2cConnectionSettings htu21dConnection = new I2cConnectionSettings(Htu21dI2cAddress);
-            htu21dConnection.BusSpeed = I2cBusSpeed.FastMode;
-            htu21dConnection.SharingMode = I2cSharingMode.Shared;
-
-            this.i2c = await I2cDevice.FromIdAsync(deviceId, htu21dConnection);
-
-            // Test to see if the I2C devices are available.
-            //
-            // If the I2C devices are not available, this is
-            // a good indicator the weather shield is either
-            // missing or configured incorrectly. Therefore we
-            // will disable the weather shield functionality to
-            // handle the failure case gracefully. This allows
-            // the invoking application to remain deployable
-            // across the Universal Windows Platform.
-            if (null == this.i2c)
-            {
-                this.isConnected = false;
-            }
-            else
-            {
-                byte[] i2cTemperatureData = new byte[3];
-
-                try
-                {
-                    this.i2c.WriteRead(new byte[] {SampleTemperatureHold }, i2cTemperatureData);
-                    this.isConnected = true;
-
-                    EventHandler handler = Connected;
-                    if (handler != null)
-                    {
-                        handler(this, EventArgs.Empty);
-                    }
-                }
-                catch
-                {
-                    this.isConnected = false;
-                }
-            }
-
         }
 
         /// <summary>
@@ -288,12 +264,14 @@ namespace myfoodapp.Business.HumidityTemperature
                 bool humidityData = 0x00 != (0x02 & i2cHumidityData[1]);
                 if (!humidityData)
                 {
+                    logModel.AppendLog(Log.CreateLog(String.Format("Un-consistent Humidity - {0}", humidity), Log.LogType.Warning));
                     return 0;
                 }
 
                 bool validData = this.ValidCyclicRedundancyCheck(humidity, (byte)(i2cHumidityData[2] ^ 0x62));
                 if (!validData)
                 {
+                    logModel.AppendLog(Log.CreateLog(String.Format("Un-consistent Humidity - {0}", humidity), Log.LogType.Warning));
                     return 0;
                 }
 
@@ -342,12 +320,14 @@ namespace myfoodapp.Business.HumidityTemperature
                 bool temperatureData = 0x00 == (0x02 & i2cTemperatureData[1]);
                 if (!temperatureData)
                 {
+                    logModel.AppendLog(Log.CreateLog(String.Format("Un-consistent Air Temperature - {0}", temperature), Log.LogType.Warning));
                     return 0;
                 }
 
                 bool validData = this.ValidCyclicRedundancyCheck(temperature, i2cTemperatureData[2]);
                 if (!validData)
                 {
+                    logModel.AppendLog(Log.CreateLog(String.Format("Un-consistent Air Temperature - {0}", temperature), Log.LogType.Warning));
                     return 0;
                 }
 

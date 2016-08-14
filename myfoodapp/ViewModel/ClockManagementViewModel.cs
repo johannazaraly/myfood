@@ -16,6 +16,7 @@ using Windows.Data.Json;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
+using static myfoodapp.Business.Log;
 
 namespace myfoodapp.ViewModel
 {
@@ -23,6 +24,17 @@ namespace myfoodapp.ViewModel
     {
         private LogModel logModel = LogModel.GetInstance;
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
+
+        private bool isBusy = false;
+        public bool IsBusy
+        {
+            get { return isBusy; }
+            set
+            {
+                isBusy = value;
+                OnPropertyChanged("IsBusy");
+            }
+        }
 
         private bool isConnected = false;
         public bool IsConnected
@@ -91,6 +103,7 @@ namespace myfoodapp.ViewModel
         public void OnSetDateClicked(object sender, RoutedEventArgs args)
         {
             var clockManager = ClockManager.GetInstance;
+            IsBusy = true;
 
             try
             {
@@ -137,6 +150,11 @@ namespace myfoodapp.ViewModel
             catch (Exception ex)
             {
                 logModel.AppendLog(Log.CreateErrorLog("Exception on Set Date", ex));
+            }
+            finally
+            {
+                logModel.AppendLog(Log.CreateLog("Date settings changed", LogType.Information));
+                IsBusy = false;
             }
         }
 
