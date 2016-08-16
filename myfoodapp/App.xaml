@@ -39,7 +39,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="FontFamily" Value="Segoe UI"/>
-                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontSize" Value="18"/>
                 <Setter Property="FontWeight" Value="Light"/>
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -61,7 +61,7 @@
                                         <VisualState x:Name="PointerOver"/>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Grid x:Name="grid" Grid.Row="0" Grid.RowSpan="2" Margin="15">
+                                <Grid x:Name="grid" Grid.Row="0" Grid.RowSpan="2" Margin="5">
                                     <Border x:Name="border"
                                     BorderBrush="Gray"
                                     BorderThickness="3"
@@ -116,12 +116,21 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Default">
                     <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="DarkRed" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="DarkRed" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightBaseHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="DarkRed" />
+                    <SolidColorBrush x:Key="SystemControlForegroundAccentBrush" Color="DarkRed" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>

@@ -23,7 +23,6 @@ using myfoodapp.Model;
 using Microsoft.Data.Entity;
 using myfoodapp.Business.Clock;
 using System.Threading.Tasks;
-using myfoodapp.Business.HumidityTemperature;
 
 namespace myfoodapp
 {
@@ -41,6 +40,18 @@ namespace myfoodapp
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
+
+            using (var db = new LocalDataContext())
+            {
+                db.Database.Migrate();
+                LocalDataContextExtension.EnsureSeedData(db);
+            }
+
+            var taskLogFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
+            taskLogFile.Wait();
+
+            var taskUserFile = Task.Run(async () => { await UserSettingsModel.GetInstance.InitFileFolder(); });
+            taskUserFile.Wait();
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -90,21 +101,6 @@ namespace myfoodapp
             }
             // Ensure the current window is active
             Window.Current.Activate();
-
-            using (var db = new LocalDataContext())
-            {
-                db.Database.Migrate();
-                LocalDataContextExtension.EnsureSeedData(db);
-            }
-
-            var taskLogFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            taskLogFile.Wait();
-
-            var taskUserFile = Task.Run(async () => { await UserSettingsModel.GetInstance.InitFileFolder(); });
-            taskUserFile.Wait();
-
-            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Run();
 
         }
 

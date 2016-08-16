@@ -33,11 +33,11 @@ namespace myfoodapp.ViewModel
             }
         }
 
-        public NotifyTaskCompletion<ObservableCollection<Log>> Logs { get; private set; }
+        public NotifyTaskCompletion<List<Log>> Logs { get; private set; }
 
         public LogManagementViewModel()
         {
-            Logs = new NotifyTaskCompletion<ObservableCollection<Log>>(logModel.GetLogsAsync());
+            Logs = new NotifyTaskCompletion<List<Log>>(logModel.GetLogsAsync());
         }
 
         public void OnBackClicked(object sender, RoutedEventArgs args)

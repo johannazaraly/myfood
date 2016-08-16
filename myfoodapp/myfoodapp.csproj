@@ -110,54 +110,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Business\Actions.cs" />
-    <Compile Include="Business\BackgroundWorkers\MeasureBackgroundTask.cs" />
-    <Compile Include="Business\Clock\ClockManager.cs" />
-    <Compile Include="Business\HumidityTemperature\HumidityTemperatureManager.cs" />
-    <Compile Include="Business\Sensor\AtlasSensor.cs" />
-    <Compile Include="Business\Sensor\AtlasSensorManager.cs" />
-    <Compile Include="Business\UserSettings.cs" />
-    <Compile Include="Common\AsyncLock.cs" />
-    <Compile Include="Business\Event.cs" />
-    <Compile Include="Business\Log.cs" />
-    <Compile Include="Common\BindableBase.cs" />
-    <Compile Include="Common\CloseFlyoutMessage.cs" />
-    <Compile Include="Common\EventLogHelper.cs" />
-    <Compile Include="Common\FlyoutHelper.cs" />
-    <Compile Include="Common\NotifyTaskCompletion.cs" />
-    <Compile Include="Business\Clock\RTCPiHelper.cs" />
-    <Compile Include="Core\ActionTile.xaml.cs">
-      <DependentUpon>ActionTile.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Core\AdvancedTextBlock.xaml.cs">
-      <DependentUpon>AdvancedTextBlock.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Core\NotificationTile.xaml.cs">
-      <DependentUpon>NotificationTile.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Core\TabHeader.xaml.cs">
-      <DependentUpon>TabHeader.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20160701091118_FirstMigration.cs" />
-    <Compile Include="Migrations\20160701091118_FirstMigration.designer.cs">
-      <DependentUpon>20160701091118_FirstMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\LocalDataContextModelSnapshot.cs" />
-    <Compile Include="Model\LocalDataContext.cs" />
-    <Compile Include="Model\LocalDataContextExtension.cs" />
-    <Compile Include="Model\DatabaseModel.cs" />
-    <Compile Include="Model\UserSettingsModel.cs" />
-    <Compile Include="Model\LogModel.cs" />
     <Compile Include="ViewModel\AdvancedSettingsViewModel.cs" />
     <Compile Include="ViewModel\LogManagementViewModel.cs" />
     <Compile Include="ViewModel\ClockManagementViewModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\Sensors\DOSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\Sensors\ORPSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\Sensors\TempSensorsMonitoringViewModel.cs" />
-    <Compile Include="ViewModel\Sensors\PhSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Calibration\PhCalibrationViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Monitoring\DOSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Monitoring\ORPSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Monitoring\TempSensorsMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Monitoring\PhSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\GreenhouseConfigurationViewModel.cs" />
-    <Compile Include="ViewModel\AdministratorViewModel.cs" />
     <Compile Include="ViewModel\AquaponicsManagementViewModel.cs" />
     <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SettingsUserViewModel.cs" />
@@ -176,16 +138,19 @@
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sensors\DOSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\Calibration\PhCalibrationPage.xaml.cs">
+      <DependentUpon>PhCalibrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sensors\Monitoring\DOSensorsMonitoringPage.xaml.cs">
       <DependentUpon>DOSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sensors\ORPSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\Monitoring\ORPSensorsMonitoringPage.xaml.cs">
       <DependentUpon>ORPSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sensors\TempSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\Monitoring\TempSensorsMonitoringPage.xaml.cs">
       <DependentUpon>TempSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sensors\PhSensorsMonitoringPage.xaml.cs">
+    <Compile Include="Views\Sensors\Monitoring\PhSensorsMonitoringPage.xaml.cs">
       <DependentUpon>PhSensorsMonitoringPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AquaponicsManagementView.xaml.cs">
@@ -231,22 +196,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Core\ActionTile.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Core\AdvancedTextBlock.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Core\NotificationTile.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Core\TabHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\AdvancedSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -267,19 +216,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sensors\DOSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\Calibration\PhCalibrationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sensors\ORPSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\Monitoring\DOSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sensors\TempSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\Monitoring\ORPSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sensors\PhSensorsMonitoringPage.xaml">
+    <Page Include="Views\Sensors\Monitoring\TempSensorsMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Sensors\Monitoring\PhSensorsMonitoringPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -304,9 +257,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Business\Network\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <SDKReference Include="Microsoft.VCLibs, version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
@@ -317,6 +268,20 @@
     <SDKReference Include="WindowsIoT, Version=10.0.10586.0">
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\myfoodapp.Business\myfoodapp.Business.csproj">
+      <Project>{ad00c69b-4b59-4553-89ea-49822a91edfd}</Project>
+      <Name>myfoodapp.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\myfoodapp.Common\myfoodapp.Common.csproj">
+      <Project>{36b938d0-85a3-47ac-9ef1-00668307430e}</Project>
+      <Name>myfoodapp.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\myfoodapp.Model\myfoodapp.Model.csproj">
+      <Project>{eef3d211-2b1c-403f-adc2-8601de17afee}</Project>
+      <Name>myfoodapp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

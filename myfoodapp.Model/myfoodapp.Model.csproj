@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AD00C69B-4B59-4553-89EA-49822A91EDFD}</ProjectGuid>
+    <ProjectGuid>{EEF3D211-2B1C-403F-ADC2-8601DE17AFEE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>myfoodapp.Business</RootNamespace>
-    <AssemblyName>myfoodapp.Business</AssemblyName>
+    <RootNamespace>myfoodapp.Model</RootNamespace>
+    <AssemblyName>myfoodapp.Model</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
@@ -107,32 +107,28 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundWorkers\MeasureBackgroundTask.cs" />
-    <Compile Include="Clock\ClockManager.cs" />
-    <Compile Include="Clock\RTCPiHelper.cs" />
+    <Compile Include="Business\Actions.cs" />
+    <Compile Include="Business\Event.cs" />
+    <Compile Include="Business\Log.cs" />
+    <Compile Include="Business\UserSettings.cs" />
+    <Compile Include="DatabaseModel.cs" />
+    <Compile Include="LocalDataContext.cs" />
+    <Compile Include="LocalDataContextExtension.cs" />
+    <Compile Include="LogModel.cs" />
+    <Compile Include="Migrations\20160701091118_FirstMigration.cs" />
+    <Compile Include="Migrations\20160701091118_FirstMigration.Designer.cs">
+      <DependentUpon>20160701091118_FirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\LocalDataContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensor\AtlasSensor.cs" />
-    <Compile Include="Sensor\AtlasSensorManager.cs" />
-    <Compile Include="Sensor\HumidityTemperature\HumidityTemperatureManager.cs" />
-    <EmbeddedResource Include="Properties\myfoodapp.Business.rd.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network\" />
+    <Compile Include="UserSettingsModel.cs" />
+    <EmbeddedResource Include="Properties\myfoodapp.Model.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\myfoodapp.Common\myfoodapp.Common.csproj">
       <Project>{36b938d0-85a3-47ac-9ef1-00668307430e}</Project>
       <Name>myfoodapp.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\myfoodapp.Model\myfoodapp.Model.csproj">
-      <Project>{eef3d211-2b1c-403f-adc2-8601de17afee}</Project>
-      <Name>myfoodapp.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <SDKReference Include="WindowsIoT, Version=10.0.10586.0">
-      <Name>Windows IoT Extensions for the UWP</Name>
-    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

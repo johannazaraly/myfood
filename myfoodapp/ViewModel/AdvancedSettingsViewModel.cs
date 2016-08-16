@@ -151,8 +151,7 @@ namespace myfoodapp.ViewModel
             IsSleepModeEnable = currentUserSettings.isSleepModeEnable;
             IsTempHumiditySensorEnable = currentUserSettings.isTempHumiditySensorEnable;
             IsVerboseLogEnable = currentUserSettings.isVerboseLogEnable;
-            IsDebugLedEnable = currentUserSettings.isDebugLedEnable;
-            
+            IsDebugLedEnable = currentUserSettings.isDebugLedEnable;          
         }
 
         public async Task<UInt64> GetFreeSpace()

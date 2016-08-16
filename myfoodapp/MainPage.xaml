@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid Background="{StaticResource BackgroundAppBrush}">
-        <TextBlock HorizontalAlignment="Right" Margin="0,2,15,2" VerticalAlignment="Bottom" Foreground="White" Text="myfood app® [preview mode] v.0.1.1.20160601"/>
+       
         <Grid Margin="-5,0,-5,20" Background="{StaticResource AppBrush}" BorderThickness="5" BorderBrush="DarkRed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

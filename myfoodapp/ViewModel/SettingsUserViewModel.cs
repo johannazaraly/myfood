@@ -19,22 +19,22 @@ namespace myfoodapp.ViewModel
 
         public void OnPHSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<AboutPage>();
+            App.TryShowNewWindow<PhCalibrationPage>();
         }
 
         public void OnTempSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<AboutPage>();
+            App.TryShowNewWindow<PhCalibrationPage>();
         }
 
         public void OnORPSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<AboutPage>();
+            App.TryShowNewWindow<PhCalibrationPage>();
         }
 
         public void OnDOSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<AboutPage>();
+            App.TryShowNewWindow<PhCalibrationPage>();
         }
 
         public void OnClockSettingsClicked(object sender, RoutedEventArgs args)
@@ -46,11 +46,14 @@ namespace myfoodapp.ViewModel
         {
             App.TryShowNewWindow<LogManagementPage>();
         }
-
+        
         public void OnAdvancedSettingsClicked(object sender, RoutedEventArgs args)
         {
             App.TryShowNewWindow<AdvancedSettingsPage>();
         }
-
+        public void OnAboutClicked(object sender, RoutedEventArgs args)
+        {
+            App.TryShowNewWindow<AboutPage>();
+        }
     }
 }

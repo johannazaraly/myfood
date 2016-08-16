@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
 using myfoodapp.ViewModel;
 using myfoodapp.Business;
+using System.Threading.Tasks;
+using Microsoft.Data.Entity;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -35,6 +37,9 @@ namespace myfoodapp
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = ViewModel;
+
+            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            mesureBackgroundTask.Run();
         }
 
         public AquaponicsManagementViewModel ViewModel { get; set; }
