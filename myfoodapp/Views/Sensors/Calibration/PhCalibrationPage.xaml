@@ -105,7 +105,7 @@
 
                     <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock FontSize="23" FontWeight="Bold" Text="Last Calibration:"/>
-                        <TextBlock FontSize="23" Text="{x:Bind ViewModel.LastCalibrationDate.Result}"/>
+                        <TextBlock FontSize="23" Text="{Binding LastCalibrationDate.Result, Mode=TwoWay}"/>
                     </StackPanel>
                     
                 </Grid>

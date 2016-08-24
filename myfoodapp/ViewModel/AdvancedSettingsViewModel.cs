@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using myfoodapp.Business;
+using myfoodapp.Business.Clock;
+using myfoodapp.Business.Sensor;
 using myfoodapp.Common;
 using myfoodapp.Model;
 using myfoodapp.Views;
@@ -197,8 +199,19 @@ namespace myfoodapp.ViewModel
             logModel.AppendLog(Log.CreateLog("Restart from user", LogType.Information));
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
+            mesureBackgroundTask.Completed += RestartBackgroundTask_Completed;
             mesureBackgroundTask.Stop();            
+        }
+
+        public void OnHardwareResetAppClicked(object sender, RoutedEventArgs args)
+        {
+            IsBusy = true;
+
+            logModel.AppendLog(Log.CreateLog("Hardware reset", LogType.Information));
+
+            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            mesureBackgroundTask.Completed += ResetHardwareBackgroundTask_Completed;
+            mesureBackgroundTask.Stop();
         }
 
         public void OnSaveClicked(object sender, RoutedEventArgs args)
@@ -215,10 +228,10 @@ namespace myfoodapp.ViewModel
             Messenger.Default.Send(new CloseFlyoutMessage());
         }
 
-        private void MesureBackgroundTask_Completed(object sender, EventArgs e)
+        private void RestartBackgroundTask_Completed(object sender, EventArgs e)
         {
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed -= MesureBackgroundTask_Completed;
+            mesureBackgroundTask.Completed -= RestartBackgroundTask_Completed;
 
             try
             {
@@ -227,6 +240,34 @@ namespace myfoodapp.ViewModel
             catch (Exception ex)
             {
                 logModel.AppendLog(Log.CreateErrorLog("Exception on Restart App", ex));
+            }
+            finally
+            {
+                Messenger.Default.Send(new CloseFlyoutMessage());
+                IsBusy = false;
+            }
+        }
+
+        private void ResetHardwareBackgroundTask_Completed(object sender, EventArgs e)
+        {
+            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            mesureBackgroundTask.Completed -= ResetHardwareBackgroundTask_Completed;
+
+            try
+            {
+                AtlasSensorManager.GetInstance.ResetSensorsToFactory();
+                ClockManager.GetInstance.Dispose();
+
+                Windows.ApplicationModel.Core.CoreApplication.Exit();
+            }
+            catch (Exception ex)
+            {
+                logModel.AppendLog(Log.CreateErrorLog("Exception on Reset Hardware", ex));                
+            }
+            finally
+            {
+                Messenger.Default.Send(new CloseFlyoutMessage());
+                IsBusy = false;
             }
         }
 
@@ -261,6 +302,7 @@ namespace myfoodapp.ViewModel
             finally
             {
                 logModel.AppendLog(Log.CreateLog("Settings saved", LogType.Information));
+                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }

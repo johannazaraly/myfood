@@ -112,15 +112,17 @@ namespace myfoodapp.ViewModel
                 var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.ph); });
                 taskUser.Wait();
 
-                mesureBackgroundTask.Run();               
+                mesureBackgroundTask.Run();
+
+                logModel.AppendLog(Log.CreateLog("Set pH at 7 ended", LogType.Information));
             }
             catch (Exception ex)
             {
                 logModel.AppendLog(Log.CreateErrorLog("Exception on Set Calibration", ex));
             }
             finally
-            {
-                logModel.AppendLog(Log.CreateLog("Set pH at 7 ended", LogType.Information));
+            {              
+                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }
@@ -138,6 +140,8 @@ namespace myfoodapp.ViewModel
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
+
+                logModel.AppendLog(Log.CreateLog("Set pH at 4 ended", LogType.Information));
             }
             catch (Exception ex)
             {
@@ -145,7 +149,7 @@ namespace myfoodapp.ViewModel
             }
             finally
             {
-                logModel.AppendLog(Log.CreateLog("Set pH at 4 ended", LogType.Information));
+                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }
@@ -163,6 +167,8 @@ namespace myfoodapp.ViewModel
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
+
+                logModel.AppendLog(Log.CreateLog("Set pH at 10 ended", LogType.Information));
             }
             catch (Exception ex)
             {
@@ -170,7 +176,7 @@ namespace myfoodapp.ViewModel
             }
             finally
             {
-                logModel.AppendLog(Log.CreateLog("Set pH at 10 ended", LogType.Information));
+                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }
@@ -188,6 +194,8 @@ namespace myfoodapp.ViewModel
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
+
+                logModel.AppendLog(Log.CreateLog("Reset ended", LogType.Information));
             }
             catch (Exception ex)
             {
@@ -195,7 +203,7 @@ namespace myfoodapp.ViewModel
             }
             finally
             {
-                logModel.AppendLog(Log.CreateLog("Reset ended", LogType.Information));
+                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }

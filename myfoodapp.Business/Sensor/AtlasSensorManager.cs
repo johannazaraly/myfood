@@ -128,6 +128,19 @@ namespace myfoodapp.Business.Sensor
                                     string s = String.Empty;
                                     string r = String.Empty;
 
+                                    
+                                    var taskAuto = Task.Run(async () =>
+                                    {
+                                        await WriteAsync(disableAutomaticAnswerCommand, newSensor);
+                                    });
+                                    taskAuto.Wait();
+
+                                    var taskContinuous = Task.Run(async () =>
+                                    {
+                                        await WriteAsync(disableContinuousModeCommand, newSensor);
+                                    });
+                                    taskContinuous.Wait();
+
                                     var taskStatus = Task.Run(async () =>
                                     {
                                         await WriteAsync(getStatusCommand, newSensor)
@@ -282,6 +295,24 @@ namespace myfoodapp.Business.Sensor
 
                 var taskDebugMode = Task.Run(async () => {
                     await WriteAsync(String.Format(ledDebugCommand, strIsEnable), currentSensor);
+                });
+
+                taskDebugMode.Wait();
+            }
+        }
+
+        public void ResetSensorsToFactory()
+        {
+            if (!isInitialized)
+                return;
+
+            foreach (AtlasSensor currentSensor in sensorsList)
+            {
+
+                string strResult = String.Empty;
+
+                var taskDebugMode = Task.Run(async () => {
+                    await WriteAsync(String.Format(resetFactoryCommand), currentSensor);
                 });
 
                 taskDebugMode.Wait();

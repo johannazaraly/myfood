@@ -41,8 +41,11 @@ namespace myfoodapp.Model
         {
             if (await folder.TryGetItemAsync(FILE_NAME) != null)
             {
-                var file = await folder.GetFileAsync(FILE_NAME);
-                await file.RenameAsync(String.Format("{0}_{1}.json", file.Name, file.DateCreated.ToString("yyyyMMddHHmmss")));                
+                var task = Task.Run(async () => {
+                    var file = await folder.GetFileAsync(FILE_NAME);
+                    await file.RenameAsync(String.Format("{0}_{1}.json", file.Name, file.DateCreated.ToString("yyyyMMddHHmmss")));
+                });
+                task.Wait();         
             }
 
             var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);

@@ -42,6 +42,7 @@ namespace myfoodapp.Views
                 eraseLogsButton.Flyout.Hide();
                 eraseMeasuresButton.Flyout.Hide();
                 restartAppButton.Flyout.Hide();
+                resetToHardwareToFactoryButton.Flyout.Hide();
             });
         }
 

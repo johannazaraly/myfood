@@ -58,8 +58,8 @@ namespace myfoodapp.ViewModel
             }
         }
 
-        private DateTimeOffset setDate;
-        public DateTimeOffset SetDate
+        private DateTime? setDate;
+        public DateTime? SetDate
         {
             get { return setDate; }
             set
@@ -69,8 +69,8 @@ namespace myfoodapp.ViewModel
             }
         }
 
-        private TimeSpan setTime;
-        public TimeSpan SetTime
+        private DateTime? setTime;
+        public DateTime? SetTime
         {
             get { return setTime; }
             set
@@ -82,17 +82,26 @@ namespace myfoodapp.ViewModel
 
         public ClockManagementViewModel()
         {
-            DateTime currentDate = DateTime.Now ;
+            DateTime clockDate = new DateTime();
 
-            var task = Task.Run(async () => {
-                currentDate = await databaseModel.GetLastMesureDate();
-            });
-            task.Wait();
+            var clockManager = ClockManager.GetInstance;
 
-            CurrentDate = currentDate.ToString();
+            if (clockManager != null)
+            {
+                var taskClock = Task.Run(async () =>
+                {
+                    await clockManager.Connect();
+                });
+                taskClock.Wait();
 
-            SetDate = new DateTimeOffset(currentDate);
-            //SetTime = new TimeSpan(currentDate.Hour, currentDate.Minute, currentDate.Second);
+                clockDate = clockManager.ReadDate();
+                CurrentDate = clockDate.ToString();
+
+                clockManager.Dispose();
+            }
+
+            SetDate = clockDate;
+            SetTime = clockDate;
         }
 
         public void OnBackClicked(object sender, RoutedEventArgs args)
@@ -102,7 +111,6 @@ namespace myfoodapp.ViewModel
 
         public void OnSetDateClicked(object sender, RoutedEventArgs args)
         {
-            var clockManager = ClockManager.GetInstance;
             IsBusy = true;
 
             try
@@ -123,6 +131,7 @@ namespace myfoodapp.ViewModel
             {
                 var clockManager = ClockManager.GetInstance;
                 var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+                mesureBackgroundTask.Completed -= MesureBackgroundTask_Completed;
 
                 if (clockManager != null)
                 {
@@ -132,7 +141,7 @@ namespace myfoodapp.ViewModel
                     });
                     taskClock.Wait();
 
-                    var newDateTime = new DateTime(SetDate.Year, SetDate.Month, SetDate.Day, SetTime.Hours, SetTime.Minutes, SetTime.Seconds);
+                    var newDateTime = new DateTime(SetDate.Value.Year, SetDate.Value.Month, SetDate.Value.Day, SetTime.Value.Hour, SetTime.Value.Minute, SetTime.Value.Second);
                     clockManager.SetDate(newDateTime);
                     CurrentDate = clockManager.ReadDate().ToString();
 
@@ -156,16 +165,6 @@ namespace myfoodapp.ViewModel
                 logModel.AppendLog(Log.CreateLog("Date settings changed", LogType.Information));
                 IsBusy = false;
             }
-        }
-
-        public void OnConnectClockClicked(object sender, RoutedEventArgs args)
-        {
-            App.TryShowNewWindow<MainPage>();
-        }
-
-        public void OnResetClockClicked(object sender, RoutedEventArgs args)
-        {
-            App.TryShowNewWindow<MainPage>();
         }
 
     }

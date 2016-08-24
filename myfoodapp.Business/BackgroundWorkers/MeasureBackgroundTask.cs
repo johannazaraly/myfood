@@ -39,14 +39,14 @@ namespace myfoodapp.Business
         }
 
 #if DEBUG
-        private int TICKSPERCYCLE = 30000;
+        private int TICKSPERCYCLE = 600000;
 #endif
 
 #if !DEBUG
         private int TICKSPERCYCLE = 600000;
 #endif
 
-          private int TICKSPERDAY = 43200000;
+          private int TICKSPERDAY = 30000;
       //  private int TICKSPERDAY = 120000;
 
         private MeasureBackgroundTask()
@@ -129,11 +129,11 @@ namespace myfoodapp.Business
 
                 try
                 {
-                    if (elapsedMs % TICKSPERDAY == 0)
-                    {
-                        logModel.AppendLog(Log.CreateLog("App Daily restart", Log.LogType.Information));
-                        Windows.ApplicationModel.Core.CoreApplication.Exit();
-                    }
+                    //if (elapsedMs % TICKSPERDAY == 0)
+                    //{
+                    //    logModel.AppendLog(Log.CreateLog("App Daily restart", Log.LogType.Information));
+                    //    Windows.ApplicationModel.Core.CoreApplication.Exit();
+                    //}
 
                     if (elapsedMs % TICKSPERCYCLE == 0)
                     {
@@ -161,7 +161,7 @@ namespace myfoodapp.Business
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature);
                                 sensorManager.SetWaterTemperatureForSensors(capturedValue);
 
-                                if(capturedValue > 0 || capturedValue < 60 )
+                                if(capturedValue > 0 && capturedValue < 60 )
                                 {
                                     var task = Task.Run(async () =>
                                     {
@@ -185,7 +185,7 @@ namespace myfoodapp.Business
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordPhMeasure();
 
-                                if (capturedValue > 1 || capturedValue < 12)
+                                if (capturedValue > 1 && capturedValue < 12)
                                 {
                                     var task = Task.Run(async () =>
                                     {
@@ -208,7 +208,7 @@ namespace myfoodapp.Business
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp);
 
-                                if (capturedValue > -250 || capturedValue < 250)
+                                if (capturedValue > -250 && capturedValue < 250)
                                 {
                                     var task = Task.Run(async () =>
                                     {
@@ -231,7 +231,7 @@ namespace myfoodapp.Business
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.dissolvedOxygen);
 
-                                if (capturedValue > 0 || capturedValue < 100)
+                                if (capturedValue > 0 && capturedValue < 100)
                                 {
                                     var task = Task.Run(async () =>
                                     {

@@ -17,6 +17,7 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -81,6 +82,25 @@
                             </Flyout>
                         </Button.Flyout>
                     </Button>
+                    <Button x:Name="resetToHardwareToFactoryButton" Grid.Row="3" Style="{StaticResource OpenFormButton}" Content="Reset Hardware to Factory">
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <Grid MaxWidth="300">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Sensors will be resetted and application will restart. Are you sure ?"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Restart" Click="{x:Bind ViewModel.OnHardwareResetAppClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
+                                </Grid>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
                     
                     <StackPanel Grid.Column="2" Orientation="Vertical">
                         <TextBlock FontSize="23" FontWeight="Bold" Text="System Information"/>
@@ -89,7 +109,7 @@
                         <TextBlock FontSize="23" Text="Free Memory: 102Mo (13%)"/>
                     </StackPanel>
 
-                    <Grid Margin="2" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2">
+                    <Grid Margin="2" Grid.Row="1" Grid.RowSpan="3" Grid.Column="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>

@@ -74,7 +74,6 @@ namespace myfoodapp.Business.Clock
         public ClockManager()
         {
             IsConnected = false;
-            //this.InitClock();
         }
 
         public async void InitClock()
@@ -142,7 +141,6 @@ namespace myfoodapp.Business.Clock
         {
             return (byte)((val / 10 * 16) + (val % 10));
         }
-
 
         /// <summary>
         /// Set the date and time on the RTC

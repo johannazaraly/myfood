@@ -6,8 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:telerikInput="using:Telerik.UI.Xaml.Controls.Input"
     mc:Ignorable="d">
-
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Pivot x:Name="pivot">
             <PivotItem Name="lastDay" Header="Set Internal Clock" FontSize="8">
@@ -26,8 +27,8 @@
                     <TextBlock HorizontalAlignment="Left" Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.CurrentDate, Mode=TwoWay}" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="32"/>
 
                     <TextBlock HorizontalAlignment="Left" Grid.Row="1" TextWrapping="Wrap" Text="Set Date:" VerticalAlignment="Top" FontSize="32"/>
-                    <DatePicker HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Date="{x:Bind ViewModel.SetDate, Mode=TwoWay}" VerticalAlignment="Top"/>
-                    <TimePicker HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="2" Time="{x:Bind ViewModel.SetTime}" VerticalAlignment="Top" ClockIdentifier="12HourClock"/>
+                    <telerikInput:RadDatePicker HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" DisplayMode="Inline" VerticalAlignment="Top" Value="{Binding SetDate, Mode=TwoWay}"/>
+                    <telerikInput:RadTimePicker HorizontalAlignment="Left"  Grid.Row="1" Grid.Column="2" DisplayMode="Inline" Value="{Binding SetTime, Mode=TwoWay}" VerticalAlignment="Top"/>
                 </Grid>
             </PivotItem>
         </Pivot>
