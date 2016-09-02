@@ -40,7 +40,7 @@ namespace myfoodapp.Model
             db = new LocalDataContext();
         }
 
-        public async Task SetLastCalibrationDate(SensorTypeEnum sensorType)
+        public async Task SetLastCalibrationDate(SensorTypeEnum sensorType, DateTime currentDate)
         {
             using (await asyncLock.LockAsync())
             {
@@ -50,7 +50,6 @@ namespace myfoodapp.Model
 
                     if (currentSensorType != null)
                     {
-                        var currentDate = await GetLastMesureDate();
                         currentSensorType.lastCalibration = currentDate;
                         await db.SaveChangesAsync();
                     }
@@ -124,6 +123,30 @@ namespace myfoodapp.Model
                     return Math.Round(rslt.value,1);
                 else
                     return 0;
+            }
+        }
+
+        public async Task<string> GetLastMesureSignature()
+        {
+            StringBuilder valueSignature = new StringBuilder();
+
+            using (await asyncLock.LockAsync())
+            {
+
+                var allValues = Enum.GetValues(typeof(SensorTypeEnum));
+
+                foreach (SensorTypeEnum sensorType in Enum.GetValues(typeof(SensorTypeEnum)))
+                {
+                    var rslt = await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                                      select m).Take(1).FirstOrDefaultAsync();
+
+                    if (rslt != null)
+                        valueSignature.Append(Math.Round(rslt.value, 1).ToString("000.0").Replace(".",""));
+                    else
+                        valueSignature.Append("AAAA");
+                }
+
+                return valueSignature.ToString();
             }
         }
 

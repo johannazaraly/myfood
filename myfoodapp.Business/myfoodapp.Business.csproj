@@ -110,15 +110,14 @@
     <Compile Include="BackgroundWorkers\MeasureBackgroundTask.cs" />
     <Compile Include="Clock\ClockManager.cs" />
     <Compile Include="Clock\RTCPiHelper.cs" />
+    <Compile Include="Network\SigfoxInterfaceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensor\AtlasSensor.cs" />
     <Compile Include="Sensor\AtlasSensorManager.cs" />
     <Compile Include="Sensor\HumidityTemperature\HumidityTemperatureManager.cs" />
     <EmbeddedResource Include="Properties\myfoodapp.Business.rd.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\myfoodapp.Common\myfoodapp.Common.csproj">
       <Project>{36b938d0-85a3-47ac-9ef1-00668307430e}</Project>

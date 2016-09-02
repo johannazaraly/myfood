@@ -114,6 +114,9 @@
     <Compile Include="ViewModel\LogManagementViewModel.cs" />
     <Compile Include="ViewModel\ClockManagementViewModel.cs" />
     <Compile Include="ViewModel\HealthMonitoringViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Calibration\DOCalibrationViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Calibration\TempCalibrationViewModel.cs" />
+    <Compile Include="ViewModel\Sensors\Calibration\ORPCalibrationViewModel.cs" />
     <Compile Include="ViewModel\Sensors\Calibration\PhCalibrationViewModel.cs" />
     <Compile Include="ViewModel\Sensors\Monitoring\DOSensorsMonitoringViewModel.cs" />
     <Compile Include="ViewModel\Sensors\Monitoring\ORPSensorsMonitoringViewModel.cs" />
@@ -137,6 +140,15 @@
     </Compile>
     <Compile Include="Views\HealthMonitoringPage.xaml.cs">
       <DependentUpon>HealthMonitoringPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sensors\Calibration\DOCalibrationPage.xaml.cs">
+      <DependentUpon>DOCalibrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sensors\Calibration\TempCalibrationPage.xaml.cs">
+      <DependentUpon>TempCalibrationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sensors\Calibration\ORPCalibrationPage.xaml.cs">
+      <DependentUpon>ORPCalibrationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Sensors\Calibration\PhCalibrationPage.xaml.cs">
       <DependentUpon>PhCalibrationPage.xaml</DependentUpon>
@@ -196,12 +208,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MyDarkResourcesPath.xaml">
+    <Page Include="Assets\Theme\MyDarkResourcesPath.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="MyLightResourcesPath.xaml">
+    <Page Include="Assets\Theme\MyLightResourcesPath.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -223,6 +235,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HealthMonitoringPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Sensors\Calibration\DOCalibrationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Sensors\Calibration\TempCalibrationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Sensors\Calibration\ORPCalibrationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

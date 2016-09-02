@@ -9,4 +9,7 @@ namespace myfoodapp.Common
     public class CloseFlyoutMessage
     {
     }
+    public class RefreshDashboardMessage
+    {
+    }
 }

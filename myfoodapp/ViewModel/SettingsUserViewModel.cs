@@ -24,17 +24,17 @@ namespace myfoodapp.ViewModel
 
         public void OnTempSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<PhCalibrationPage>();
+            App.TryShowNewWindow<TempCalibrationPage>();
         }
 
         public void OnORPSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<PhCalibrationPage>();
+            App.TryShowNewWindow<ORPCalibrationPage>();
         }
 
         public void OnDOSensorSettingsClicked(object sender, RoutedEventArgs args)
         {
-            App.TryShowNewWindow<PhCalibrationPage>();
+            App.TryShowNewWindow<DOCalibrationPage>();
         }
 
         public void OnClockSettingsClicked(object sender, RoutedEventArgs args)

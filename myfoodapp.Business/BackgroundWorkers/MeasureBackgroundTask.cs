@@ -1,6 +1,8 @@
-﻿using myfoodapp.Business.Clock;
+﻿using GalaSoft.MvvmLight.Messaging;
+using myfoodapp.Business.Clock;
 using myfoodapp.Business.Sensor;
 using myfoodapp.Business.Sensor.HumidityTemperature;
+using myfoodapp.Common;
 using myfoodapp.Model;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace myfoodapp.Business
     {
         private BackgroundWorker bw = new BackgroundWorker();
         private AtlasSensorManager sensorManager;
+        private SigfoxInterfaceManager sigfoxManager;
 
         private UserSettingsModel userSettingsModel = UserSettingsModel.GetInstance;
         private LogModel logModel = LogModel.GetInstance;
@@ -46,16 +49,20 @@ namespace myfoodapp.Business
         private int TICKSPERCYCLE = 600000;
 #endif
 
-          private int TICKSPERDAY = 30000;
-      //  private int TICKSPERDAY = 120000;
-
         private MeasureBackgroundTask()
         {
             logModel.AppendLog(Log.CreateLog("Measure Service starting...", Log.LogType.System));
 
             bw.WorkerSupportsCancellation = true;
+            bw.WorkerReportsProgress = true;
             bw.DoWork += Bw_DoWork;
             bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+            bw.ProgressChanged += Bw_ProgressChanged;
+        }
+
+        private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Messenger.Default.Send(new RefreshDashboardMessage());
         }
 
         public void Run()
@@ -87,13 +94,6 @@ namespace myfoodapp.Business
             var taskUser = Task.Run(async () => { userSettings = await userSettingsModel.GetUserSettingsAsync(); });
             taskUser.Wait();
 
-            sensorManager = AtlasSensorManager.GetInstance;
-
-            var taskSensor = Task.Run(async () => { await sensorManager.InitSensors(); });
-            taskSensor.Wait();
-
-            sensorManager.SetDebugLedMode(userSettings.isDebugLedEnable);
-
             var clockManager = ClockManager.GetInstance;
 
             var captureDateTime = DateTime.Now;
@@ -110,6 +110,18 @@ namespace myfoodapp.Business
 
                 clockManager.Dispose();
             }
+
+            sigfoxManager = SigfoxInterfaceManager.GetInstance;
+
+            var taskSigfox = Task.Run(async () => { await sigfoxManager.InitSensors(); });
+            taskSigfox.Wait();
+
+            sensorManager = AtlasSensorManager.GetInstance;
+
+            var taskSensor = Task.Run(async () => { await sensorManager.InitSensors(); });
+            taskSensor.Wait();
+
+            sensorManager.SetDebugLedMode(userSettings.isDebugLedEnable);
 
             var humTempManager = HumidityTemperatureManager.GetInstance;
 
@@ -129,11 +141,6 @@ namespace myfoodapp.Business
 
                 try
                 {
-                    //if (elapsedMs % TICKSPERDAY == 0)
-                    //{
-                    //    logModel.AppendLog(Log.CreateLog("App Daily restart", Log.LogType.Information));
-                    //    Windows.ApplicationModel.Core.CoreApplication.Exit();
-                    //}
 
                     if (elapsedMs % TICKSPERCYCLE == 0)
                     {
@@ -141,8 +148,9 @@ namespace myfoodapp.Business
 
                             TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
 
-                            string logDescription = string.Format("[ {0:d} | {0:t} ] Service running since {1:D2}h:{2:D2}m:{3:D2}s",
+                            string logDescription = string.Format("[ {0:d} | {0:t} ] Service running since {1:D2}d:{2:D2}h:{3:D2}m:{4:D2}s",
                                                     captureDateTime,
+                                                    t.Days,
                                                     t.Hours,
                                                     t.Minutes,
                                                     t.Seconds,
@@ -161,7 +169,7 @@ namespace myfoodapp.Business
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature);
                                 sensorManager.SetWaterTemperatureForSensors(capturedValue);
 
-                                if(capturedValue > 0 && capturedValue < 60 )
+                                if(capturedValue > -20 && capturedValue < 80 )
                                 {
                                     var task = Task.Run(async () =>
                                     {
@@ -208,7 +216,7 @@ namespace myfoodapp.Business
                                 decimal capturedValue = 0;
                                 capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp);
 
-                                if (capturedValue > -250 && capturedValue < 250)
+                                if (capturedValue > 0 && capturedValue < 1500)
                                 {
                                     var task = Task.Run(async () =>
                                     {
@@ -277,7 +285,27 @@ namespace myfoodapp.Business
                                     logModel.AppendLog(Log.CreateLog("Humidity captured", Log.LogType.Information));
                             }
 
-                           logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));                   
+                           logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));  
+                        
+                        if(userSettings.isSigFoxComEnable && sigfoxManager.isInitialized)
+                        {
+                            string sigFoxSignature = String.Empty;
+
+                            var taskSig = Task.Run(async () =>
+                            {
+                                sigFoxSignature = await databaseModel.GetLastMesureSignature();
+                            });
+                            taskSig.Wait();
+
+                            sigfoxManager.SendMessage(sigFoxSignature);
+
+                            if (userSettings.isVerboseLogEnable)
+                                sigfoxManager.Listen();
+
+                            logModel.AppendLog(Log.CreateLog(String.Format("Data sent to Azure in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));
+                        }
+
+                        bw.ReportProgress(33);         
                     }
                 }
                 catch (Exception ex)

@@ -7,8 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
     xmlns:telerikInput="using:Telerik.UI.Xaml.Controls.Input"
+    xmlns:common="using:myfoodapp.Common"
     mc:Ignorable="d">
-    
+    <Page.Resources>
+        <common:BooleanToInvertBoolConverter x:Key="BooleanToInvertBoolConverter"/>
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Pivot x:Name="pivot">
             <PivotItem Name="lastDay" Header="Set Internal Clock" FontSize="8">
@@ -43,7 +46,7 @@
 
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
-            <AppBarButton Foreground="White" Icon="NewWindow" Label="Set Date" IsEnabled="True" Click="{x:Bind ViewModel.OnSetDateClicked}"/>
+            <AppBarButton Foreground="White" Icon="NewWindow" Label="Set Date" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource BooleanToInvertBoolConverter}}" Click="{x:Bind ViewModel.OnSetDateClicked}"/>
             <AppBarButton Foreground="White" Icon="Back" Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
         </CommandBar>
     </Page.BottomAppBar>

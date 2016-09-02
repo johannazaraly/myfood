@@ -1,27 +1,12 @@
 ﻿using myfoodapp.Business;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
 using Microsoft.Data.Entity;
-using myfoodapp.Business.Clock;
 using System.Threading.Tasks;
 
 namespace myfoodapp
@@ -127,6 +112,9 @@ namespace myfoodapp
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
+        SuspendingDeferral currentSuspending;
+        LogModel logModel = LogModel.GetInstance;
+
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
@@ -136,9 +124,19 @@ namespace myfoodapp
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
+            currentSuspending = e.SuspendingOperation.GetDeferral();
+
+            logModel.AppendLog(Log.CreateLog("App will be terminated", Log.LogType.System));
+
+            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
+            mesureBackgroundTask.Stop();
+        }
+
+        private void MesureBackgroundTask_Completed(object sender, EventArgs e)
+        {
+            logModel.AppendLog(Log.CreateLog("Background Services stopped. App suspending", Log.LogType.System));
+            currentSuspending.Complete();
         }
     }
 }

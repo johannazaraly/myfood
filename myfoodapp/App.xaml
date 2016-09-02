@@ -13,8 +13,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <telerik:UserThemeResources x:Key="ResourceLoaderInitializer"
-                                                LightResourcesPath="ms-appx:///MyLightResourcesPath.xaml"
-                                                DarkResourcesPath="ms-appx:///MyDarkResourcesPath.xaml"/>
+                                                LightResourcesPath="ms-appx:///Assets/Theme/MyLightResourcesPath.xaml"
+                                                DarkResourcesPath="ms-appx:///Assets/Theme/MyDarkResourcesPath.xaml"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 

@@ -27,12 +27,12 @@
                     <Primitives:RadHubTile Background="Green" IsFrozen="True" IsHitTestVisible="False">
                             <Primitives:RadHubTile.TitleTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="Last month : 2.6kg" Margin="0,0,0,10" FontSize="15"/>
+                                    <TextBlock Text="Last month : 25.6kg" Margin="0,0,0,10" FontSize="15"/>
                                 </DataTemplate>
                             </Primitives:RadHubTile.TitleTemplate>
                             <Primitives:RadHubTile.NotificationTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="3.2kg" Margin="0,0,0,50" FontSize="40" FontWeight="Bold" />
+                                    <TextBlock Text="30.2kg" Margin="0,0,0,50" FontSize="40" FontWeight="Bold" />
                                 </DataTemplate>
                             </Primitives:RadHubTile.NotificationTemplate>
                             <Primitives:RadHubTile.MessageTemplate>
@@ -45,14 +45,14 @@
                     <Primitives:RadHubTile Grid.Row="1" Background="Green" IsFrozen="True" IsHitTestVisible="False">
                         <Primitives:RadHubTile.TitleTemplate>
                             <DataTemplate>
-                                <TextBlock Text="Cumul. : 16.7kg" Margin="0,0,0,10" FontSize="15"/>
+                                <TextBlock Text="Cumul. : 160.7kg" Margin="0,0,0,10" FontSize="15"/>
                             </DataTemplate>
                         </Primitives:RadHubTile.TitleTemplate>
                         <Primitives:RadHubTile.NotificationTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="0,0,0,50" >
-                                    <TextBlock Text="Best: 5.6" FontSize="20" FontWeight="Bold"/>
-                                    <TextBlock Text="Aver: 4.9" FontSize="20" FontWeight="Bold"/>
+                                    <TextBlock Text="Best: 550.6kg" FontSize="20" FontWeight="Bold"/>
+                                    <TextBlock Text="Aver: 234.9kg" FontSize="20" FontWeight="Bold"/>
                                 </StackPanel>
                             </DataTemplate>
                         </Primitives:RadHubTile.NotificationTemplate>

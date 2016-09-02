@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
-using Windows.Devices.I2c;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
 
@@ -49,6 +48,7 @@ namespace myfoodapp.Business.Sensor
         private string midCalibrationCommand = "Cal,mid,7.00\r";
         private string lowCalibrationCommand = "Cal,low,4.00\r";
         private string highCalibrationCommand = "Cal,high,10.00\r";
+        private string setCalibrationCommand = "Cal,{0}\r";
 
         //Water Temperature Sensors commands
         private string setCelsiusTemperatureCommand = "S,C\r";
@@ -126,20 +126,7 @@ namespace myfoodapp.Business.Sensor
                                     newSensor.dataReaderObject = new DataReader(serialPort.InputStream);
 
                                     string s = String.Empty;
-                                    string r = String.Empty;
-
-                                    
-                                    var taskAuto = Task.Run(async () =>
-                                    {
-                                        await WriteAsync(disableAutomaticAnswerCommand, newSensor);
-                                    });
-                                    taskAuto.Wait();
-
-                                    var taskContinuous = Task.Run(async () =>
-                                    {
-                                        await WriteAsync(disableContinuousModeCommand, newSensor);
-                                    });
-                                    taskContinuous.Wait();
+                                    string r = String.Empty;                                  
 
                                     var taskStatus = Task.Run(async () =>
                                     {
@@ -262,6 +249,25 @@ namespace myfoodapp.Business.Sensor
             }
         }
 
+        public void SetCalibration(SensorTypeEnum sensorType, int calibrationValue)
+        {
+            if (!isInitialized)
+                return;
+                      
+            var currentSensor = this.GetSensor(sensorType);
+
+            if (currentSensor != null)
+            {
+                string strQuery = String.Format(setCalibrationCommand, calibrationValue);
+
+                var taskCal = Task.Run(async () => {
+                    await WriteAsync(strQuery, currentSensor);
+                });
+
+                taskCal.Wait();
+            }
+        }
+
         public void ResetCalibration(SensorTypeEnum sensorType)
         {
             if (!isInitialized)
@@ -308,14 +314,26 @@ namespace myfoodapp.Business.Sensor
 
             foreach (AtlasSensor currentSensor in sensorsList)
             {
-
                 string strResult = String.Empty;
 
-                var taskDebugMode = Task.Run(async () => {
+                var taskReset = Task.Run(async () => {
                     await WriteAsync(String.Format(resetFactoryCommand), currentSensor);
+                    await Task.Delay(5000);
                 });
 
-                taskDebugMode.Wait();
+                taskReset.Wait();
+                
+                var taskAuto = Task.Run(async () =>
+                {
+                    await WriteAsync(disableAutomaticAnswerCommand, currentSensor);
+                });
+                taskAuto.Wait();
+
+                var taskContinuous = Task.Run(async () =>
+                {
+                    await WriteAsync(disableContinuousModeCommand, currentSensor);
+                });
+                taskContinuous.Wait();
             }
         }
 

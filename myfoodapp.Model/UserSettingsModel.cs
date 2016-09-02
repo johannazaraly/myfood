@@ -49,9 +49,9 @@ namespace myfoodapp.Model
                     {
                         isDebugLedEnable = true,
                         isScreenSaverEnable = false,
-                        isSigFoxComEnable = false,
+                        isSigFoxComEnable = true,
                         isSleepModeEnable = false,
-                        isTempHumiditySensorEnable = false,
+                        isTempHumiditySensorEnable = true,
                         isVerboseLogEnable = false
                     };
 #endif

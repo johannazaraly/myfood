@@ -109,7 +109,8 @@
   <ItemGroup>
     <Compile Include="AsyncLock.cs" />
     <Compile Include="BindableBase.cs" />
-    <Compile Include="CloseFlyoutMessage.cs" />
+    <Compile Include="BooleanToInvertBoolConverter.cs" />
+    <Compile Include="MVVMLightMessage.cs" />
     <Compile Include="EventLogHelper.cs" />
     <Compile Include="FlyoutHelper.cs" />
     <Compile Include="NotifyTaskCompletion.cs" />

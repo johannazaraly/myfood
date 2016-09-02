@@ -195,6 +195,7 @@ namespace myfoodapp.ViewModel
         public void OnRestartAppClicked(object sender, RoutedEventArgs args)
         {
             IsBusy = true;
+            Messenger.Default.Send(new CloseFlyoutMessage());
 
             logModel.AppendLog(Log.CreateLog("Restart from user", LogType.Information));
 
@@ -203,11 +204,12 @@ namespace myfoodapp.ViewModel
             mesureBackgroundTask.Stop();            
         }
 
-        public void OnHardwareResetAppClicked(object sender, RoutedEventArgs args)
+        public void OnResetHardwareClicked(object sender, RoutedEventArgs args)
         {
             IsBusy = true;
+            Messenger.Default.Send(new CloseFlyoutMessage());
 
-            logModel.AppendLog(Log.CreateLog("Hardware reset", LogType.Information));
+            logModel.AppendLog(Log.CreateLog("Hardware reset started", LogType.Information));
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Completed += ResetHardwareBackgroundTask_Completed;
@@ -217,6 +219,7 @@ namespace myfoodapp.ViewModel
         public void OnSaveClicked(object sender, RoutedEventArgs args)
         {
             IsBusy = true;
+            Messenger.Default.Send(new CloseFlyoutMessage());
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Completed += SaveSettingMesureBackgroundTask_Completed;
@@ -256,9 +259,7 @@ namespace myfoodapp.ViewModel
             try
             {
                 AtlasSensorManager.GetInstance.ResetSensorsToFactory();
-                ClockManager.GetInstance.Dispose();
-
-                Windows.ApplicationModel.Core.CoreApplication.Exit();
+                mesureBackgroundTask.Run();
             }
             catch (Exception ex)
             {
@@ -266,7 +267,7 @@ namespace myfoodapp.ViewModel
             }
             finally
             {
-                Messenger.Default.Send(new CloseFlyoutMessage());
+                logModel.AppendLog(Log.CreateLog("Hardware reset ended", LogType.Information));
                 IsBusy = false;
             }
         }
@@ -302,7 +303,6 @@ namespace myfoodapp.ViewModel
             finally
             {
                 logModel.AppendLog(Log.CreateLog("Settings saved", LogType.Information));
-                Messenger.Default.Send(new CloseFlyoutMessage());
                 IsBusy = false;
             }
         }

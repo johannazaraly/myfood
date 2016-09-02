@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using myfoodapp.Model;
 using myfoodapp.ViewModel;
 using myfoodapp.Business;
-using System.Threading.Tasks;
-using Microsoft.Data.Entity;
+using GalaSoft.MvvmLight.Messaging;
+using myfoodapp.Common;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -37,6 +24,11 @@ namespace myfoodapp
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = ViewModel;
+
+            Messenger.Default.Register<RefreshDashboardMessage>(this, (mess) =>
+            {
+                App.TryShowNewWindow<MainPage>();
+            });
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Run();

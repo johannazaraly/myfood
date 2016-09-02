@@ -8,8 +8,11 @@
     xmlns:telerikChart="using:Telerik.UI.Xaml.Controls.Chart"
     xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
     xmlns:telerik="using:Telerik.UI.Xaml.Controls.DataVisualization"
+    xmlns:common="using:myfoodapp.Common"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <common:BooleanToInvertBoolConverter x:Key="BooleanToInvertBoolConverter"/>
+    </Page.Resources>
     <Grid Background="{StaticResource AppBrush}">
         <Pivot x:Name="pivot" SelectionChanged="{x:Bind ViewModel.OnSelectionChanged}">
             <PivotItem Name="lastDay" Header="Last Day Measures" FontSize="8">
@@ -181,7 +184,7 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
-            <AppBarButton Foreground="White" Icon="Refresh"  Label="Refresh" IsEnabled="True" Click="{x:Bind ViewModel.OnRefreshClicked}"/>
+            <AppBarButton Foreground="White" Icon="Refresh" Label="Refresh" IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource BooleanToInvertBoolConverter}}" Click="{x:Bind ViewModel.OnRefreshClicked}"/>
             <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
         </CommandBar>
     </Page.BottomAppBar>

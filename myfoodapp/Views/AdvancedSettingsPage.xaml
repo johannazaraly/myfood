@@ -7,8 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerik="using:Telerik.UI.Xaml.Controls.Grid"
     xmlns:Primitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:common="using:myfoodapp.Common"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <common:BooleanToInvertBoolConverter x:Key="BooleanToInvertBoolConverter"/>
+    </Page.Resources>
     <Grid Background="{StaticResource AppBrush}">
         <Pivot x:Name="pivot" CanDrag="False">
             <PivotItem Header="Advanced Settings" FontSize="8">
@@ -95,7 +98,7 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="10" Text="Sensors will be resetted and application will restart. Are you sure ?"/>
-                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Restart" Click="{x:Bind ViewModel.OnHardwareResetAppClicked}"/>
+                                    <AppBarButton Grid.Row="1" VerticalAlignment="Center" Icon="Accept" Label="Restart" Click="{x:Bind ViewModel.OnResetHardwareClicked}"/>
                                     <AppBarButton Grid.Row="1" VerticalAlignment="Center" Grid.Column="1" Icon="Cancel" Label="Cancel" Click="{x:Bind ViewModel.CancelClicked}"/>
                                 </Grid>
                             </Flyout>
@@ -130,13 +133,13 @@
                         <ToggleSwitch Grid.Row="0" Grid.Column="4" IsOn="{x:Bind ViewModel.IsSleepModeEnable, Mode=TwoWay}"/>
 
                         <TextBlock Grid.Row="2" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Sigfox Com"/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="{x:Bind ViewModel.IsSigFoxComEnable, Mode=TwoWay}"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1" IsOn="{x:Bind ViewModel.IsTempHumiditySensorEnable, Mode=TwoWay}"/>
 
                         <TextBlock Grid.Row="1" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Enable Verbose Logs"/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="4" IsOn="{x:Bind ViewModel.IsVerboseLogEnable, Mode=TwoWay}"/>
 
                         <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource TitleText}" Text="Enable Temp/Hum Sensors"/>
-                        <ToggleSwitch Grid.Row="2" Grid.Column="1" IsOn="{x:Bind ViewModel.IsTempHumiditySensorEnable, Mode=TwoWay}"/>
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1" IsOn="{x:Bind ViewModel.IsSigFoxComEnable, Mode=TwoWay}"/>
                                               
                         <TextBlock Grid.Row="2" TextWrapping="Wrap" Grid.Column="3" Style="{StaticResource TitleText}" Text="Enable Screensaver"/>
                         <ToggleSwitch Grid.Row="2" Grid.Column="4" IsOn="{x:Bind ViewModel.IsScreenSaverEnable, Mode=TwoWay}"/>
@@ -154,7 +157,7 @@
     </Grid>
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
-            <AppBarButton Foreground="White" Icon="Save"  Label="Save"  IsEnabled="True" Click="{x:Bind ViewModel.OnSaveClicked}"/>
+            <AppBarButton Foreground="White" Icon="Save"  Label="Save"  IsEnabled="{x:Bind ViewModel.IsBusy, Converter={StaticResource BooleanToInvertBoolConverter}}" Click="{x:Bind ViewModel.OnSaveClicked}"/>
             <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
         </CommandBar>
     </Page.BottomAppBar>

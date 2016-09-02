@@ -6,24 +6,13 @@ using myfoodapp.Common;
 using myfoodapp.Model;
 using myfoodapp.Views;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.Data.Json;
-using Windows.Data.Xml.Dom;
-using Windows.Storage;
-using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using static myfoodapp.Business.Log;
 
 namespace myfoodapp.ViewModel
 {
-    public class PhCalibrationViewModel : BindableBase
+    public class TempCalibrationViewModel : BindableBase
     {
         private LogModel logModel = LogModel.GetInstance;
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
@@ -42,9 +31,9 @@ namespace myfoodapp.ViewModel
 
         public NotifyTaskCompletion<string> LastCalibrationDate { get; private set; }
 
-        public PhCalibrationViewModel()
+        public TempCalibrationViewModel()
         {
-            LastCalibrationDate = new NotifyTaskCompletion<string>(databaseModel.GetLastCalibrationDate(SensorTypeEnum.ph));
+            LastCalibrationDate = new NotifyTaskCompletion<string>(databaseModel.GetLastCalibrationDate(SensorTypeEnum.waterTemperature));
         }
 
         public void OnBackClicked(object sender, RoutedEventArgs args)
@@ -52,39 +41,27 @@ namespace myfoodapp.ViewModel
             App.TryShowNewWindow<MainPage>();
         }
 
-        public void OnPhCalibrationat7Clicked(object sender, RoutedEventArgs args)
+        public void OnTempCalibrationat0Clicked(object sender, RoutedEventArgs args)
         {
             IsBusy = true;
             Messenger.Default.Send(new CloseFlyoutMessage());
 
-            logModel.AppendLog(Log.CreateLog("Set pH at 7 starting", LogType.Information));
+            logModel.AppendLog(Log.CreateLog("Set Water Temp at 0°C starting", LogType.Information));
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed += ph7BackgroundTask_Completed;
+            mesureBackgroundTask.Completed += Temp0BackgroundTask_Completed;
             mesureBackgroundTask.Stop();
         }
 
-        public void OnPhCalibrationat4Clicked(object sender, RoutedEventArgs args)
+        public void OnTempCalibrationat100Clicked(object sender, RoutedEventArgs args)
         {
             IsBusy = true;
             Messenger.Default.Send(new CloseFlyoutMessage());
 
-            logModel.AppendLog(Log.CreateLog("Set pH at 4 starting", LogType.Information));
+            logModel.AppendLog(Log.CreateLog("Set Water Temp at 100°C starting", LogType.Information));
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed += ph4BackgroundTask_Completed;
-            mesureBackgroundTask.Stop();
-        }
-
-        public void OnPhCalibrationat10Clicked(object sender, RoutedEventArgs args)
-        {
-            IsBusy = true;
-            Messenger.Default.Send(new CloseFlyoutMessage());
-
-            logModel.AppendLog(Log.CreateLog("Set pH at 10 starting", LogType.Information));
-
-            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed += ph10BackgroundTask_Completed;
+            mesureBackgroundTask.Completed += Temp100BackgroundTask_Completed;
             mesureBackgroundTask.Stop();
         }
 
@@ -93,7 +70,7 @@ namespace myfoodapp.ViewModel
             IsBusy = true;
             Messenger.Default.Send(new CloseFlyoutMessage());
 
-            logModel.AppendLog(Log.CreateLog("Reset pH to Default Calibration starting", LogType.Information));
+            logModel.AppendLog(Log.CreateLog("Reset Water Temp to Default Calibration starting", LogType.Information));
 
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
             mesureBackgroundTask.Completed += factoryBackgroundTask_Completed;
@@ -105,18 +82,18 @@ namespace myfoodapp.ViewModel
             Messenger.Default.Send(new CloseFlyoutMessage());
         }
 
-        private void ph7BackgroundTask_Completed(object sender, EventArgs e)
+        private void Temp0BackgroundTask_Completed(object sender, EventArgs e)
         {
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed -= ph7BackgroundTask_Completed;
+            mesureBackgroundTask.Completed -= Temp0BackgroundTask_Completed;
 
             try
             {
                 DateTime currentDate = GetClockDateTime();
 
-                sensorManager.SetCalibration(SensorTypeEnum.ph, AtlasSensorManager.CalibrationType.Mid);
+                sensorManager.SetCalibration(SensorTypeEnum.waterTemperature, 0);
 
-                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.ph, currentDate); });
+                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.waterTemperature, currentDate); });
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
@@ -128,51 +105,23 @@ namespace myfoodapp.ViewModel
             finally
             {              
                 IsBusy = false;
-                logModel.AppendLog(Log.CreateLog("Set pH at 7 ended", LogType.Information));
-                App.TryShowNewWindow<PhCalibrationPage>();
+                logModel.AppendLog(Log.CreateLog("Set Water Temp at 0°C ended", LogType.Information));
+                App.TryShowNewWindow<TempCalibrationPage>();
             }
         }
 
-        private void ph4BackgroundTask_Completed(object sender, EventArgs e)
+        private void Temp100BackgroundTask_Completed(object sender, EventArgs e)
         {
             var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed -= ph4BackgroundTask_Completed;
+            mesureBackgroundTask.Completed -= Temp100BackgroundTask_Completed;
 
             try
             {
                 DateTime currentDate = GetClockDateTime();
 
-                sensorManager.SetCalibration(SensorTypeEnum.ph, AtlasSensorManager.CalibrationType.Low);
+                sensorManager.SetCalibration(SensorTypeEnum.waterTemperature, 100);
 
-                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.ph, currentDate); });
-                taskUser.Wait();
-
-                mesureBackgroundTask.Run();         
-            }
-            catch (Exception ex)
-            {
-                logModel.AppendLog(Log.CreateErrorLog("Exception on Set Calibration", ex));
-            }
-            finally
-            {
-                IsBusy = false;
-                logModel.AppendLog(Log.CreateLog("Set pH at 4 ended", LogType.Information));
-                App.TryShowNewWindow<PhCalibrationPage>();
-            }
-        }
-
-        private void ph10BackgroundTask_Completed(object sender, EventArgs e)
-        {
-            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed -= ph10BackgroundTask_Completed;
-
-            try
-            {
-                DateTime currentDate = GetClockDateTime();
-
-                sensorManager.SetCalibration(SensorTypeEnum.ph, AtlasSensorManager.CalibrationType.High);
-
-                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.ph, currentDate); });
+                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.waterTemperature, currentDate); });
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
@@ -184,8 +133,8 @@ namespace myfoodapp.ViewModel
             finally
             {
                 IsBusy = false;
-                logModel.AppendLog(Log.CreateLog("Set pH at 10 ended", LogType.Information));
-                App.TryShowNewWindow<PhCalibrationPage>();
+                logModel.AppendLog(Log.CreateLog("Set Water Temp at 100°C ended", LogType.Information));
+                App.TryShowNewWindow<TempCalibrationPage>();
             }
         }
 
@@ -198,9 +147,9 @@ namespace myfoodapp.ViewModel
             {
                 DateTime currentDate = GetClockDateTime();
 
-                sensorManager.ResetCalibration(SensorTypeEnum.ph);
+                sensorManager.ResetCalibration(SensorTypeEnum.waterTemperature);
 
-                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.ph, currentDate); });
+                var taskUser = Task.Run(async () => { await databaseModel.SetLastCalibrationDate(SensorTypeEnum.waterTemperature, currentDate); });
                 taskUser.Wait();
 
                 mesureBackgroundTask.Run();
@@ -213,7 +162,7 @@ namespace myfoodapp.ViewModel
             {
                 IsBusy = false;
                 logModel.AppendLog(Log.CreateLog("Reset ended", LogType.Information));
-                App.TryShowNewWindow<PhCalibrationPage>();
+                App.TryShowNewWindow<TempCalibrationPage>();
             }
         }
 
