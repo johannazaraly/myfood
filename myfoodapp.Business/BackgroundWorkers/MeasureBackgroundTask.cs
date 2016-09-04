@@ -5,13 +5,9 @@ using myfoodapp.Business.Sensor.HumidityTemperature;
 using myfoodapp.Common;
 using myfoodapp.Model;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
 
 namespace myfoodapp.Business
 {
@@ -62,7 +58,7 @@ namespace myfoodapp.Business
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Messenger.Default.Send(new RefreshDashboardMessage());
+           // Messenger.Default.Send(new RefreshDashboardMessage());
         }
 
         public void Run()
@@ -118,7 +114,7 @@ namespace myfoodapp.Business
 
             sensorManager = AtlasSensorManager.GetInstance;
 
-            var taskSensor = Task.Run(async () => { await sensorManager.InitSensors(); });
+            var taskSensor = Task.Run(async () => { await sensorManager.InitSensors(userSettings.isSleepModeEnable); });
             taskSensor.Wait();
 
             sensorManager.SetDebugLedMode(userSettings.isDebugLedEnable);
@@ -134,14 +130,12 @@ namespace myfoodapp.Business
                 taskHumManager.Wait();
             }
 
-
             while (!bw.CancellationPending)
             {
                 var elapsedMs = watch.ElapsedMilliseconds;
 
                 try
                 {
-
                     if (elapsedMs % TICKSPERCYCLE == 0)
                     {
                             captureDateTime = captureDateTime.AddMilliseconds(TICKSPERCYCLE);
@@ -166,7 +160,7 @@ namespace myfoodapp.Business
                                     logModel.AppendLog(Log.CreateLog("Water Temperature capturing", Log.LogType.Information));
 
                                 decimal capturedValue = 0;
-                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature);
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.waterTemperature, userSettings.isSleepModeEnable);
                                 sensorManager.SetWaterTemperatureForSensors(capturedValue);
 
                                 if(capturedValue > -20 && capturedValue < 80 )
@@ -191,7 +185,7 @@ namespace myfoodapp.Business
                                     logModel.AppendLog(Log.CreateLog("pH capturing", Log.LogType.Information));
 
                                 decimal capturedValue = 0;
-                                capturedValue = sensorManager.RecordPhMeasure();
+                                capturedValue = sensorManager.RecordPhMeasure(userSettings.isSleepModeEnable);
 
                                 if (capturedValue > 1 && capturedValue < 12)
                                 {
@@ -214,7 +208,7 @@ namespace myfoodapp.Business
                                    logModel.AppendLog(Log.CreateLog("ORP capturing", Log.LogType.Information));
 
                                 decimal capturedValue = 0;
-                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp);
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.orp, userSettings.isSleepModeEnable);
 
                                 if (capturedValue > 0 && capturedValue < 1500)
                                 {
@@ -237,7 +231,7 @@ namespace myfoodapp.Business
                                   logModel.AppendLog(Log.CreateLog("DO capturing", Log.LogType.Information));
 
                                 decimal capturedValue = 0;
-                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.dissolvedOxygen);
+                                capturedValue = sensorManager.RecordSensorsMeasure(SensorTypeEnum.dissolvedOxygen, userSettings.isSleepModeEnable);
 
                                 if (capturedValue > 0 && capturedValue < 100)
                                 {
@@ -289,6 +283,8 @@ namespace myfoodapp.Business
                         
                         if(userSettings.isSigFoxComEnable && sigfoxManager.isInitialized)
                         {
+                            watchMesures.Restart();
+
                             string sigFoxSignature = String.Empty;
 
                             var taskSig = Task.Run(async () =>

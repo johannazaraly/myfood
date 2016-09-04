@@ -62,7 +62,7 @@ namespace myfoodapp.Business.Sensor
         private string sleepModeCommand = "Sleep\r";
         private string readValueCommand = "R\r";
         private string setWaterTemperatureCommand = "T,{0}\r";
-        private string wakeupCommand = "W";
+        private string wakeupCommand = "W\r";
         private string disableContinuousModeCommand = "C,0\r";
         private string disableAutomaticAnswerCommand = "RESPONSE,0\r";
         
@@ -78,7 +78,7 @@ namespace myfoodapp.Business.Sensor
         {         
         }
 
-        public async Task InitSensors()
+        public async Task InitSensors(bool isSleepModeActivated)
         {
             if (isInitialized)
                 return;
@@ -126,7 +126,18 @@ namespace myfoodapp.Business.Sensor
                                     newSensor.dataReaderObject = new DataReader(serialPort.InputStream);
 
                                     string s = String.Empty;
-                                    string r = String.Empty;                                  
+                                    string r = String.Empty;
+                                    string strResult = String.Empty;
+
+                                    var taskWakeUp = Task.Run(async () =>
+                                    {
+                                        await WriteAsync(wakeupCommand, newSensor)
+                                            .ContinueWith((a) => strResult = ReadAsync(ReadCancellationTokenSource.Token, newSensor).Result);
+
+                                        await Task.Delay(1000);
+                                    });
+
+                                    taskWakeUp.Wait(2000);
 
                                     var taskStatus = Task.Run(async () =>
                                     {
@@ -141,6 +152,16 @@ namespace myfoodapp.Business.Sensor
                                              .ContinueWith((are) => r = ReadAsync(ReadCancellationTokenSource.Token, newSensor).Result);
                                     });
                                     taskInformation.Wait();
+
+                                    //if (isSleepModeActivated)
+                                    //{
+                                    //    var taskSleep = Task.Run(async () =>
+                                    //    {
+                                    //        await WriteAsync(sleepModeCommand, newSensor);
+                                    //    });
+
+                                    //    taskSleep.Wait();
+                                    //}
 
                                     logModel.AppendLog(Log.CreateLog(String.Format("Sensor Information - {0}", r), Log.LogType.System));
 
@@ -364,7 +385,7 @@ namespace myfoodapp.Business.Sensor
             return false;
         }
 
-        public decimal RecordSensorsMeasure(SensorTypeEnum sensorType)
+        public decimal RecordSensorsMeasure(SensorTypeEnum sensorType, bool isSleepModeActivated)
         {
             var currentSensor = this.GetSensor(sensorType);
 
@@ -373,26 +394,39 @@ namespace myfoodapp.Business.Sensor
                 decimal capturedMesure = 0;
                 string strResult = String.Empty;
 
-                //var taskWakeUp = Task.Run(async () => {
-                //    await WriteAsync(wakeupCommand, currentSensor);
-                //});
+                //if (isSleepModeActivated)
+                //{
+                //    var taskWakeUp = Task.Run(async () =>
+                //    {
+                //        await WriteAsync(wakeupCommand, currentSensor);
 
-                //taskWakeUp.Wait();
+                //        await Task.Delay(1000);
+                //    });
 
-                    var taskMeasure = Task.Run(async () => {
+                //    taskWakeUp.Wait();
+                //}
+
+                var taskMeasure = Task.Run(async () => {
                         await WriteAsync(readValueCommand, currentSensor)
                              .ContinueWith((a) => strResult = ReadAsync(ReadCancellationTokenSource.Token, currentSensor).Result);
                         
-                        var boolMeasure = Decimal.TryParse(strResult.Replace("\r", ""), out capturedMesure);
+                        var boolMeasure = Decimal.TryParse(strResult.Replace("\r", "")
+                                                                    .Replace(answersSleepMode, "")
+                                                                    .Replace(answersWakeUpMode, "")
+                                                                    , out capturedMesure);
                     });
 
                 taskMeasure.Wait();
 
-                //var taskSleep = Task.Run(async () => {
-                //    await WriteAsync(sleepModeCommand, currentSensor);
-                //});
+                //if (isSleepModeActivated)
+                //{
+                //    var taskSleep = Task.Run(async () =>
+                //    {
+                //        await WriteAsync(sleepModeCommand, currentSensor);
+                //    });
 
-                //taskSleep.Wait();
+                //    taskSleep.Wait();
+                //}
 
                 return capturedMesure;
             }
@@ -400,7 +434,7 @@ namespace myfoodapp.Business.Sensor
             return 0;
         }
 
-        public decimal RecordPhMeasure()
+        public decimal RecordPhMeasure(bool isSleepModeActivated)
         {
             var phSensor = this.GetSensor(SensorTypeEnum.ph);
 
@@ -409,11 +443,16 @@ namespace myfoodapp.Business.Sensor
                 StringBuilder strResult = new StringBuilder();
                 decimal sumCapturedMesure = 0;
 
-                //var taskWakeUp = Task.Run(async () => {
-                //    await WriteAsync(wakeupCommand, phSensor);
-                //});
+                //if (isSleepModeActivated)
+                //{
+                //    var taskWakeUp = Task.Run(async () =>
+                //    {
+                //        await WriteAsync(wakeupCommand, phSensor);
+                //        await Task.Delay(1000);
+                //    });
 
-                //taskWakeUp.Wait();
+                //    taskWakeUp.Wait();
+                //}
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -421,18 +460,24 @@ namespace myfoodapp.Business.Sensor
                         await WriteAsync(readValueCommand, phSensor)
                         .ContinueWith((a) => strResult.Append(ReadAsync(ReadCancellationTokenSource.Token, phSensor).Result));
                         decimal capturedMesure = 0;
-                        var boolMeasure_1 = Decimal.TryParse(strResult.ToString().Replace("\r", ""), out capturedMesure);
+                        var boolMeasure_1 = Decimal.TryParse(strResult.ToString().Replace("\r", "")
+                                                                                 .Replace(answersSleepMode, "")
+                                                                                 .Replace(answersWakeUpMode, ""), out capturedMesure);
                         sumCapturedMesure += capturedMesure;
                         strResult.Clear();});
 
                     taskSumMeasure.Wait();
                 }
 
-                //var taskSleep = Task.Run(async () => {
-                //    await WriteAsync(sleepModeCommand, phSensor);
-                //});
+                //if (isSleepModeActivated)
+                //{
+                //    var taskSleep = Task.Run(async () =>
+                //    {
+                //        await WriteAsync(sleepModeCommand, phSensor);
+                //    });
 
-                //taskSleep.Wait();            
+                //    taskSleep.Wait();
+                //}
 
                 return sumCapturedMesure / 4;
             }
