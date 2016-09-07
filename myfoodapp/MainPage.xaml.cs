@@ -5,6 +5,9 @@ using myfoodapp.Business;
 using GalaSoft.MvvmLight.Messaging;
 using myfoodapp.Common;
 using myfoodapp.WebApp;
+using myfoodapp.Model;
+using System.Threading.Tasks;
+using Microsoft.Data.Entity;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -30,15 +33,7 @@ namespace myfoodapp
             {
                 App.TryShowNewWindow<MainPage>();
             });
-
-            webServer = new HTTPServer();
-            webServer.Initialise();
-
-            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Run();
         }
-
-        private HTTPServer webServer;
 
         public AquaponicsManagementViewModel ViewModel { get; set; }
     }

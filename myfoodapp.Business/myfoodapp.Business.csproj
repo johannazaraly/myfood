@@ -127,6 +127,10 @@
       <Project>{eef3d211-2b1c-403f-adc2-8601de17afee}</Project>
       <Name>myfoodapp.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\myfoodapp.WebApp\myfoodapp.WebApp.csproj">
+      <Project>{920A51EE-CA17-414B-BEE3-25622595AB12}</Project>
+      <Name>myfoodapp.WebApp</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="WindowsIoT, Version=10.0.10586.0">

@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Navigation;
 using myfoodapp.Model;
 using Microsoft.Data.Entity;
 using System.Threading.Tasks;
+using myfoodapp.Views;
 
 namespace myfoodapp
 {
@@ -26,20 +27,9 @@ namespace myfoodapp
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
 
-            using (var db = new LocalDataContext())
-            {
-                db.Database.Migrate();
-                LocalDataContextExtension.EnsureSeedData(db);
-            }
-
-            var taskLogFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            taskLogFile.Wait();
-
-            var taskUserFile = Task.Run(async () => { await UserSettingsModel.GetInstance.InitFileFolder(); });
-            taskUserFile.Wait();
-
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
         }
 
         /// <summary>
@@ -82,7 +72,7 @@ namespace myfoodapp
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(LoadingPage), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();
@@ -112,8 +102,7 @@ namespace myfoodapp
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        SuspendingDeferral currentSuspending;
-        LogModel logModel = LogModel.GetInstance;
+        //SuspendingDeferral currentSuspending;
 
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
@@ -124,19 +113,19 @@ namespace myfoodapp
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            currentSuspending = e.SuspendingOperation.GetDeferral();
+            var g = e.SuspendingOperation.GetDeferral();
+            g.Complete();
 
-            logModel.AppendLog(Log.CreateLog("App will be terminated", Log.LogType.System));
+            //logModel.AppendLog(Log.CreateLog("App will be terminated", Log.LogType.System));
 
-            var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
-            mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
-            mesureBackgroundTask.Stop();
+            //var mesureBackgroundTask = MeasureBackgroundTask.GetInstance;
+            //mesureBackgroundTask.Completed += MesureBackgroundTask_Completed;
+            //mesureBackgroundTask.Stop();
         }
 
         private void MesureBackgroundTask_Completed(object sender, EventArgs e)
         {
-            logModel.AppendLog(Log.CreateLog("Background Services stopped. App suspending", Log.LogType.System));
-            currentSuspending.Complete();
+            //logModel.AppendLog(Log.CreateLog("Background Services stopped. App suspending", Log.LogType.System));           
         }
     }
 }

@@ -240,12 +240,20 @@ namespace myfoodapp.Model
                               select m).Take(24 * 6).ToListAsync();
             }          
         }
-
         public async Task<List<Measure>> GetLastWeeksMesures(SensorTypeEnum sensorType)
         {
             using (await asyncLock.LockAsync())
             {
-                return await(from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
+                              select m).Take(7 * 24 * 6).ToListAsync();
+            }
+        }
+
+        public async Task<List<Measure>> GetLastWeeksMesures()
+        {
+            using (await asyncLock.LockAsync())
+            {
+                return await(from m in db.Measures.OrderByDescending(m => m.captureDate)
                               select m).Take(7 * 24 * 6).ToListAsync();
             }
         }

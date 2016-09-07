@@ -4,6 +4,7 @@ using myfoodapp.Business.Sensor;
 using myfoodapp.Business.Sensor.HumidityTemperature;
 using myfoodapp.Common;
 using myfoodapp.Model;
+using myfoodapp.WebApp;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -20,7 +21,9 @@ namespace myfoodapp.Business
         private UserSettingsModel userSettingsModel = UserSettingsModel.GetInstance;
         private LogModel logModel = LogModel.GetInstance;
         private DatabaseModel databaseModel = DatabaseModel.GetInstance;
-        
+
+        private HTTPServer webServer;
+
         public event EventHandler Completed;
 
         private static MeasureBackgroundTask instance;
@@ -54,6 +57,9 @@ namespace myfoodapp.Business
             bw.DoWork += Bw_DoWork;
             bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
             bw.ProgressChanged += Bw_ProgressChanged;
+
+            webServer = new HTTPServer();
+            webServer.Initialise();
         }
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)

@@ -74,6 +74,14 @@ namespace myfoodapp.WebApp
                           $"Content-Length: {bodyStream.Length}\r\n" +
                           "Connection: close\r\n\r\n";
 
+                    if(request.ToString().Contains("csv"))
+                    {
+                        header = "HTTP/1.1 200 OK\r\n" +
+                          $"Content-Length: {bodyStream.Length}\r\n" +
+                          $"Content-Type: application/csv" +
+                          "Connection: close\r\n\r\n";
+                    }
+
                     byte[] headerArray = Encoding.UTF8.GetBytes(header);
 
                     await response.WriteAsync(headerArray, 0, headerArray.Length);
@@ -96,7 +104,7 @@ namespace myfoodapp.WebApp
 
                 if (request == "")
                 {
-
+                    response = DefaultPage;
                 }
                 else if (request.ToString().Contains("temp_water.txt"))
                 {
@@ -153,6 +161,20 @@ namespace myfoodapp.WebApp
                     response = "";
 
                     listMes.ForEach(m => response += String.Format("{0} {1},{2}\r\n", m.captureDate.ToString("d"), m.captureDate.ToString("t"), m.value));
+                }
+                else if (request.ToString().Contains("data.csv"))
+                {
+                    var listMes = new List<Measure>();
+
+                    var taskClock = Task.Run(async () =>
+                    {
+                        listMes = await databaseModel.GetLastWeeksMesures();
+                    });
+                    taskClock.Wait();
+
+                    response = "";
+
+                    listMes.ForEach(m => response += String.Format("{0} {1};{2};{3}\r\n", m.captureDate.ToString("d"), m.captureDate.ToString("t"), m.value, m.sensor.Id));
                 }
                 else
                 {
