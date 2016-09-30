@@ -141,7 +141,7 @@ namespace myfoodapp.Model
                                       select m).Take(1).FirstOrDefaultAsync();
 
                     if (rslt != null)
-                        valueSignature.Append(Math.Round(rslt.value, 1).ToString("000.0").Replace(".",""));
+                        valueSignature.Append(Math.Round(rslt.value, 1).ToString("000.0").Replace(".","").Replace("-", "B"));
                     else
                         valueSignature.Append("AAAA");
                 }

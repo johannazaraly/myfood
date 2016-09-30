@@ -110,7 +110,7 @@
                                 <telerikChart:LinearAxis Title="Water Temp (°C)"/>
                             </telerikChart:RadCartesianChart.VerticalAxis>
                             <telerikChart:RadCartesianChart.HorizontalAxis>
-                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
+                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="12" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
                             </telerikChart:RadCartesianChart.HorizontalAxis>
 
                             <telerikChart:SplineAreaSeries LegendTitle="Temp Sensor" Stroke="Black" Fill="DarkRed" ItemsSource="{Binding Measures.Result}">

@@ -104,10 +104,10 @@
                             </telerikChart:RadCartesianChart.Behaviors>
 
                             <telerikChart:RadCartesianChart.VerticalAxis>
-                                <telerikChart:LinearAxis Title="ORP (V)"/>
+                                <telerikChart:LinearAxis Title="ORP (mV)"/>
                             </telerikChart:RadCartesianChart.VerticalAxis>
                             <telerikChart:RadCartesianChart.HorizontalAxis>
-                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
+                                <telerikChart:DateTimeContinuousAxis MajorStepUnit="Hour" MajorStep="12" LabelFitMode="MultiLine" LabelFormat="{}{0:t}"/>
                             </telerikChart:RadCartesianChart.HorizontalAxis>
 
                             <telerikChart:SplineAreaSeries LegendTitle="ORP Sensor" Stroke="Black" Fill="DarkRed" ItemsSource="{Binding Measures.Result}">
@@ -149,7 +149,7 @@
                             </telerikChart:RadCartesianChart.Behaviors>
 
                             <telerikChart:RadCartesianChart.VerticalAxis>
-                                <telerikChart:LinearAxis Title="ORP (V)"/>
+                                <telerikChart:LinearAxis Title="ORP (mV)"/>
                             </telerikChart:RadCartesianChart.VerticalAxis>
                             <telerikChart:RadCartesianChart.HorizontalAxis>
                                 <telerikChart:DateTimeContinuousAxis MajorStepUnit="Day" MajorStep="1" LabelFitMode="MultiLine" LabelFormat="{}{0:dd/MM}"/>
