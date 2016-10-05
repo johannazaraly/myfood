@@ -1,0 +1,85 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.Measure>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="main-section-header" class="row">
+    <h2 id="team-efficiency" class="col-xs-3">Measures Monitoring</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="measure-grid" class="main-section-content row">
+    <div id="message-details" class="col-xs-2">
+        <h3 class="section-header">Manage Measures from sensors</h3>
+    </div>
+    <div id="grid-container" class="col-xs-10">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.MeasureViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.Id).Width(75);
+            columns.Bound(c => c.captureDate).Format("{0:d} - {0:t}").Width(100);
+            columns.Bound(c => c.value).Width(75);
+            columns.ForeignKey(c => c.sensorId, (System.Collections.IEnumerable)ViewData["sensorTypes"], "Id", "name").Title("Sensor Type").Width(100);
+            columns.Command(command => command.Destroy()).Width(110);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+            toolbar.Save();
+        })
+        .HtmlAttributes(new { style = "height: 550px;" })
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Navigatable()
+        .Sortable()
+        .Scrollable()
+        .Filterable()
+        .Groupable()
+        .ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Batch(true)
+            .PageSize(20)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.captureDate).Editable(false);
+                model.Field(c => c.value).Editable(true);
+                model.Field(c => c.sensorId).DefaultValue(1);
+            })
+            .Events(events => events.Error("error_handler"))
+            .Create("Editing_Create", "Measures")
+            .Read("Editing_Read", "Measures")
+            .Update("Editing_Update", "Measures")
+            .Destroy("Editing_Destroy", "Measures")
+        )
+        )
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+</script>
+

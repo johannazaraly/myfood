@@ -1,0 +1,85 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.Message>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="main-section-header" class="row">
+    <h2 id="team-efficiency" class="col-xs-3">Messages Monitoring</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="message-grid" class="main-section-content row">
+    <div id="message-details" class="col-xs-2">
+        <h3 class="section-header">Follow Messages sent by Sigfox from Production Units</h3>
+    </div>
+    <div id="grid-container" class="col-xs-10">
+        @(Html.Kendo().Grid<myfoodapp.Hub.Models.MessageViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.Id).Width(75);
+            columns.Bound(c => c.content).Width(200);
+            columns.Bound(c => c.date).Format("{0:d} - {0:t}").Width(100);
+            columns.Bound(c => c.device).Width(75);
+            columns.ForeignKey(c => c.messageTypeId, (System.Collections.IEnumerable)ViewData["messageTypes"], "Id", "name").Title("Message Type").Width(100);
+            columns.Command(command => command.Destroy()).Width(110);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+            toolbar.Save();
+        })
+        .HtmlAttributes(new { style = "height: 550px;" })
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Navigatable()
+        .Sortable()
+        .Scrollable()
+        .Filterable()
+        .Groupable()
+        .ColumnMenu()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Batch(true)
+            .PageSize(20)
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(c => c.Id);
+                model.Field(c => c.Id).Editable(false);
+                model.Field(c => c.date).Editable(false);
+                model.Field(c => c.device).Editable(false);
+                model.Field(c => c.content).Editable(false);
+                model.Field(c => c.messageTypeId).DefaultValue(1);
+            })
+            .Events(events => events.Error("error_handler"))
+            .Create("Editing_Create", "Messages")
+            .Read("Editing_Read", "Messages")
+            .Update("Editing_Update", "Messages")
+            .Destroy("Editing_Destroy", "Messages")
+        )
+        )
+    </div>
+     
+</div>   
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>

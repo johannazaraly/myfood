@@ -1,0 +1,191 @@
+﻿<div id="main-section-header" class="row">
+    <h2 id="team-efficiency" class="col-xs-3">Pioneer Citizen Network</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="pioneer-network" class="main-section-content row">
+    <div id="map-details" class="col-xs-2">
+        <h3 class="section-header">Pick a Production Unit to view stats</h3>
+    </div>
+        <div id="map-container" class="col-xs-10">
+@model myfoodapp.Hub.Models.Map
+
+@(Html.Kendo().Map()
+        .Name(Model.Name)
+        .Center(Model.CenterLatitude, Model.CenterLongitude)
+        .Zoom(Model.Zoom)
+        .Zoomable(false)
+        .Layers(layers =>
+                {
+                    layers.Add()
+                        .Style(style => style
+                            .Fill(fill => fill.Color("#018001"))
+                            .Stroke(stroke => stroke.Color("#FFFFFF"))
+                        )
+                        .Type(MapLayerType.Shape)
+                        .DataSource(dataSource => dataSource
+                            .GeoJson()
+                            .Read(read => read.Url(Url.Content("~/Content/countries-sales.geo.json")))
+                        );
+                })
+        .Markers(markers =>
+        {
+            foreach (var marker in Model.Markers)
+            {
+                markers.Add()
+                .Location(marker.latlng)
+                .Title(marker.name);
+            }
+        })
+)
+        </div>
+
+    <div id="statsContainer" class="row">
+        <div id="pHContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">pH</h3>
+            <span id="pHLabel"></span>
+            <div class="sparkline-container">
+                @*@(Html.Kendo().Chart<CountryMarketShare_Result>()
+                    .Name("MarketShare")
+                    .Theme("metro")
+                    .HtmlAttributes(new { @style = "height: 100px;" })
+                    .AutoBind(false)
+                    .Events(e => e.DataBound("onMarketShareDataBound"))
+                    .Legend(legend => legend
+                        .Visible(false)
+                    )
+                    .DataSource(ds => ds
+                        .Read(read => read.Action("MarketShareByCountry", "RegionalSales"))
+                    )
+                    .Series(series =>
+                    {
+                        series.Donut("Sales", "Country").Padding(0);
+                    })
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= dataItem.Country #: #= kendo.toString(dataItem.Sales, 'c2') #")
+                    )
+                )*@
+                <div id="MarketShareNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+        <div id="TempContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">Temperature</h3>
+            <span id="TemperatureLabel"></span>
+            <div class="sparkline-container">
+                @*@(Html.Kendo().Sparkline<CountryRevenue_Result>()
+                    .Name("Revenue")
+                    .Theme("metro")
+                    .HtmlAttributes(new { @style = "height: 100px;" })
+                    .AutoBind(false)
+                    .DataSource(ds => ds
+                        .Read(read => read.Action("CountryRevenue", "RegionalSales"))
+                    )
+                    .Series(series =>
+                    {
+                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
+
+                    })
+                    .CategoryAxis(axis => axis
+                        .Date()
+                        .BaseUnit(ChartAxisBaseUnit.Months)
+                    )
+                    .Tooltip(t => t.Format("{0:c2}"))
+                )*@
+                <div id="RevenueNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+        <div id="ORPContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">ORP</h3>
+            <span id="ORPLabel"></span>
+            <div class="sparkline-container">
+                @*@(Html.Kendo().Sparkline<CountryOrders_Result>()
+                    .Name("Orders")
+                    .Theme("metro")
+                    .HtmlAttributes(new { @style = "height: 100px;" })
+                    .AutoBind(false)
+                    .DataSource(ds => ds
+                        .Read(read => read.Action("CountryOrders", "RegionalSales"))
+                    )
+                    .Series(series =>
+                    {
+                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
+                    })
+                    .CategoryAxis(axis => axis
+                        .Date()
+                        .BaseUnit(ChartAxisBaseUnit.Months)
+                    )
+                )*@
+                <div id="OrdersNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+        <div id="DissolvedOxyContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">Dissolved Oxygen</h3>
+            <span id="CustomersLabel"></span>
+            <div class="sparkline-container">
+                @*@(Html.Kendo().Sparkline<CountryCustomers_Result>()
+                    .Name("Customers")
+                    .Theme("metro")
+                    .HtmlAttributes(new { @style = "height: 100px;" })
+                    .AutoBind(false)
+                    .DataSource(ds => ds
+                        .Read(read => read.Action("CountryCustomers", "RegionalSales"))
+                    )
+                    .Series(series =>
+                    {
+                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
+                    })
+                    .CategoryAxis(axis => axis
+                        .Date()
+                        .BaseUnit(ChartAxisBaseUnit.Months)
+                    )
+                )*@
+                <div id="CustomersNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="topProductsContainer">
+        <h3 class="section-header">Performance &Aacute; Health Analysis</h3>
+        @*@(Html.Kendo().Chart<CountryTopProducts_Result>()
+        .Name("TopSellingProducts")
+        .Theme("metro")
+        .AutoBind(false)
+        .Legend(legend => legend
+            .Visible(true)
+            .Position(ChartLegendPosition.Top)
+        )
+        .ChartArea(ch => ch.Background("#eeeeee"))
+        .Events(e => e.DataBound("onTopProductsDataBound"))
+        .ChartArea(ch => ch.Background("#eeeeee"))
+        .DataSource(ds => ds
+            .Group(g => g.Add(f => f.ProductName))
+            .Read(read => read.Action("TopSellingProducts", "RegionalSales")))
+        .Series(series =>
+        {
+            series.Line(model => model.Quantity).Style(ChartLineStyle.Smooth).Markers(false);
+
+        })
+        .HtmlAttributes(new { @style = "height: 260px;" })
+        .CategoryAxis(axis => axis
+            .Categories(model => model.Date)
+            .MajorGridLines(m => m.Visible(false))
+            .Line(l => l.Width(0))
+            .Labels(l => l.Visible(false))
+        )
+        .ValueAxis(axis => axis.Numeric()
+            .MajorUnit(50)
+            .MajorTicks(x => x.Visible(false))
+            .MajorGridLines(m => m.Visible(false))
+            .Line(l => l.Visible(false))
+            .Labels(l => l.Visible(false))
+        )
+        .Tooltip(tooltip => tooltip
+            .Visible(true)
+            .Template("#=data.series.name.replace(data.series.field, data.value)#"))
+    )*@
+        <div id="ProductsNoData" class="overlay"><div>No data available</div></div>
+    </div>
+
+</div>
+
