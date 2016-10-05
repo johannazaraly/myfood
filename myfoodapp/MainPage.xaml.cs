@@ -1,13 +1,9 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using myfoodapp.ViewModel;
-using myfoodapp.Business;
 using GalaSoft.MvvmLight.Messaging;
 using myfoodapp.Common;
-using myfoodapp.WebApp;
-using myfoodapp.Model;
-using System.Threading.Tasks;
-using Microsoft.Data.Entity;
+using System;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -28,11 +24,6 @@ namespace myfoodapp
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.DataContext = ViewModel;
-
-            Messenger.Default.Register<RefreshDashboardMessage>(this, (mess) =>
-            {
-                App.TryShowNewWindow<MainPage>();
-            });
         }
 
         public AquaponicsManagementViewModel ViewModel { get; set; }

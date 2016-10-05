@@ -64,7 +64,7 @@ namespace myfoodapp.Business
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-           // Messenger.Default.Send(new RefreshDashboardMessage());
+            Messenger.Default.Send(new RefreshDashboardMessage());
         }
 
         public void Run()
@@ -181,7 +181,7 @@ namespace myfoodapp.Business
                                         logModel.AppendLog(Log.CreateLog("Water Temperature captured", Log.LogType.Information));
                                 }
                                 else
-                                logModel.AppendLog(Log.CreateLog("Water Temperature value out of range", Log.LogType.Warning));
+                                logModel.AppendLog(Log.CreateLog(String.Format("Water Temperature value out of range - {0}", capturedValue), Log.LogType.Warning));
 
                            }
 
@@ -205,7 +205,7 @@ namespace myfoodapp.Business
                                         logModel.AppendLog(Log.CreateLog("pH captured", Log.LogType.Information));
                                 }
                                 else
-                                logModel.AppendLog(Log.CreateLog("pH value out of range", Log.LogType.Warning));
+                                logModel.AppendLog(Log.CreateLog(String.Format("pH value out of range - {0}", capturedValue), Log.LogType.Warning));
                             }
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.orp))
@@ -228,7 +228,7 @@ namespace myfoodapp.Business
                                         logModel.AppendLog(Log.CreateLog("ORP captured", Log.LogType.Information));
                             }
                             else
-                                logModel.AppendLog(Log.CreateLog("ORP value out of range", Log.LogType.Warning));
+                                logModel.AppendLog(Log.CreateLog(String.Format("ORP value out of range - {0}", capturedValue), Log.LogType.Warning));
                             }  
 
                             if (sensorManager.isSensorOnline(SensorTypeEnum.dissolvedOxygen))
@@ -251,38 +251,62 @@ namespace myfoodapp.Business
                                         logModel.AppendLog(Log.CreateLog("DO captured", Log.LogType.Information));
                                 }
                                 else
-                                logModel.AppendLog(Log.CreateLog("DO value out of range", Log.LogType.Warning));
+                                logModel.AppendLog(Log.CreateLog(String.Format("DO value out of range - {0}", capturedValue), Log.LogType.Warning));
                             }
 
                             if (userSettings.isTempHumiditySensorEnable)
                             {
-                                if (userSettings.isVerboseLogEnable)
-                                    logModel.AppendLog(Log.CreateLog("Air Temperature capturing", Log.LogType.Information));
-
-                                decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
-
-                                var taskTemp = Task.Run(async () =>
+                                try
                                 {
-                                    await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
-                                });
-                                taskTemp.Wait();
+                                    if (userSettings.isVerboseLogEnable)
+                                        logModel.AppendLog(Log.CreateLog("Air Temperature capturing", Log.LogType.Information));
 
-                                if (userSettings.isVerboseLogEnable)
-                                    logModel.AppendLog(Log.CreateLog("Air Temperature captured", Log.LogType.Information));
+                                    decimal capturedAirTemperature = (decimal)humTempManager.Temperature;
 
-                                if (userSettings.isVerboseLogEnable)
-                                    logModel.AppendLog(Log.CreateLog("Humidity capturing", Log.LogType.Information));
-
-                                decimal capturedHumidity = (decimal)humTempManager.Humidity;
-
-                                var taskHum = Task.Run(async () =>
+                                if (capturedAirTemperature > 0 && capturedAirTemperature < 100)
                                 {
-                                    await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
-                                });
-                                taskHum.Wait();
+                                    var taskTemp = Task.Run(async () =>
+                                    {
+                                        await databaseModel.AddMesure(captureDateTime, capturedAirTemperature, SensorTypeEnum.airTemperature);
+                                    });
+                                    taskTemp.Wait();
 
-                                if (userSettings.isVerboseLogEnable)
-                                    logModel.AppendLog(Log.CreateLog("Humidity captured", Log.LogType.Information));
+                                    if (userSettings.isVerboseLogEnable)
+                                        logModel.AppendLog(Log.CreateLog("Air Temperature captured", Log.LogType.Information));
+                                }
+                                else
+                                    logModel.AppendLog(Log.CreateLog(String.Format("Air Temperature out of range - {0}", capturedAirTemperature), Log.LogType.Warning));
+                                }
+                                catch (Exception ex)
+                                {
+                                    logModel.AppendLog(Log.CreateErrorLog("Exception on Air Temperature Sensor", ex));
+                                }
+
+                                try
+                                {
+                                    if (userSettings.isVerboseLogEnable)
+                                        logModel.AppendLog(Log.CreateLog("Humidity capturing", Log.LogType.Information));
+
+                                    decimal capturedHumidity = (decimal)humTempManager.Humidity;
+
+                                if (capturedHumidity > 0 && capturedHumidity < 100)
+                                {
+                                    var taskHum = Task.Run(async () =>
+                                    {
+                                        await databaseModel.AddMesure(captureDateTime, capturedHumidity, SensorTypeEnum.humidity);
+                                    });
+                                    taskHum.Wait();
+
+                                    if (userSettings.isVerboseLogEnable)
+                                        logModel.AppendLog(Log.CreateLog("Humidity captured", Log.LogType.Information));
+                                }
+                                else
+                                    logModel.AppendLog(Log.CreateLog(String.Format("Air Humidity out of range - {0}", capturedHumidity), Log.LogType.Warning));
+                                }
+                                catch (Exception ex)
+                                {
+                                logModel.AppendLog(Log.CreateErrorLog("Exception on Air Humidity Sensor", ex));
+                                }
                             }
 
                            logModel.AppendLog(Log.CreateLog(String.Format("Measures captured in {0} sec.", watchMesures.ElapsedMilliseconds / 1000), Log.LogType.System));  

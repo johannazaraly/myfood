@@ -242,7 +242,7 @@ namespace myfoodapp.Business.Clock
         {
             IsConnected = false;
             i2cbus.Dispose();
-            logModel.AppendLog(Log.CreateLog("Clock Service offline", Log.LogType.System));
+            logModel.AppendLog(Log.CreateLog("Clock Service released", Log.LogType.System));
         }
     }
 }

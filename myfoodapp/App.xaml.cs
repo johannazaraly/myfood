@@ -9,6 +9,8 @@ using myfoodapp.Model;
 using Microsoft.Data.Entity;
 using System.Threading.Tasks;
 using myfoodapp.Views;
+using myfoodapp.Common;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace myfoodapp
 {
@@ -29,6 +31,18 @@ namespace myfoodapp
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            Messenger.Default.Register<RefreshDashboardMessage>(this, (mess) =>
+            {
+                var frame = Window.Current.Content as Frame;
+
+                if (frame != null)
+                {
+                    Type whatpageisit = frame.SourcePageType;
+                    if (whatpageisit == typeof(MainPage))
+                        App.TryShowNewWindow<MainPage>();
+                }
+            });
 
         }
 
