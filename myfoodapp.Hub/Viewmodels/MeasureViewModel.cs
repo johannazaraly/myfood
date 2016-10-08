@@ -14,6 +14,8 @@ namespace myfoodapp.Hub.Models
         public decimal value { get; set; }
         public SensorTypeViewModel sensor { get; set; }
         public int sensorId { get; set; }
+        public int productionUnitId { get; set; }
+        public ProductionUnitViewModel productionUnit { get; set; }
     }
 
     public class SensorTypeViewModel

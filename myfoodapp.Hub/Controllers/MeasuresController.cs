@@ -24,6 +24,7 @@ namespace myfoodapp.Hub.Controllers
         public async Task<ActionResult> Index()
         {
             PopulateSensorsTypes();
+            PopulateProductionUnit();
 
             measureService = new MeasureService(db);
             return View(await db.Measures.ToListAsync());
@@ -102,6 +103,19 @@ namespace myfoodapp.Hub.Controllers
                         .OrderBy(e => e.name);
 
             ViewData["sensorTypes"] = sensorTypes;
+        }
+
+        private void PopulateProductionUnit()
+        {
+            var productionUnits = db.ProductionUnits
+                        .Select(m => new ProductionUnitViewModel
+                        {
+                            Id = m.Id,
+                            info = m.info
+                        })
+                        .OrderBy(e => e.info);
+
+            ViewData["productionUnits"] = productionUnits;
         }
 
         protected override void Dispose(bool disposing)

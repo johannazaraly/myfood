@@ -18,9 +18,9 @@ namespace myfoodapp.Hub.Models
         [Required]
         public ProductionUnitType productionUnitType { get; set; }
         [Required]
-        public decimal locationLatitude { get; set; }
+        public double locationLatitude { get; set; }
         [Required]
-        public decimal locationLongitude { get; set; }
+        public double locationLongitude { get; set; }
         public String info { get; set; }
         public String version { get; set; }
         public List<Option> options { get; set; }

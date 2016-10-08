@@ -71,22 +71,21 @@ namespace myfoodapp.Hub.Migrations
                 task.Wait();
             });
 
- 
            var prodUnitTypeFam22 = context.ProductionUnitTypes.Where(m => m.Id == 4).FirstOrDefault();
 
-           var userDummy = new ApplicationUser() { Email = "pallcenter@pt.lu", UserName = "pallcenter" };
+           var userPallCenter = new ApplicationUser() { Email = "pallcenter@pt.lu", UserName = "pallcenter" };
                
-           var t = Task.Run(async () => { await manager.CreateAsync(userDummy, "myfoodhub_123"); });
+           var t = Task.Run(async () => { await manager.CreateAsync(userPallCenter, "myfoodhub_123"); });
            t.Wait();
 
-           var newOwner = new ProductionUnitOwner() { Id = 0, user = userDummy };
+           var newOwner = new ProductionUnitOwner() { Id = 0, user = userPallCenter };
            context.ProductionUnitOwner.Add(newOwner);
            context.SaveChanges();
 
             var pallCenterProdUnit = new ProductionUnit()
             {
-                locationLatitude = 49.7287232M,
-                locationLongitude = 5.8390948M,
+                locationLatitude = 49.7287232,
+                locationLongitude = 5.8390948,
                 reference = "746F6",
                 info = "Pall Center Oberpallen",
                 startDate = new DateTime(2016, 10, 01),

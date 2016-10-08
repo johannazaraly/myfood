@@ -99,11 +99,11 @@ namespace myfoodapp.Model
             return true;
         }
 
-        public async Task<DateTime> GetLastMesureDate()
+        public async Task<DateTime> GetLastMesureDateTime()
         {
             using (await asyncLock.LockAsync())
             {
-                var currentDateTime = await (from m in db.Measures select m.captureDate).MaxAsync();
+                var currentDateTime = await (from m in db.Measures orderby m.Id descending select m.captureDate).FirstOrDefaultAsync();
 
                 if (currentDateTime == null)
                     return new DateTime(2016, 8, 10, 0, 0, 0);
@@ -116,11 +116,15 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var rslt = await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
-                                  select m).Take(1).FirstOrDefaultAsync();
+                var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                          .Where(m => m.sensor.Id == (int)sensorType)
+                          .OrderByDescending(m => m.Id)
+                           select m).FirstOrDefaultAsync();
 
                 if (rslt != null)
-                    return Math.Round(rslt.value,1);
+                {
+                    return Math.Round(rslt.value, 1);
+                }
                 else
                     return 0;
             }
@@ -132,13 +136,14 @@ namespace myfoodapp.Model
 
             using (await asyncLock.LockAsync())
             {
-
                 var allValues = Enum.GetValues(typeof(SensorTypeEnum));
 
                 foreach (SensorTypeEnum sensorType in Enum.GetValues(typeof(SensorTypeEnum)))
                 {
-                    var rslt = await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
-                                      select m).Take(1).FirstOrDefaultAsync();
+                    var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                          .Where(m => m.sensor.Id == (int)sensorType)
+                          .OrderByDescending(m => m.Id)
+                                      select m).FirstOrDefaultAsync();
 
                     if (rslt != null)
                         valueSignature.Append(Math.Round(rslt.value, 1).ToString("000.0").Replace(".","").Replace("-", "B"));
@@ -154,22 +159,18 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var currentDateTime = await (from m in db.Measures select m.captureDate).MaxAsync();
 
-                if (currentDateTime == null)
-                    return 0;
+                if (await db.Measures.CountAsync() == 0)
+                return 0;
 
-                var rslt = await (from m in db.Measures
-                                  .Where(m => m.sensor.Id == (int)sensorType 
-                                  && m.captureDate > currentDateTime.AddDays(-1) 
-                                  && m.captureDate < currentDateTime)
-                                  .OrderBy(m => m.captureDate)
-                                  select m).Take(1).FirstOrDefaultAsync();
+            var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                              .Where(m => m.sensor.Id == (int)sensorType)
+                              .OrderBy(m => m.Id)
+                              select m.value).Take(6 * 24).FirstOrDefaultAsync();
 
-                if (rslt != null)
-                    return Math.Round(rslt.value, 1);
-                else
-                    return 0;
+ 
+            return Math.Round(rslt, 1);
+
             }
         }
 
@@ -177,16 +178,13 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var currentDateTime = await (from m in db.Measures select m.captureDate).MaxAsync();
+                if (await db.Measures.CountAsync() == 0)
+                return 0;
 
-                if (currentDateTime == null)
-                    return 0;
-
-                var rslt = await (from m in db.Measures
-                                  .Where(m => m.sensor.Id == (int)sensorType
-                                  && m.captureDate > currentDateTime.AddDays(-1))
-                                  .OrderByDescending(m => m.captureDate)
-                                  select m).MinAsync(m => m.value);
+            var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                           .Where(m => m.sensor.Id == (int)sensorType)
+                           .OrderByDescending(m => m.Id)
+                              select m).Take(6 * 24).MinAsync(m => m.value);
 
                 return Math.Round(rslt, 1);
 
@@ -197,16 +195,14 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var currentDateTime = await (from m in db.Measures select m.captureDate).MaxAsync();
 
-                if (currentDateTime == null)
-                    return 0;
+                if (await db.Measures.CountAsync() == 0)
+                return 0;
 
-                var rslt = await (from m in db.Measures
-                                  .Where(m => m.sensor.Id == (int)sensorType
-                                  && m.captureDate > currentDateTime.AddDays(-1))
-                                  .OrderByDescending(m => m.captureDate)
-                                  select m).MaxAsync(m => m.value);
+            var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                          .Where(m => m.sensor.Id == (int)sensorType)
+                          .OrderByDescending(m => m.Id)
+                              select m).Take(6 * 24).MaxAsync(m => m.value);
 
                 return Math.Round(rslt, 1);
             }
@@ -216,16 +212,13 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                var currentDateTime = await (from m in db.Measures select m.captureDate).MaxAsync();
+                if (await db.Measures.CountAsync() == 0)
+                return 0;
 
-                if (currentDateTime == null)
-                    return 0;
-
-                var rslt = await (from m in db.Measures
-                                  .Where(m => m.sensor.Id == (int)sensorType
-                                  && m.captureDate > currentDateTime.AddDays(-1))
-                                  .OrderByDescending(m => m.captureDate)
-                                  select m).AverageAsync(m => m.value);
+            var rslt = await (from m in db.Measures.Include(m => m.sensor)
+                          .Where(m => m.sensor.Id == (int)sensorType)
+                          .OrderByDescending(m => m.Id)
+                              select m).Take(6 * 24).AverageAsync(m => m.value);
 
                 return Math.Round(rslt, 1);
 
@@ -236,16 +229,16 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
-                              select m).Take(24 * 6).ToListAsync();
+                return await (from m in db.Measures.OrderByDescending(m => m.Id).Include(m => m.sensor)
+                              select m).Where(m => m.sensor.Id == (int)sensorType).Take(24 * 6).ToListAsync();
             }          
         }
         public async Task<List<Measure>> GetLastWeeksMesures(SensorTypeEnum sensorType)
         {
             using (await asyncLock.LockAsync())
             {
-                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType).OrderByDescending(m => m.captureDate)
-                              select m).Take(7 * 24 * 6).ToListAsync();
+                return await (from m in db.Measures.OrderByDescending(m => m.captureDate).Include(m => m.sensor).Take(7 * 24 * 6 * 4)
+                              select m).Where(m => m.sensor.Id == (int)sensorType).ToListAsync();
             }
         }
 
@@ -253,7 +246,7 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                return await(from m in db.Measures.OrderByDescending(m => m.captureDate)
+                return await (from m in db.Measures.OrderByDescending(m => m.Id)
                               select m).Take(7 * 24 * 6).ToListAsync();
             }
         }
@@ -262,13 +255,13 @@ namespace myfoodapp.Model
         {
             using (await asyncLock.LockAsync())
             {
-                return await (from m in db.Measures.Where(m => m.sensor.Id == (int)sensorType)
+                return await (from m in db.Measures.Include(m => m.sensor).Where(m => m.sensor.Id == (int)sensorType).Take(7 * 30 * 2)
                               group m by new { m.captureDate.Year, m.captureDate.DayOfYear} into groupedDay
                               select new Measure
                               {
                                   captureDate = groupedDay.FirstOrDefault().captureDate,
                                   value = groupedDay.Average(x => x.value),
-                              }).Take(7 * 30 * 2).ToListAsync();
+                              }).ToListAsync();
 
             }
         }

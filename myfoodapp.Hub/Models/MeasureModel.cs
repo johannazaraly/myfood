@@ -30,4 +30,14 @@ namespace myfoodapp.Hub.Models
         public string description { get; set; }
         public DateTime? lastCalibration { get; set; }
     }
+
+    public enum SensorTypeEnum
+    {
+        ph = 1,
+        waterTemperature = 2,
+        dissolvedOxygen = 3,
+        orp = 4,
+        airTemperature = 5,
+        humidity = 6
+    }
 }

@@ -1,16 +1,47 @@
-﻿<div id="main-section-header" class="row">
-    <h2 id="team-efficiency" class="col-xs-3">Pioneer Citizen Network</h2>
+﻿<script src="@Url.Content("~/Scripts/chroma.min.js")"></script> 
+
+<script type="text/javascript">
+    var scale = chroma.scale(["#ade1fb", "#097dc6"]).domain([1, 100]),
+        selectedShape = null,
+        selectedProductionUnit = "Matthieu U.";
+
+    function resizeMap() {
+        var map = $("#map").data("kendoMap");
+        map.resize();
+        map.center([50.000, 0]);
+    }
+
+    function onShow() {
+
+        var PHMeasures = $("#PHMeasures").data("kendoChart");
+        PHMeasures.dataSource.read();
+        PHMeasures.resize();
+        PHMeasures.refresh();
+    }
+
+    function onPHMeasuresDataBound() {
+        var PHMeasures = $("#PHMeasures").data("kendoChart");
+
+        var items = PHMeasures.dataSource.data().length;
+        $("#PHMeasureNoData").toggle(items === 0);
+    }
+
+</script>
+
+<div id="main-section-header" class="row">
+    <h2 id="title-pioneer" class="col-xs-3">Pioneer Citizen Network</h2>
     <div style="clear:both;"></div>
 </div>
 
 <div id="pioneer-network" class="main-section-content row">
-    <div id="map-details" class="col-xs-2">
-        <h3 class="section-header">Pick a Production Unit to view stats</h3>
-    </div>
+    <div id="map-wrapper" class="row">
+        <div id="map-details" class="col-xs-2">
+            <h3 class="section-header">Pick a Production Unit to view stats</h3>
+        </div>
         <div id="map-container" class="col-xs-10">
-@model myfoodapp.Hub.Models.Map
+            @model myfoodapp.Hub.Models.Map
 
-@(Html.Kendo().Map()
+            @(Html.Kendo().Map()
         .Name(Model.Name)
         .Center(Model.CenterLatitude, Model.CenterLongitude)
         .Zoom(Model.Zoom)
@@ -25,7 +56,7 @@
                         .Type(MapLayerType.Shape)
                         .DataSource(dataSource => dataSource
                             .GeoJson()
-                            .Read(read => read.Url(Url.Content("~/Content/countries-sales.geo.json")))
+                            .Read(read => read.Url(Url.Content("~/Content/countries.geo.json")))
                         );
                 })
         .Markers(markers =>
@@ -34,44 +65,66 @@
             {
                 markers.Add()
                 .Location(marker.latlng)
+                .Shape(marker.shape)
+                .Tooltip(t => t.ShowOn(TooltipShowOnEvent.Click))
+                .Tooltip(t => t.Events(e => e.Show("onShow")))
                 .Title(marker.name);
             }
         })
-)
-        </div>
 
-    <div id="statsContainer" class="row">
+            )
+        </div>
+    </div>
+
+
+<div id="statsContainer" class="row">
         <div id="pHContainer" class="col-xs-3 stats-graph">
             <h3 class="section-header">pH</h3>
             <span id="pHLabel"></span>
             <div class="sparkline-container">
-                @*@(Html.Kendo().Chart<CountryMarketShare_Result>()
-                    .Name("MarketShare")
-                    .Theme("metro")
-                    .HtmlAttributes(new { @style = "height: 100px;" })
-                    .AutoBind(false)
-                    .Events(e => e.DataBound("onMarketShareDataBound"))
-                    .Legend(legend => legend
-                        .Visible(false)
-                    )
-                    .DataSource(ds => ds
-                        .Read(read => read.Action("MarketShareByCountry", "RegionalSales"))
-                    )
-                    .Series(series =>
-                    {
-                        series.Donut("Sales", "Country").Padding(0);
-                    })
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Template("#= dataItem.Country #: #= kendo.toString(dataItem.Sales, 'c2') #")
-                    )
-                )*@
-                <div id="MarketShareNoData" class="overlay"><div>No data available</div></div>
+@(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("PHMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(true)
+                .Position(ChartLegendPosition.Top)
+            )
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .Events(e => e.DataBound("onPHMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("PHMeasure_Read", "Home")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate);
+                            })
+            .HtmlAttributes(new { @style = "height: 260px;" })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(50)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#=data.series.name.replace(data.series.field, data.value)#"))
+ )
+                <div id="PHMeasureNoData" class="overlay">
+                    <div>No data available</div>
+                </div>
             </div>
         </div>
-        <div id="TempContainer" class="col-xs-3 stats-graph">
+        <div id = "TempContainer" class="col-xs-3 stats-graph">
             <h3 class="section-header">Temperature</h3>
-            <span id="TemperatureLabel"></span>
+            <span id = "TemperatureLabel"></span>
             <div class="sparkline-container">
                 @*@(Html.Kendo().Sparkline<CountryRevenue_Result>()
                     .Name("Revenue")
@@ -143,9 +196,9 @@
                 <div id="CustomersNoData" class="overlay"><div>No data available</div></div>
             </div>
         </div>
-    </div>
+</div>
 
-    <div id="topProductsContainer">
+<div id="performanceHealthAnalysis">
         <h3 class="section-header">Performance &Aacute; Health Analysis</h3>
         @*@(Html.Kendo().Chart<CountryTopProducts_Result>()
         .Name("TopSellingProducts")
@@ -184,8 +237,26 @@
             .Visible(true)
             .Template("#=data.series.name.replace(data.series.field, data.value)#"))
     )*@
-        <div id="ProductsNoData" class="overlay"><div>No data available</div></div>
-    </div>
+        <div id="ProductsNoData" class="overlay">
+                <div>No data available</div>
+        </div>
+</div>
 
 </div>
+
+<style>
+    .k-map .k-marker-green-marker {
+        background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgMTAgMTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwIDEwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxjaXJjbGUgZmlsbD0iIzAwRkYzMSIgY3g9IjUiIGN5PSI1IiByPSI1Ii8+DQo8L3N2Zz4NCg==');
+        width: 10px;
+        height: 10px;
+        margin: -5px 0 0 -5px;
+    }
+
+    .k-map .k-marker-red-marker {
+        background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgMTAgMTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwIDEwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxjaXJjbGUgZmlsbD0iI0ZGMjUwMCIgY3g9IjUiIGN5PSI1IiByPSI1Ii8+DQo8L3N2Zz4NCg==');
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
 

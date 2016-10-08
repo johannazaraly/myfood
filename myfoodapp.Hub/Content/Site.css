@@ -388,13 +388,13 @@ body,
     background-color: #fff;
 }
 
-#regional-sales {
+#pioneer-network {
     border: none;
     overflow-y: auto;
     height: calc(100% - 86px);
 }
 
-#regional-sales .row {
+#pioneer-network .row {
     height: auto;
 }
 
@@ -410,12 +410,12 @@ body,
     font-size: 11px;
 }
 
-#topProductsContainer {
+#performanceHealthAnalysis {
    
     padding: 15px;
 }
 
-#topProductsContainer h3{
+#performanceHealthAnalysis h3{
     padding-left: 15px;
 }
 
@@ -793,7 +793,7 @@ body,
         display: inline-block;
     }
 
-    #team-efficiency {
+    #title-pioneer {
         font-size: 14px;
     }
 
@@ -830,7 +830,7 @@ body,
 /* End custom */
 
 /* Empty charts overlays */
-#topProductsContainer,
+#performanceHealthAnalysis,
 .sparkline-container {
   position: relative;
 }

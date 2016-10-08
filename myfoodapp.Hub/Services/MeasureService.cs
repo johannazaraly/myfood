@@ -31,7 +31,13 @@ namespace myfoodapp.Hub.Services
                 {
                     Id = meas.sensor.Id,
                     name = meas.sensor.name
-                }
+                },
+                productionUnitId = meas.productionUnit.Id,
+                productionUnit = new ProductionUnitViewModel()
+                {
+                    Id = meas.productionUnit.Id,
+                    info = meas.productionUnit.info
+                },
 
             }).ToList();
 
@@ -41,6 +47,11 @@ namespace myfoodapp.Hub.Services
         public IEnumerable<MeasureViewModel> Read()
         {
             return GetAll();
+        }
+
+        public IEnumerable<MeasureViewModel> Read(SensorTypeEnum sensorType)
+        {
+            return GetAll().Where(m => m.sensorId == (int)sensorType).Take(10);
         }
 
         public void Create(MeasureViewModel measure)
@@ -55,6 +66,12 @@ namespace myfoodapp.Hub.Services
             {
                 entity.sensor = new SensorType();
                 entity.sensor.Id = measure.sensorId;
+            }
+
+            if (entity.productionUnit == null)
+            {
+                entity.productionUnit = new ProductionUnit();
+                entity.productionUnit.Id = measure.productionUnitId;
             }
 
             entities.Measures.Add(entity);
@@ -77,6 +94,11 @@ namespace myfoodapp.Hub.Services
                 currentSensorType = entities.SensorTypes.Where(m => m.Id == measure.sensorId).FirstOrDefault();
 
                 target.sensor = currentSensorType;
+
+                ProductionUnit currentProductionUnit = new ProductionUnit();
+                currentProductionUnit = entities.ProductionUnits.Where(m => m.Id == measure.productionUnitId).FirstOrDefault();
+
+                target.productionUnit = currentProductionUnit;
             }      
 
                 entities.SaveChanges();  

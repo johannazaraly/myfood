@@ -28,13 +28,13 @@ namespace myfoodapp.Model
                 context.SaveChanges();
             }
 
-            if (!context.MessageTypes.Any())
-            {
-                context.MessageTypes.Add(new MessageType() { Id = 1, name = "Sent", description = "Message sent" });
-                context.MessageTypes.Add(new MessageType() { Id = 2, name = "Received", description = "Message received" });
+            //if (!context.MessageTypes.Any())
+            //{
+            //    context.MessageTypes.Add(new MessageType() { Id = 1, name = "Sent", description = "Message sent" });
+            //    context.MessageTypes.Add(new MessageType() { Id = 2, name = "Received", description = "Message received" });
 
-                context.SaveChanges();
-            }
+            //    context.SaveChanges();
+            //}
 
 #if !ARM
             //if (!context.Measures.Any())

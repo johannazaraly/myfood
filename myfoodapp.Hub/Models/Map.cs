@@ -32,5 +32,7 @@ namespace myfoodapp.Hub.Models
 
         public double[] latlng { get; set; }
         public string name { get; set; }
+
+        public string shape { get; set; }
     }
 }
