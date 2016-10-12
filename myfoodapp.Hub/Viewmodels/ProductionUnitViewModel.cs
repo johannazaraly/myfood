@@ -20,7 +20,6 @@ namespace myfoodapp.Hub.Models
         public ProductionUnitTypeViewModel productionUnitType { get; set; }
  
         public double locationLatitude { get; set; }
-
         public double locationLongitude { get; set; }
         public String info { get; set; }
         public String version { get; set; }

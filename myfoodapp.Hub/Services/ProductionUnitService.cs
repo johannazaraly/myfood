@@ -42,7 +42,8 @@ namespace myfoodapp.Hub.Services
                 owner = new OwnerViewModel()
                 {
                     Id = pu.owner.Id,
-                    userName = pu.owner.user.UserName
+                    pioneerCitizenName = pu.owner.pioneerCitizenName,
+                    pioneerCitizenNumber = pu.owner.pioneerCitizenNumber
                 }
 
             }).ToList();

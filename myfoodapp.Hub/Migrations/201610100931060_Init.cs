@@ -3,7 +3,7 @@ namespace myfoodapp.Hub.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Initial : DbMigration
+    public partial class Init : DbMigration
     {
         public override void Up()
         {
@@ -30,8 +30,8 @@ namespace myfoodapp.Hub.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         startDate = c.DateTime(nullable: false),
                         reference = c.String(nullable: false),
-                        locationLatitude = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        locationLongitude = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        locationLatitude = c.Double(nullable: false),
+                        locationLongitude = c.Double(nullable: false),
                         info = c.String(),
                         version = c.String(),
                         owner_Id = c.Int(nullable: false),
@@ -61,6 +61,8 @@ namespace myfoodapp.Hub.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        pioneerCitizenNumber = c.Int(nullable: false),
+                        pioneerCitizenName = c.String(),
                         user_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id)
@@ -172,6 +174,20 @@ namespace myfoodapp.Hub.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
+                "dbo.OptionLists",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        option_Id = c.Int(),
+                        productionUnit_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Options", t => t.option_Id)
+                .ForeignKey("dbo.ProductionUnits", t => t.productionUnit_Id)
+                .Index(t => t.option_Id)
+                .Index(t => t.productionUnit_Id);
+            
+            CreateTable(
                 "dbo.AspNetRoles",
                 c => new
                     {
@@ -186,6 +202,8 @@ namespace myfoodapp.Hub.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.OptionLists", "productionUnit_Id", "dbo.ProductionUnits");
+            DropForeignKey("dbo.OptionLists", "option_Id", "dbo.Options");
             DropForeignKey("dbo.Messages", "messageType_Id", "dbo.MessageTypes");
             DropForeignKey("dbo.Measures", "sensor_Id", "dbo.SensorTypes");
             DropForeignKey("dbo.Measures", "productionUnit_Id", "dbo.ProductionUnits");
@@ -197,6 +215,8 @@ namespace myfoodapp.Hub.Migrations
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.Options", "ProductionUnit_Id", "dbo.ProductionUnits");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.OptionLists", new[] { "productionUnit_Id" });
+            DropIndex("dbo.OptionLists", new[] { "option_Id" });
             DropIndex("dbo.Messages", new[] { "messageType_Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
@@ -210,6 +230,7 @@ namespace myfoodapp.Hub.Migrations
             DropIndex("dbo.Measures", new[] { "sensor_Id" });
             DropIndex("dbo.Measures", new[] { "productionUnit_Id" });
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.OptionLists");
             DropTable("dbo.MessageTypes");
             DropTable("dbo.Messages");
             DropTable("dbo.SensorTypes");

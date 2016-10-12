@@ -123,7 +123,7 @@
         </Grid>
     </Grid>
     <Page.BottomAppBar>
-        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="True">
+        <CommandBar x:Name="cmdBar" Background="Green" IsOpen="False">
             <AppBarButton x:Name="startButton" Foreground="White" Icon="NewWindow" Label="Start Config" IsEnabled="True" Click="{x:Bind ViewModel.OnStartClicked}"/>
             <AppBarButton Foreground="White" Icon="Back"  Label="Back" IsEnabled="True" Click="{x:Bind ViewModel.OnBackClicked}"/>
         </CommandBar>

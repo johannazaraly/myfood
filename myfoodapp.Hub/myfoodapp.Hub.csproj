@@ -367,13 +367,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201610051426071_Initial.cs" />
-    <Compile Include="Migrations\201610051426071_Initial.Designer.cs">
-      <DependentUpon>201610051426071_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201610081325246_Initial_2.cs" />
-    <Compile Include="Migrations\201610081325246_Initial_2.Designer.cs">
-      <DependentUpon>201610081325246_Initial_2.cs</DependentUpon>
+    <Compile Include="Migrations\201610100931060_Init.cs" />
+    <Compile Include="Migrations\201610100931060_Init.Designer.cs">
+      <DependentUpon>201610100931060_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -2116,6 +2112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Home\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -2125,11 +2122,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201610051426071_Initial.resx">
-      <DependentUpon>201610051426071_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201610081325246_Initial_2.resx">
-      <DependentUpon>201610081325246_Initial_2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610100931060_Init.resx">
+      <DependentUpon>201610100931060_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

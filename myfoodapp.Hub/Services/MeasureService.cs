@@ -11,7 +11,6 @@ namespace myfoodapp.Hub.Services
     {
         private ApplicationDbContext entities;
 
-
         public MeasureService(ApplicationDbContext entities)
         {
             this.entities = entities;
@@ -36,7 +35,9 @@ namespace myfoodapp.Hub.Services
                 productionUnit = new ProductionUnitViewModel()
                 {
                     Id = meas.productionUnit.Id,
-                    info = meas.productionUnit.info
+                    info = meas.productionUnit.info,
+                    locationLatitude = meas.productionUnit.locationLatitude,
+                    locationLongitude = meas.productionUnit.locationLongitude
                 },
 
             }).ToList();
@@ -49,9 +50,11 @@ namespace myfoodapp.Hub.Services
             return GetAll();
         }
 
-        public IEnumerable<MeasureViewModel> Read(SensorTypeEnum sensorType)
+        public IEnumerable<MeasureViewModel> Read(SensorTypeEnum sensorType, double productionUnitLat, double productionUnitLong)
         {
-            return GetAll().Where(m => m.sensorId == (int)sensorType).Take(10);
+            return GetAll().Where(m => m.sensorId == (int)sensorType && 
+                                       m.productionUnit.locationLatitude == productionUnitLat &&
+                                       m.productionUnit.locationLongitude == productionUnitLong).Take(24);
         }
 
         public void Create(MeasureViewModel measure)

@@ -24,17 +24,17 @@ namespace myfoodapp.Views
     {
         public AquaponicsManagementView()
         {
-            this.ViewModel = new AquaponicsManagementViewModel();
-            this.InitializeComponent();
-            this.Loaded += AquaponicsManagementView_Loaded;
+            //this.ViewModel = new AquaponicsManagementViewModel();
+            //this.InitializeComponent();
+            //this.Loaded += AquaponicsManagementView_Loaded;
         }
 
-        private void AquaponicsManagementView_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = this;
-        }
+        //private void AquaponicsManagementView_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    this.DataContext = this;
+        //}
 
-        public AquaponicsManagementViewModel ViewModel { get; set; }
+        //public AquaponicsManagementViewModel ViewModel { get; set; }
 
     }
 }

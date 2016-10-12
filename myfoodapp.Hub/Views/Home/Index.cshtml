@@ -1,22 +1,42 @@
-﻿<script src="@Url.Content("~/Scripts/chroma.min.js")"></script> 
-
-<script type="text/javascript">
-    var scale = chroma.scale(["#ade1fb", "#097dc6"]).domain([1, 100]),
-        selectedShape = null,
-        selectedProductionUnit = "Matthieu U.";
-
+﻿<script type="text/javascript">
     function resizeMap() {
         var map = $("#map").data("kendoMap");
         map.resize();
         map.center([50.000, 0]);
     }
 
-    function onShow() {
+    function onShow(e) {
 
         var PHMeasures = $("#PHMeasures").data("kendoChart");
-        PHMeasures.dataSource.read();
-        PHMeasures.resize();
-        PHMeasures.refresh();
+        var TempMeasures = $("#TempMeasures").data("kendoChart");
+        var ORPMeasures = $("#ORPMeasures").data("kendoChart");
+        var DissolvedOxyMeasures = $("#DissolvedOxyMeasures").data("kendoChart");
+
+        var OptionList = $("#OptionList").data("kendoListView");
+
+        var currentProductionUnitLat = this.marker.options.location[0];
+        var currentProductionUnitLong = this.marker.options.location[1];
+
+        $.ajax({
+            url: "@Url.Action("GetProductionUnitDetail", "Home")",
+            dataType: "json",
+            data: { SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong },
+        type: "POST",
+        success: function (response) {
+            $("#PioneerCitizenName").text('NAME: ' + response.PioneerCitizenName);
+            $("#PioneerCitizenNumber").text('NUMBER: ' + response.PioneerCitizenNumber);
+            $("#ProductionUnitType").text('TYPE: ' + response.ProductionUnitType);
+            $("#ProductionUnitVersion").text('VERSION: ' + response.ProductionUnitVersion);
+            $("#ProductionUnitStartDate").text('START DATE: ' + kendo.toString(kendo.parseDate(response.ProductionUnitStartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy'));
+        }
+    });
+        
+        PHMeasures.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
+        TempMeasures.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
+        ORPMeasures.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
+        DissolvedOxyMeasures.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
+
+        OptionList.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
     }
 
     function onPHMeasuresDataBound() {
@@ -26,10 +46,38 @@
         $("#PHMeasureNoData").toggle(items === 0);
     }
 
+    function onTempMeasuresDataBound() {
+        var TempMeasures = $("#TempMeasures").data("kendoChart");
+
+        var items = TempMeasures.dataSource.data().length;
+        $("#TempMeasureNoData").toggle(items === 0);
+    }
+
+    function onORPMeasuresDataBound() {
+        var ORPMeasures = $("#ORPMeasures").data("kendoChart");
+
+        var items = ORPMeasures.dataSource.data().length;
+        $("#ORPMeasureNoData").toggle(items === 0);
+    }
+
+    function onDissolvedOxyMeasuresDataBound() {
+        var DissolvedOxyMeasures = $("#DissolvedOxyMeasures").data("kendoChart");
+
+        var items = DissolvedOxyMeasures.dataSource.data().length;
+        $("#DissolvedOxyNoData").toggle(items === 0);
+    }
+
 </script>
 
+<script type="text/x-kendo-tmpl" id="templateOption">
+    <div class="option">
+        <span>&bull; #:name#</span>
+    </div>
+</script>
+
+
 <div id="main-section-header" class="row">
-    <h2 id="title-pioneer" class="col-xs-3">Pioneer Citizen Network</h2>
+    <h2 id="title-pioneer" class="col-xs-3">Pioneer Citizen Network Preview</h2>
     <div style="clear:both;"></div>
 </div>
 
@@ -37,11 +85,25 @@
     <div id="map-wrapper" class="row">
         <div id="map-details" class="col-xs-2">
             <h3 class="section-header">Pick a Production Unit to view stats</h3>
+            <h2 id="PioneerCitizenName"></h2>
+            <div id="PioneerCitizenNumber"><span></span></div>
+            <div id="ProductionUnitType"><span></span></div>
+            <div id="ProductionUnitVersion"><span></span></div>
+            <div id="ProductionUnitStartDate"><span></span></div>
+            <h3 class="section-header">OPTIONS</h3>           
+            @(Html.Kendo().ListView<myfoodapp.Hub.Models.Option>()
+            .Name("OptionList")
+            .TagName("div")
+            .ClientTemplateId("templateOption")
+            .DataSource(dataSource => dataSource
+              .Read(read => read.Action("Option_Read", "Home"))
+            )
+            )
         </div>
         <div id="map-container" class="col-xs-10">
-            @model myfoodapp.Hub.Models.Map
+        @model myfoodapp.Hub.Models.Map
 
-            @(Html.Kendo().Map()
+         @(Html.Kendo().Map()
         .Name(Model.Name)
         .Center(Model.CenterLatitude, Model.CenterLongitude)
         .Zoom(Model.Zoom)
@@ -66,9 +128,9 @@
                 markers.Add()
                 .Location(marker.latlng)
                 .Shape(marker.shape)
-                .Tooltip(t => t.ShowOn(TooltipShowOnEvent.Click))
+                .Tooltip(t => t.ShowOn(TooltipShowOnEvent.MouseEnter))
                 .Tooltip(t => t.Events(e => e.Show("onShow")))
-                .Title(marker.name);
+                .Title(marker.name);               
             }
         })
 
@@ -79,7 +141,7 @@
 
 <div id="statsContainer" class="row">
         <div id="pHContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">pH</h3>
+            <h3 class="section-header">pH - Last 24h</h3>
             <span id="pHLabel"></span>
             <div class="sparkline-container">
 @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
@@ -87,7 +149,7 @@
             .Theme("metro")
             .AutoBind(false)
             .Legend(legend => legend
-                .Visible(true)
+                .Visible(false)
                 .Position(ChartLegendPosition.Top)
             )
             .ChartArea(ch => ch.Background("#eeeeee"))
@@ -99,7 +161,7 @@
                             {
                                 series.Line(model => model.value, categoryExpression: model => model.captureDate);
                             })
-            .HtmlAttributes(new { @style = "height: 260px;" })
+            .HtmlAttributes(new { @style = "height: 100px;" })
             .CategoryAxis(axis => axis
                 .Date()
                 .MajorGridLines(m => m.Visible(false))
@@ -107,7 +169,7 @@
                 .Labels(l => l.Visible(false))
             )
             .ValueAxis(axis => axis.Numeric()
-                .MajorUnit(50)
+                .MajorUnit(1)
                 .MajorTicks(x => x.Visible(false))
                 .MajorGridLines(m => m.Visible(false))
                 .Line(l => l.Visible(false))
@@ -115,7 +177,7 @@
             )
             .Tooltip(tooltip => tooltip
                 .Visible(true)
-                .Template("#=data.series.name.replace(data.series.field, data.value)#"))
+                .Template("#=kendo.format('{0}', data.value)#"))
  )
                 <div id="PHMeasureNoData" class="overlay">
                     <div>No data available</div>
@@ -123,83 +185,135 @@
             </div>
         </div>
         <div id = "TempContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">Temperature</h3>
+            <h3 class="section-header">Temperature - Last 24h</h3>
             <span id = "TemperatureLabel"></span>
             <div class="sparkline-container">
-                @*@(Html.Kendo().Sparkline<CountryRevenue_Result>()
-                    .Name("Revenue")
-                    .Theme("metro")
-                    .HtmlAttributes(new { @style = "height: 100px;" })
-                    .AutoBind(false)
-                    .DataSource(ds => ds
-                        .Read(read => read.Action("CountryRevenue", "RegionalSales"))
-                    )
-                    .Series(series =>
-                    {
-                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
-
-                    })
-                    .CategoryAxis(axis => axis
-                        .Date()
-                        .BaseUnit(ChartAxisBaseUnit.Months)
-                    )
-                    .Tooltip(t => t.Format("{0:c2}"))
-                )*@
-                <div id="RevenueNoData" class="overlay"><div>No data available</div></div>
+@(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("TempMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .Events(e => e.DataBound("onTempMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("TempMeasure_Read", "Home")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate);
+                            })
+            .HtmlAttributes(new { @style = "height: 100px;" })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#=kendo.format('{0}', data.value)#"))
+)
+                <div id="TempMeasureNoData" class="overlay"><div>No data available</div></div>
             </div>
         </div>
         <div id="ORPContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">ORP</h3>
+            <h3 class="section-header">ORP - Last 24h</h3>
             <span id="ORPLabel"></span>
             <div class="sparkline-container">
-                @*@(Html.Kendo().Sparkline<CountryOrders_Result>()
-                    .Name("Orders")
-                    .Theme("metro")
-                    .HtmlAttributes(new { @style = "height: 100px;" })
-                    .AutoBind(false)
-                    .DataSource(ds => ds
-                        .Read(read => read.Action("CountryOrders", "RegionalSales"))
-                    )
-                    .Series(series =>
-                    {
-                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
-                    })
-                    .CategoryAxis(axis => axis
-                        .Date()
-                        .BaseUnit(ChartAxisBaseUnit.Months)
-                    )
-                )*@
-                <div id="OrdersNoData" class="overlay"><div>No data available</div></div>
+@(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("ORPMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .Events(e => e.DataBound("onORPMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("ORPMeasure_Read", "Home")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate);
+                            })
+            .HtmlAttributes(new { @style = "height: 100px;" })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#=kendo.format('{0}', data.value)#"))
+)
+                <div id="ORPMeasureNoData" class="overlay"><div>No data available</div></div>
             </div>
         </div>
         <div id="DissolvedOxyContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">Dissolved Oxygen</h3>
-            <span id="CustomersLabel"></span>
+            <h3 class="section-header">Dissolved Oxygen - Last 24h</h3>
+            <span id="DissolvedOxyLabel"></span>
             <div class="sparkline-container">
-                @*@(Html.Kendo().Sparkline<CountryCustomers_Result>()
-                    .Name("Customers")
-                    .Theme("metro")
-                    .HtmlAttributes(new { @style = "height: 100px;" })
-                    .AutoBind(false)
-                    .DataSource(ds => ds
-                        .Read(read => read.Action("CountryCustomers", "RegionalSales"))
-                    )
-                    .Series(series =>
-                    {
-                        series.Column(x => x.Value).CategoryField("Date").Aggregate(ChartSeriesAggregate.Sum).Color("#1996e4").Gap(0.2);
-                    })
-                    .CategoryAxis(axis => axis
-                        .Date()
-                        .BaseUnit(ChartAxisBaseUnit.Months)
-                    )
-                )*@
-                <div id="CustomersNoData" class="overlay"><div>No data available</div></div>
+@(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("DissolvedOxyMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .Events(e => e.DataBound("onDissolvedOxyMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("DissolvedOxyMeasure_Read", "Home")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate);
+                            })
+            .HtmlAttributes(new { @style = "height: 100px;" })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#=kendo.format('{0}', data.value)#"))
+)
+                <div id="DissolvedOxyNoData" class="overlay"><div>No data available</div></div>
             </div>
         </div>
 </div>
 
 <div id="performanceHealthAnalysis">
-        <h3 class="section-header">Performance &Aacute; Health Analysis</h3>
+        <h3 class="section-header">Performance and Health Analysis</h3>
         @*@(Html.Kendo().Chart<CountryTopProducts_Result>()
         .Name("TopSellingProducts")
         .Theme("metro")
@@ -245,6 +359,20 @@
 </div>
 
 <style>
+    #OptionList {
+        background: transparent;
+        border-color: transparent;
+        color: #333      
+    }
+
+    .k-listview:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
     .k-map .k-marker-green-marker {
         background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgMTAgMTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwIDEwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxjaXJjbGUgZmlsbD0iIzAwRkYzMSIgY3g9IjUiIGN5PSI1IiByPSI1Ii8+DQo8L3N2Zz4NCg==');
         width: 10px;
@@ -257,6 +385,15 @@
         width: 10px;
         height: 10px;
     }
+
+    /*.k-map .k-marker-green-marker .k-state-hover:hover {
+        background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgMTAgMTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwIDEwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxjaXJjbGUgZmlsbD0iI0ZGMjUwMCIgY3g9IjUiIGN5PSI1IiByPSI1Ii8+DQo8L3N2Zz4NCg==');
+        width: 20px;
+        height: 20px;
+    }*/
+
 </style>
+
+
 
 

@@ -32,7 +32,7 @@
             toolbar.Create();
             toolbar.Save();
         })
-        .HtmlAttributes(new { style = "height: 550px;" })
+        .HtmlAttributes(new { style = "height: 800px;" })
         .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()
         .Sortable()
@@ -47,7 +47,7 @@
         .DataSource(dataSource => dataSource
             .Ajax()
             .Batch(true)
-            .PageSize(50)
+            .PageSize(20)
             .ServerOperation(false)
             .Model(model =>
             {

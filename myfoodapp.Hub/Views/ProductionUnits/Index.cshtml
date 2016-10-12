@@ -28,7 +28,7 @@
             columns.Bound(c => c.version).Width(100);
             columns.Bound(c => c.info).Width(175);
             columns.ForeignKey(c => c.productionUnitTypeId, (System.Collections.IEnumerable)ViewData["productionUnitTypes"], "Id", "name").Title("Prod. Type").Width(100);
-            columns.ForeignKey(c => c.ownerId, (System.Collections.IEnumerable)ViewData["owners"], "Id", "userName").Title("Owner").Width(100);
+            columns.ForeignKey(c => c.ownerId, (System.Collections.IEnumerable)ViewData["owners"], "Id", "pioneerCitizenName").Title("Owner").Width(100);
             //columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
             columns.Command(command => { command.Destroy(); }).Width(250);
         })
@@ -37,7 +37,7 @@
             toolbar.Create();
             toolbar.Save();
         })
-        .HtmlAttributes(new { style = "height: 550px;" })
+        .HtmlAttributes(new { style = "height: 800px;" })
         //.Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("ProductionUnitEditTemplate"))
         .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()

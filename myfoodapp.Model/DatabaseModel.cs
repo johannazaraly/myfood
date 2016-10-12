@@ -123,7 +123,10 @@ namespace myfoodapp.Model
 
                 if (rslt != null)
                 {
-                    return Math.Round(rslt.value, 1);
+                    if(sensorType == SensorTypeEnum.humidity)
+                        return Math.Round(rslt.value, 0);
+                    else
+                        return Math.Round(rslt.value, 1);
                 }
                 else
                     return 0;

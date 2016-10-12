@@ -112,9 +112,10 @@ namespace myfoodapp.Hub.Controllers
                         .Select(m => new OwnerViewModel
                         {
                             Id = m.Id,
-                            userName = m.user.UserName
+                            pioneerCitizenName = m.pioneerCitizenName,
+                            pioneerCitizenNumber = m.pioneerCitizenNumber
                         })
-                        .OrderBy(e => e.userName);
+                        .OrderBy(e => e.pioneerCitizenNumber);
 
             ViewData["owners"] = owners;
         }

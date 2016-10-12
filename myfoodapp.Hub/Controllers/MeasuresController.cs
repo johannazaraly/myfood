@@ -35,7 +35,10 @@ namespace myfoodapp.Hub.Controllers
             if (measureService == null)
                 measureService = new MeasureService(db);
 
-            return Json(measureService.Read().ToDataSourceResult(request));
+            JsonResult result = Json(measureService.Read().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+            result.MaxJsonLength = 8675309;
+
+            return result;
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

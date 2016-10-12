@@ -10,7 +10,8 @@ namespace myfoodapp.Hub.Models
     public class OwnerViewModel
     {
         public int Id { get; set; }
-        public string userName { get; set; }
+        public int pioneerCitizenNumber { get; set; }
+        public string pioneerCitizenName { get; set; }
     }
 
 }

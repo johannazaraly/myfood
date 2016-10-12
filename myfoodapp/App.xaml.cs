@@ -38,8 +38,8 @@ namespace myfoodapp
 
                 if (frame != null)
                 {
-                    Type whatpageisit = frame.SourcePageType;
-                    if (whatpageisit == typeof(MainPage))
+                    Type currentPage = frame.SourcePageType;
+                    if (currentPage == typeof(MainPage))
                         App.TryShowNewWindow<MainPage>();
                 }
             });

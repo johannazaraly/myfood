@@ -28,12 +28,21 @@ namespace myfoodapp.Hub.Models
         public ProductionUnitOwner owner { get; set; }
     }
 
+    public class OptionList
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public ProductionUnit productionUnit { get; set; }
+        public Option option { get; set; }
+    }
+
     public class ProductionUnitOwner
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
         public ApplicationUser user { get; set; }
+        public int pioneerCitizenNumber { get; set; }
+        public string pioneerCitizenName { get; set; }
     }
 
     public class ProductionUnitType
