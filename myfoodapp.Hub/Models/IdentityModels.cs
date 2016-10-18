@@ -44,9 +44,11 @@ namespace myfoodapp.Hub.Models
 
         public System.Data.Entity.DbSet<myfoodapp.Hub.Models.Option> Options { get; set; }
 
-        public System.Data.Entity.DbSet<myfoodapp.Hub.Models.OptionList> OptionList { get; set; }
+        public System.Data.Entity.DbSet<myfoodapp.Hub.Models.OptionList> OptionLists { get; set; }
 
-        public System.Data.Entity.DbSet<myfoodapp.Hub.Models.ProductionUnitOwner> ProductionUnitOwner { get; set; }
+        public System.Data.Entity.DbSet<myfoodapp.Hub.Models.ProductionUnitOwner> ProductionUnitOwners { get; set; }
+
+        public System.Data.Entity.DbSet<myfoodapp.Hub.Models.Log> Logs { get; set; }
 
     }
 }

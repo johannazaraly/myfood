@@ -35,7 +35,7 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                <h1 id="dash-logo" class="center-block">myfood&#183;Dashboard</h1>
+                <h1 id="dash-logo" class="center-block"><a href="@(Url.Action("Index", "Home"))">myfood&#183;IOT&#183;Hub</a></h1>
                 <div class="collapse navbar-collapse" id="sidebar-nav" role="navigation">
                     <ul class="nav">
                         <li id="DashboardView"><a href="@(Url.Action("Index", "Messages"))"><span class="icon icon-chart-column"></span>Messages</a></li>
@@ -63,5 +63,25 @@
             });
         });
     </script>
+
+    <style type="text/css">
+        a:link {
+            color: #ffffff;
+        }
+        /* normal link */
+        a:visited {
+            color: #ffffff;
+        }
+        /* visited link */
+        a:hover {
+            color: #ffffff;
+        }
+        /* mouse over link */
+        a:active {
+            color: #ffffff;
+        }
+        /* selected link */
+    </style>
+
 </body>
 </html>

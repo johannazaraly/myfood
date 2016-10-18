@@ -31,6 +31,7 @@ namespace myfoodapp.Hub.Services
                 info = pu.info,
                 options = pu.options,
                 reference = pu.reference,
+                picturePath = pu.picturePath,
 
                 productionUnitTypeId = pu.productionUnitType.Id,
                 productionUnitType = new ProductionUnitTypeViewModel()
@@ -68,6 +69,7 @@ namespace myfoodapp.Hub.Services
             entity.info = productionUnit.info;
             entity.options = productionUnit.options;
             entity.reference = productionUnit.reference;
+            entity.picturePath = productionUnit.picturePath;
 
             if (entity.productionUnitType == null)
             {
@@ -102,6 +104,7 @@ namespace myfoodapp.Hub.Services
                 target.info = productionUnit.info;
                 target.options = productionUnit.options;
                 target.reference = productionUnit.reference;
+                target.picturePath = productionUnit.picturePath;
 
                 ProductionUnitType currentProductionUnitType = new ProductionUnitType();
                 currentProductionUnitType = entities.ProductionUnitTypes.Where(p => p.Id == productionUnit.productionUnitTypeId).FirstOrDefault();
@@ -109,7 +112,7 @@ namespace myfoodapp.Hub.Services
                 target.productionUnitType = currentProductionUnitType;
 
                 ProductionUnitOwner currentProductionUnitOwner = new ProductionUnitOwner();
-                currentProductionUnitOwner = entities.ProductionUnitOwner.Where(p => p.Id == productionUnit.ownerId).FirstOrDefault();
+                currentProductionUnitOwner = entities.ProductionUnitOwners.Where(p => p.Id == productionUnit.ownerId).FirstOrDefault();
 
                 target.owner = currentProductionUnitOwner;
             }      

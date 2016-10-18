@@ -108,7 +108,7 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateOwners()
         {
-            var owners = db.ProductionUnitOwner
+            var owners = db.ProductionUnitOwners
                         .Select(m => new OwnerViewModel
                         {
                             Id = m.Id,

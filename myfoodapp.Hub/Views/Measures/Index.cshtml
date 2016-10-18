@@ -21,18 +21,18 @@
         .Columns(columns =>
         {
             columns.Bound(c => c.Id).Width(75);
+            columns.ForeignKey(c => c.productionUnitId, (System.Collections.IEnumerable)ViewData["productionUnits"], "Id", "info").Title("prod. unit").Width(100);
+            columns.ForeignKey(c => c.sensorId, (System.Collections.IEnumerable)ViewData["sensorTypes"], "Id", "name").Title("sensor type").Width(100);
             columns.Bound(c => c.captureDate).Format("{0:d} - {0:t}").Width(100);
             columns.Bound(c => c.value).Width(75);
-            columns.ForeignKey(c => c.productionUnitId, (System.Collections.IEnumerable)ViewData["productionUnits"], "Id", "info").Title("Prod. Unit").Width(100);
-            columns.ForeignKey(c => c.sensorId, (System.Collections.IEnumerable)ViewData["sensorTypes"], "Id", "name").Title("Sensor Type").Width(100);
-            columns.Command(command => command.Destroy()).Width(110);
+            //columns.Command(command => command.Destroy()).Width(110);
         })
-        .ToolBar(toolbar =>
-        {
-            toolbar.Create();
-            toolbar.Save();
-        })
-        .HtmlAttributes(new { style = "height: 800px;" })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 750px;" })
         .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()
         .Sortable()
@@ -55,14 +55,14 @@
                 model.Field(c => c.Id).Editable(false);
                 model.Field(c => c.captureDate).Editable(false);
                 model.Field(c => c.productionUnitId).Editable(false);
-                model.Field(c => c.value).Editable(true);
+                model.Field(c => c.value).Editable(false);
                 model.Field(c => c.sensorId).DefaultValue(1);
             })
             .Events(events => events.Error("error_handler"))
-            .Create("Editing_Create", "Measures")
+            //.Create("Editing_Create", "Measures")
             .Read("Editing_Read", "Measures")
-            .Update("Editing_Update", "Measures")
-            .Destroy("Editing_Destroy", "Measures")
+        //.Update("Editing_Update", "Measures")
+        //.Destroy("Editing_Destroy", "Measures")
         )
         )
     </div>

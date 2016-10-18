@@ -25,14 +25,14 @@ namespace myfoodapp.Hub.Controllers
             var listMarker = new List<Marker>();
 
             db.ProductionUnits.ToList().ForEach(p => 
-                                        listMarker.Add(new Marker(p.locationLatitude, p.locationLongitude, p.info) { shape = "greenMarker" }));
+                                        listMarker.Add(new Marker(p.locationLatitude, p.locationLongitude, p.info) { shape = "redMarker" }));
 
             var map = new Models.Map()
             {
                 Name = "map",
-                CenterLatitude = 46.2652306,
-                CenterLongitude = -5.489303,
-                Zoom = 5,
+                CenterLatitude = 44.0235561,
+                CenterLongitude = -10.3640063,
+                Zoom = 4,
                 TileUrlTemplate = "http://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png",
                 TileSubdomains = new string[] { "a", "b", "c" },
                 TileAttribution = "&copy; <a href='http://osm.org/copyright'>OpenStreetMap contributors</a>",
@@ -89,6 +89,7 @@ namespace myfoodapp.Hub.Controllers
                               ProductionUnitVersion = rslt.version,
                               ProductionUnitStartDate = rslt.startDate,
                               ProductionUnitType = rslt.productionUnitType.name,
+                              PicturePath = rslt.picturePath,
                             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -97,7 +98,7 @@ namespace myfoodapp.Hub.Controllers
             if (measureService == null)
                 measureService = new MeasureService(db);
 
-            var rslt = db.OptionList.Include("productionUnit")
+            var rslt = db.OptionLists.Include("productionUnit")
                                     .Include("option")
                                     .Where(p => p.productionUnit.locationLatitude == SelectedProductionUnitLat &&
                                                 p.productionUnit.locationLongitude == SelectedProductionUnitLong)

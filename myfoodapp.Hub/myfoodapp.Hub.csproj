@@ -45,11 +45,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\myfoodapp\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\myfoodapp\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Kendo.Mvc">
@@ -189,7 +189,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Concurrent" />
     <Reference Include="System.Collections.Immutable, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\myfoodapp\packages\System.Collections.Immutable.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -359,11 +358,11 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\MessageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MeasuresController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\ProductionUnitsController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -371,9 +370,18 @@
     <Compile Include="Migrations\201610100931060_Init.Designer.cs">
       <DependentUpon>201610100931060_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610140429333_initial_4.cs" />
+    <Compile Include="Migrations\201610140429333_initial_4.Designer.cs">
+      <DependentUpon>201610140429333_initial_4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610170927231_Init_5.cs" />
+    <Compile Include="Migrations\201610170927231_Init_5.Designer.cs">
+      <DependentUpon>201610170927231_Init_5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\Map.cs" />
     <Compile Include="Models\MeasureModel.cs" />
     <Compile Include="Models\ProductionUnitModel.cs" />
@@ -732,6 +740,20 @@
     <Content Include="Content\kendo\Uniform\sprite_kpi.png" />
     <Content Include="Content\kendo\Uniform\sprite_kpi_2x.png" />
     <Content Include="Content\miniLogo.png" />
+    <Content Include="Content\Pictures\BivilleFamily22.JPG" />
+    <Content Include="Content\Pictures\BraineFamily22.JPG" />
+    <Content Include="Content\Pictures\CannesFamily14.JPG" />
+    <Content Include="Content\Pictures\GertwillerFamily22.jpg" />
+    <Content Include="Content\Pictures\GuerpontFamily22.jpg" />
+    <Content Include="Content\Pictures\LeCeillierFamily22.JPG" />
+    <Content Include="Content\Pictures\MelinFamily22.JPG" />
+    <Content Include="Content\Pictures\MezelFamily22.JPG" />
+    <Content Include="Content\Pictures\OberpallenFamily22.jpg" />
+    <Content Include="Content\Pictures\OuzoueFamily22.JPG" />
+    <Content Include="Content\Pictures\PavillyFamily22.JPG" />
+    <Content Include="Content\Pictures\SainteBarbeFamily22.JPG" />
+    <Content Include="Content\Pictures\TarragonaFamily14.JPG" />
+    <Content Include="Content\Pictures\VillevaudeFamily22.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -853,7 +875,8 @@
     <Content Include="Content\kendo\kendo.silver.mobile.min.css.map" />
     <Content Include="Content\kendo\kendo.uniform.min.css.map" />
     <Content Include="Content\kendo\kendo.uniform.mobile.min.css.map" />
-    <Content Include="Content\countries.geo.json" />
+    <Content Include="Content\countries.geo.txt" />
+    <None Include="Properties\PublishProfiles\myfoodapphub - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -2124,6 +2147,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201610100931060_Init.resx">
       <DependentUpon>201610100931060_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610140429333_initial_4.resx">
+      <DependentUpon>201610140429333_initial_4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610170927231_Init_5.resx">
+      <DependentUpon>201610170927231_Init_5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

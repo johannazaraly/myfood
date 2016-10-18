@@ -20,26 +20,25 @@
         .Name("grid")
         .Columns(columns =>
         {
-            columns.Bound(c => c.Id).Width(75);
-            columns.Bound(c => c.startDate).Format("{0:d}").Width(100);
-            columns.Bound(c => c.reference).Width(75);
-            columns.Bound(c => c.locationLatitude).Width(75).Title("Lat.");
-            columns.Bound(c => c.locationLongitude).Width(75).Title("Long.");
-            columns.Bound(c => c.version).Width(100);
+            columns.ForeignKey(c => c.ownerId, (System.Collections.IEnumerable)ViewData["owners"], "Id", "pioneerCitizenName").Title("owner").Width(120);
             columns.Bound(c => c.info).Width(175);
-            columns.ForeignKey(c => c.productionUnitTypeId, (System.Collections.IEnumerable)ViewData["productionUnitTypes"], "Id", "name").Title("Prod. Type").Width(100);
-            columns.ForeignKey(c => c.ownerId, (System.Collections.IEnumerable)ViewData["owners"], "Id", "pioneerCitizenName").Title("Owner").Width(100);
+            columns.Bound(c => c.startDate).Format("{0:d}").Width(120);
+            columns.ForeignKey(c => c.productionUnitTypeId, (System.Collections.IEnumerable)ViewData["productionUnitTypes"], "Id", "name").Title("prod. type").Width(100);
+            columns.Bound(c => c.locationLatitude).Width(80).Title("lat.").HtmlAttributes(new { style = "text-align:center" }).HeaderHtmlAttributes(new { style = "text-align:center" });
+            columns.Bound(c => c.locationLongitude).Width(80).Title("long.").HtmlAttributes(new { style = "text-align:center" }).HeaderHtmlAttributes(new { style = "text-align:center" });
+            columns.Bound(c => c.version).Width(80).HtmlAttributes(new { style = "text-align:right" }).HeaderHtmlAttributes(new { style = "text-align:right" });
+            columns.Bound(c => c.reference).Width(80).Title("ref.").HtmlAttributes(new { style = "text-align:right" }).HeaderHtmlAttributes(new { style = "text-align:right" });
             //columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
-            columns.Command(command => { command.Destroy(); }).Width(250);
+            //columns.Command(command => { command.Destroy(); }).Width(250);
         })
-        .ToolBar(toolbar =>
-        {
-            toolbar.Create();
-            toolbar.Save();
-        })
-        .HtmlAttributes(new { style = "height: 800px;" })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 750px;" })
         //.Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("ProductionUnitEditTemplate"))
-        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        //.Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()
         .Sortable()
         .Scrollable()
@@ -58,20 +57,20 @@
             {
                 model.Id(c => c.Id);
                 model.Field(c => c.Id).Editable(false);
-                model.Field(c => c.startDate).Editable(true);
-                model.Field(c => c.reference).Editable(true);
-                model.Field(c => c.locationLatitude).Editable(true);
-                model.Field(c => c.locationLongitude).Editable(true);
-                model.Field(c => c.version).Editable(true);
-                model.Field(c => c.info).Editable(true);
+                model.Field(c => c.startDate).Editable(false);
+                model.Field(c => c.reference).Editable(false);
+                model.Field(c => c.locationLatitude).Editable(false);
+                model.Field(c => c.locationLongitude).Editable(false);
+                model.Field(c => c.version).Editable(false);
+                model.Field(c => c.info).Editable(false);
                 model.Field(c => c.productionUnitTypeId).DefaultValue(1);
                 model.Field(c => c.ownerId).DefaultValue(1);
             })
             .Events(events => events.Error("error_handler"))
-            .Create("Editing_Create", "ProductionUnits")
+            //.Create("Editing_Create", "ProductionUnits")
             .Read("Editing_Read", "ProductionUnits")
-            .Update("Editing_Update", "ProductionUnits")
-            .Destroy("Editing_Destroy", "ProductionUnits")
+        //.Update("Editing_Update", "ProductionUnits")
+        //.Destroy("Editing_Destroy", "ProductionUnits")
         )
         )
     </div>

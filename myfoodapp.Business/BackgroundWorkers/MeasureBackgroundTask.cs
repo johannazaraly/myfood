@@ -9,6 +9,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
+using Windows.Networking.NetworkOperators;
+using System.Linq;
 
 namespace myfoodapp.Business
 {
@@ -58,8 +61,64 @@ namespace myfoodapp.Business
             bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
             bw.ProgressChanged += Bw_ProgressChanged;
 
+            var taskTethering = Task.Run(async () =>
+            {
+                try
+                {
+                    ConnectionProfileFilter filter = new ConnectionProfileFilter();
+                    filter.IsWlanConnectionProfile = true;
+
+                    //var connectedProfile = NetworkInformation.GetInternetConnectionProfile();
+
+                    var profile = await NetworkInformation.FindConnectionProfilesAsync(filter);
+
+                    var connectedProfile = profile.FirstOrDefault();
+
+                    if (connectedProfile != null)
+                    {
+                        var networkOperatorTetheringManager = NetworkOperatorTetheringManager.CreateFromConnectionProfile(connectedProfile);
+
+                        if (networkOperatorTetheringManager.TetheringOperationalState != TetheringOperationalState.On)
+                        {
+                            var config = new NetworkOperatorTetheringAccessPointConfiguration();
+
+                            config.Ssid = "MYFOOD_AP";
+                            config.Passphrase = "myfoodpi";
+
+                            logModel.AppendLog(Log.CreateLog("Access Point creation init...", Log.LogType.System));
+                            await networkOperatorTetheringManager.ConfigureAccessPointAsync(config);
+
+                            var rslt = await networkOperatorTetheringManager.StartTetheringAsync();
+                            await Task.Delay(5000);
+                            logModel.AppendLog(Log.CreateLog("Access Point creation ending...", Log.LogType.System));
+
+                            if (rslt.Status == TetheringOperationStatus.Success)
+                            {
+                                logModel.AppendLog(Log.CreateLog("Access Point created", Log.LogType.System));
+                            }
+                            else
+                            {
+                                logModel.AppendLog(Log.CreateLog(String.Format("Access Point creation failed - {0}", rslt.AdditionalErrorMessage), Log.LogType.Warning));
+                            }
+                        }
+                        else
+                            logModel.AppendLog(Log.CreateLog("Access Point already on", Log.LogType.System));
+                    }
+                    else
+                        logModel.AppendLog(Log.CreateLog("No connection profile found", Log.LogType.System));
+                }
+                catch (Exception ex)
+                {
+                    logModel.AppendLog(Log.CreateErrorLog("Error on Access Point init", ex));
+                }
+            });
+
+            taskTethering.Wait();
+
+            logModel.AppendLog(Log.CreateLog("Local Webserver starting..", Log.LogType.System));
             webServer = new HTTPServer();
             webServer.Initialise();
+            logModel.AppendLog(Log.CreateLog("Local Webserver initialized", Log.LogType.System));
         }
 
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)

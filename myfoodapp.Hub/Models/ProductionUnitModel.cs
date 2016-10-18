@@ -26,6 +26,7 @@ namespace myfoodapp.Hub.Models
         public List<Option> options { get; set; }
         [Required]
         public ProductionUnitOwner owner { get; set; }
+        public string picturePath { get; set; }
     }
 
     public class OptionList
@@ -60,5 +61,4 @@ namespace myfoodapp.Hub.Models
         public string name { get; set; }
         public string description { get; set; }
     }
-
 }

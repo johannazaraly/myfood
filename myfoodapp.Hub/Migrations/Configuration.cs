@@ -26,12 +26,12 @@ namespace myfoodapp.Hub.Migrations
             context.Messages.RemoveRange(context.Messages);
             context.MessageTypes.RemoveRange(context.MessageTypes);
 
-            context.ProductionUnitOwner.RemoveRange(context.ProductionUnitOwner);
+            context.ProductionUnitOwners.RemoveRange(context.ProductionUnitOwners);
             context.ProductionUnitTypes.RemoveRange(context.ProductionUnitTypes);
 
             context.Options.RemoveRange(context.Options);
 
-            context.OptionList.RemoveRange(context.OptionList);
+            context.OptionLists.RemoveRange(context.OptionLists);
 
             context.SaveChanges();
 
@@ -220,38 +220,38 @@ namespace myfoodapp.Hub.Migrations
 
             //ADD PRODUCTION UNIT OWNERS
             //GREENHOUSE OWNERS 
-            context.ProductionUnitOwner.Add(MickaelGOwner);
-            context.ProductionUnitOwner.Add(MatthieuUOwner);
-            context.ProductionUnitOwner.Add(JohanNOwner);
+            context.ProductionUnitOwners.Add(MickaelGOwner);
+            context.ProductionUnitOwners.Add(MatthieuUOwner);
+            context.ProductionUnitOwners.Add(JohanNOwner);
 
-            context.ProductionUnitOwner.Add(ChristopheLOwner);
-            context.ProductionUnitOwner.Add(JeanPhilippeMGOwner);
-            context.ProductionUnitOwner.Add(RosarioRGOwner);
-            context.ProductionUnitOwner.Add(AndrewMOwner);
-            context.ProductionUnitOwner.Add(SebastienCOwner);
-            context.ProductionUnitOwner.Add(MichelVSOwner);
-            context.ProductionUnitOwner.Add(DidierPOwner);
-            context.ProductionUnitOwner.Add(ChristophePOwner);
-            context.ProductionUnitOwner.Add(SabineCOwner);
-            context.ProductionUnitOwner.Add(PhilippeTOwner);
-            context.ProductionUnitOwner.Add(StanAOwner);
-            context.ProductionUnitOwner.Add(ChristianeWOwner);
+            context.ProductionUnitOwners.Add(ChristopheLOwner);
+            context.ProductionUnitOwners.Add(JeanPhilippeMGOwner);
+            context.ProductionUnitOwners.Add(RosarioRGOwner);
+            context.ProductionUnitOwners.Add(AndrewMOwner);
+            context.ProductionUnitOwners.Add(SebastienCOwner);
+            context.ProductionUnitOwners.Add(MichelVSOwner);
+            context.ProductionUnitOwners.Add(DidierPOwner);
+            context.ProductionUnitOwners.Add(ChristophePOwner);
+            context.ProductionUnitOwners.Add(SabineCOwner);
+            context.ProductionUnitOwners.Add(PhilippeTOwner);
+            context.ProductionUnitOwners.Add(StanAOwner);
+            context.ProductionUnitOwners.Add(ChristianeWOwner);
 
             //TO BE DEPLOYED 
-            context.ProductionUnitOwner.Add(MargotWOwner);
-            context.ProductionUnitOwner.Add(GillesDOwner); 
-            context.ProductionUnitOwner.Add(CristofDOwner);
-            context.ProductionUnitOwner.Add(PieterjanGOwner);
-            context.ProductionUnitOwner.Add(AmousHGOwner);
+            context.ProductionUnitOwners.Add(MargotWOwner);
+            context.ProductionUnitOwners.Add(GillesDOwner); 
+            context.ProductionUnitOwners.Add(CristofDOwner);
+            context.ProductionUnitOwners.Add(PieterjanGOwner);
+            context.ProductionUnitOwners.Add(AmousHGOwner);
 
             //TO BE CONFIRMED
-            context.ProductionUnitOwner.Add(StephaneMOwner);
-            context.ProductionUnitOwner.Add(BrigitteGOwner);
+            context.ProductionUnitOwners.Add(StephaneMOwner);
+            context.ProductionUnitOwners.Add(BrigitteGOwner);
 
-            context.ProductionUnitOwner.Add(JoelTOwner);
-            context.ProductionUnitOwner.Add(AnhHungPOwner);
-            context.ProductionUnitOwner.Add(NicolasROwner);
-            context.ProductionUnitOwner.Add(CyrilleEOwner);
+            context.ProductionUnitOwners.Add(JoelTOwner);
+            context.ProductionUnitOwners.Add(AnhHungPOwner);
+            context.ProductionUnitOwners.Add(NicolasROwner);
+            context.ProductionUnitOwners.Add(CyrilleEOwner);
 
             context.SaveChanges();
 
@@ -267,6 +267,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "2",
                 owner = MickaelGOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "SainteBarbeFamily22.jpg"
             };
 
             var MURProdUnit = new ProductionUnit()
@@ -279,6 +280,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "2",
                 owner = MatthieuUOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "GertwillerFamily22.jpg"
             };
 
             var JNAProdUnit = new ProductionUnit()
@@ -303,6 +305,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = ChristopheLOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "BivilleFamily22.jpg"
             };
 
             var JPMProdUnit = new ProductionUnit()
@@ -315,6 +318,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = JeanPhilippeMGOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "PavillyFamily22.jpg"
             };
 
             var AMAProdUnit = new ProductionUnit()
@@ -327,6 +331,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = AndrewMOwner,
                 productionUnitType = prodUnitTypeFam14,
+                picturePath = "TarragonaFamily14.jpg"
             };
 
             var RROProdUnit = new ProductionUnit()
@@ -339,6 +344,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = RosarioRGOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "VillevaudeFamily22.jpg"
             };
 
             var SCRProdUnit = new ProductionUnit()
@@ -346,11 +352,12 @@ namespace myfoodapp.Hub.Migrations
                 locationLatitude = 45.7498386,
                 locationLongitude = 3.2077446,
                 reference = "70123",
-                info = "Agronomist Engineering Experimentation",
+                info = "Agronomist Experimentation",
                 startDate = new DateTime(2016, 04, 28),
                 version = "1",
                 owner = SebastienCOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "MezelFamily22.jpg"
             };
 
             var MSVProdUnit = new ProductionUnit()
@@ -363,6 +370,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = MichelVSOwner,
                 productionUnitType = prodUnitTypeFam14,
+                picturePath = "CannesFamily14.jpg"
             };
 
             var DPRProdUnit = new ProductionUnit()
@@ -375,6 +383,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = DidierPOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "LeCeillierFamily22.jpg"
             };
 
             var CPEProdUnit = new ProductionUnit()
@@ -387,6 +396,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = ChristophePOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "GuerpontFamily22.jpg"
             };
 
             var SCOProdUnit = new ProductionUnit()
@@ -399,6 +409,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = SabineCOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "BraineFamily22.jpg"
             };
 
             var PTOProdUnit = new ProductionUnit()
@@ -411,6 +422,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = PhilippeTOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "MelinFamily22.jpg"
             };
 
             var SASProdUnit = new ProductionUnit()
@@ -423,6 +435,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "1",
                 owner = StanAOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "OuzoueFamily22.jpg"
             };
 
             var CWIProdUnit = new ProductionUnit()
@@ -435,6 +448,7 @@ namespace myfoodapp.Hub.Migrations
                 version = "2",
                 owner = ChristianeWOwner,
                 productionUnitType = prodUnitTypeFam22,
+                picturePath = "OberpallenFamily22.jpg"
             };
 
             //TO BE DEPLOYED 
@@ -790,40 +804,40 @@ namespace myfoodapp.Hub.Migrations
 
             //ADD OPTIONS
             //GREENHOUSE OWNERS
-            context.OptionList.AddRange(optionsMGA);
-            context.OptionList.AddRange(optionsMUR);
-            context.OptionList.AddRange(optionsJNA);
+            context.OptionLists.AddRange(optionsMGA);
+            context.OptionLists.AddRange(optionsMUR);
+            context.OptionLists.AddRange(optionsJNA);
 
-            context.OptionList.AddRange(optionsCLA);
-            context.OptionList.AddRange(optionsJPM);
-            context.OptionList.AddRange(optionsRRO);
-            context.OptionList.AddRange(optionsAMA);
-            context.OptionList.AddRange(optionsSCR);
-            context.OptionList.AddRange(optionsMSV);
-            context.OptionList.AddRange(optionsDPR);
-            context.OptionList.AddRange(optionsCPE);
-            context.OptionList.AddRange(optionsSCO);
-            context.OptionList.AddRange(optionsPTO);
-            context.OptionList.AddRange(optionsSAS);
-            context.OptionList.AddRange(optionsCWI);
+            context.OptionLists.AddRange(optionsCLA);
+            context.OptionLists.AddRange(optionsJPM);
+            context.OptionLists.AddRange(optionsRRO);
+            context.OptionLists.AddRange(optionsAMA);
+            context.OptionLists.AddRange(optionsSCR);
+            context.OptionLists.AddRange(optionsMSV);
+            context.OptionLists.AddRange(optionsDPR);
+            context.OptionLists.AddRange(optionsCPE);
+            context.OptionLists.AddRange(optionsSCO);
+            context.OptionLists.AddRange(optionsPTO);
+            context.OptionLists.AddRange(optionsSAS);
+            context.OptionLists.AddRange(optionsCWI);
 
             //TO BE DEPLOYED
-            context.OptionList.AddRange(optionsMWI);
-            context.OptionList.AddRange(optionsMLA);
-            context.OptionList.AddRange(optionsGDE);
-            context.OptionList.AddRange(optionsCDE);
-            context.OptionList.AddRange(optionsPCL);
-            context.OptionList.AddRange(optionsAHE);
+            context.OptionLists.AddRange(optionsMWI);
+            context.OptionLists.AddRange(optionsMLA);
+            context.OptionLists.AddRange(optionsGDE);
+            context.OptionLists.AddRange(optionsCDE);
+            context.OptionLists.AddRange(optionsPCL);
+            context.OptionLists.AddRange(optionsAHE);
 
             //TO BE CONFIRMED
-            context.OptionList.AddRange(optionsSMA);
-            context.OptionList.AddRange(optionsBGU);
+            context.OptionLists.AddRange(optionsSMA);
+            context.OptionLists.AddRange(optionsBGU);
 
             //CONTRIBUTORS
-            context.OptionList.AddRange(optionsAPO);
-            context.OptionList.AddRange(optionsJTE);
-            context.OptionList.AddRange(optionsNRO);
-            context.OptionList.AddRange(optionsCEL);
+            context.OptionLists.AddRange(optionsAPO);
+            context.OptionLists.AddRange(optionsJTE);
+            context.OptionLists.AddRange(optionsNRO);
+            context.OptionLists.AddRange(optionsCEL);
 
             context.SaveChanges();
 
@@ -842,7 +856,7 @@ namespace myfoodapp.Hub.Migrations
 
                 foreach (ProductionUnit productionUnit in productionUnitList)
                 {
-                    for (int i = 0; i < 40; i++)
+                    for (int i = 0; i < 20; i++)
                     {
                         Random rnd = new Random();
                         var currentDate = DateTime.Now;
@@ -867,8 +881,8 @@ namespace myfoodapp.Hub.Migrations
                         decimal airTemperatureValue = Convert.ToDecimal(Math.Round(20 + Math.Sin(0.001 * i) + 0.5 * rnd.Next(-1, 1), 3));
                         context.Measures.Add(new Measure() { captureDate = currentDate, value = airTemperatureValue, sensor = airTemperatureSensor, productionUnit = productionUnit });
                     };
-               
-              }
+
+                }
                 context.SaveChanges();
             }
         }

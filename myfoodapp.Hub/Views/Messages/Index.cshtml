@@ -20,18 +20,18 @@
         .Columns(columns =>
         {
             columns.Bound(c => c.Id).Width(75);
-            columns.Bound(c => c.content).Width(200);
-            columns.Bound(c => c.date).Format("{0:d} - {0:t}").Width(100);
             columns.Bound(c => c.device).Width(75);
-            columns.ForeignKey(c => c.messageTypeId, (System.Collections.IEnumerable)ViewData["messageTypes"], "Id", "name").Title("Message Type").Width(100);
-            columns.Command(command => command.Destroy()).Width(110);
+            columns.Bound(c => c.date).Format("{0:d} - {0:t}").Width(100);
+            columns.Bound(c => c.content).Width(200).Title("content from Sigfox backend");
+            columns.ForeignKey(c => c.messageTypeId, (System.Collections.IEnumerable)ViewData["messageTypes"], "Id", "name").Title("message type").Width(100);
+            //columns.Command(command => command.Destroy()).Width(110);
         })
-        .ToolBar(toolbar =>
-        {
-            toolbar.Create();
-            toolbar.Save();
-        })
-        .HtmlAttributes(new { style = "height: 800px;" })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Create();
+        //    toolbar.Save();
+        //})
+        .HtmlAttributes(new { style = "height: 750px;" })
         .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()
         .Sortable()
@@ -58,10 +58,10 @@
                 model.Field(c => c.messageTypeId).DefaultValue(1);
             })
             .Events(events => events.Error("error_handler"))
-            .Create("Editing_Create", "Messages")
+            //.Create("Editing_Create", "Messages")
             .Read("Editing_Read", "Messages")
-            .Update("Editing_Update", "Messages")
-            .Destroy("Editing_Destroy", "Messages")
+            //.Update("Editing_Update", "Messages")
+            //.Destroy("Editing_Destroy", "Messages")
         )
         )
     </div>

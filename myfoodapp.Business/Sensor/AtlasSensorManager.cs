@@ -129,15 +129,15 @@ namespace myfoodapp.Business.Sensor
                                     string r = String.Empty;
                                     string strResult = String.Empty;
 
-                                    var taskWakeUp = Task.Run(async () =>
-                                    {
-                                        await WriteAsync(wakeupCommand, newSensor)
-                                            .ContinueWith((a) => strResult = ReadAsync(ReadCancellationTokenSource.Token, newSensor).Result);
+                                    //var taskWakeUp = Task.Run(async () =>
+                                    //{
+                                    //    await WriteAsync(wakeupCommand, newSensor)
+                                    //        .ContinueWith((a) => strResult = ReadAsync(ReadCancellationTokenSource.Token, newSensor).Result);
 
-                                        await Task.Delay(1000);
-                                    });
+                                    //    await Task.Delay(1000);
+                                    //});
 
-                                    taskWakeUp.Wait(2000);
+                                    //taskWakeUp.Wait(20000);
 
                                     var taskStatus = Task.Run(async () =>
                                     {
