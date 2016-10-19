@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace myfoodapp.Common
 {
         [EventSource(Name = "MyfoodLogProvider")]
-        sealed class MyfoodLogProvider : EventSource
+        sealed public class MyfoodLogProvider : EventSource
         {
             public static MyfoodLogProvider Log = new MyfoodLogProvider();
 

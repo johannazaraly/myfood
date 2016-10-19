@@ -1,4 +1,6 @@
-﻿using myfoodapp.Business;
+﻿using MetroLog;
+using MetroLog.Targets;
+using myfoodapp.Business;
 using myfoodapp.Common;
 using Newtonsoft.Json;
 using System;
@@ -10,14 +12,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Storage.Search;
 
 namespace myfoodapp.Model
 {
     public class LogModel
     {
         private static readonly AsyncLock asyncLock = new AsyncLock();
-        private string FILE_NAME = "logs.json";
         private StorageFolder folder = ApplicationData.Current.LocalFolder;
+
+        private ILogger Logger;
 
         private static LogModel instance;
 
@@ -34,93 +38,99 @@ namespace myfoodapp.Model
         }
 
         private LogModel()
-        {         
-        }
-
-        public async Task InitFileFolder()
         {
-            using (await asyncLock.LockAsync())
-            { 
-                if (await folder.TryGetItemAsync(FILE_NAME) != null)
-                {
-                    var task = Task.Run(async () => {
-                        var file = await folder.GetFileAsync(FILE_NAME);
-                        await file.RenameAsync(String.Format("{0}_{1}.json", file.Name.Replace(".json",""), file.DateCreated.ToString("yyyyMMddHHmmss")));
-                    });
-                    task.Wait();         
-                }
-
-                var taskFile = Task.Run(async () => {
-                    var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                });
-                taskFile.Wait();
-            }
+            var streamFile = new StreamingFileTarget();
+            streamFile.KeepLogFilesOpenForWrite = false;
+            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, streamFile);
+            Logger = LogManagerFactory.DefaultLogManager.GetLogger<LogModel>();
         }
 
         public async Task<List<Log>> GetLogsAsync()
         {
+            
             using (await asyncLock.LockAsync())
             {
-                var file = await folder.GetFileAsync(FILE_NAME);
+                var metrologFolder = await folder.GetFolderAsync("MetroLogs");
 
-                if (file != null)
+                var files = await metrologFolder.GetFilesAsync();
+                var lastLogFile = files.OrderByDescending(f => f.DateCreated).FirstOrDefault();
+
+                if (lastLogFile != null)
                 {
-                    var read = await FileIO.ReadTextAsync(file);
-                    List<Log> logs = JsonConvert.DeserializeObject<List<Log>>(read);
+                    var readLines = await FileIO.ReadLinesAsync(lastLogFile);
+                    List<Log> logs = new List<Log>();
 
-                    return logs.OrderByDescending(l => l.date).ToList();
+                    //22 | 2016 - 10 - 21T12: 13:56.7589699 + 00:00 | INFO | 24 | LogModel | ORP online
+
+                    try
+                    {
+                        readLines.ToList().ForEach(l =>
+                        {
+                            if(l.Split('|').Count() > 5)
+                            {
+                                var newLog = new Log();
+
+                                if (l.Split('|')[2].Contains("INFO"))
+                                    newLog.type = Log.LogType.Information;
+
+                                if (l.Split('|')[2].Contains("TRACE"))
+                                    newLog.type = Log.LogType.System;
+
+                                if (l.Split('|')[2].Contains("WARN"))
+                                    newLog.type = Log.LogType.Warning;
+
+                                if (l.Split('|')[2].Contains("ERROR"))
+                                    newLog.type = Log.LogType.Error;
+
+                                newLog.date = DateTime.Parse(l.Split('|')[1]);
+                                newLog.description = l.Split('|')[5];
+
+                                logs.Add(newLog);
+                            }                         
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }            
+
+                    return logs;
                 }
-
                 return null;
             }
         }
 
-        public async void AppendLog(Log newLog)
+        public void AppendLog(Log newLog)
         {
-            using (await asyncLock.LockAsync())
+            try
             {
-                var task = Task.Run(async () => { 
-                
-                var file = await folder.GetFileAsync(FILE_NAME);
-
-                if (file != null)
+                switch (newLog.type)
                 {
-                    var read = await FileIO.ReadTextAsync(file);
-                    ObservableCollection<Log> currentLogs = JsonConvert.DeserializeObject<ObservableCollection<Log>>(read);
-
-                    if (currentLogs == null)
-                        currentLogs = new ObservableCollection<Log>();       
-
-                    currentLogs.Add(newLog);
-
-                    var str = JsonConvert.SerializeObject(currentLogs.OrderByDescending(l => l.date));
-
-                    var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                    await FileIO.WriteTextAsync(newFile, str);
-                }
-
-                });
-
-                task.Wait();
+                    case Log.LogType.Information:
+                        Logger.Info(newLog.description);
+                        break;
+                    case Log.LogType.Warning:
+                        Logger.Warn(newLog.description);
+                        break;
+                    case Log.LogType.System:
+                        Logger.Trace(newLog.description);
+                        break;
+                    case Log.LogType.Error:
+                        Logger.Error(newLog.description, newLog.stackCall);
+                        break;
+                    default:
+                        break;
+                }              
+            }
+            catch (Exception ex)
+            {
+                throw ex ;
             }
         }
 
         public async Task ClearLog()
         {
-            using (await asyncLock.LockAsync())
-            {
-                var task = Task.Run(async () => {
 
-                    var file = await folder.GetFileAsync(FILE_NAME);
-
-                    if (file != null)
-                    {
-                        var newFile = await folder.CreateFileAsync(FILE_NAME, CreationCollisionOption.ReplaceExisting);
-                    }
-                });
-
-                task.Wait();
-            }
         }
     }
 }

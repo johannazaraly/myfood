@@ -17,6 +17,9 @@ namespace myfoodapp.Hub.Controllers
     public class ProductionUnitsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private MeasureService measureService;
+
+        private int productionUnitId;
 
         private ProductionUnitService productionUnitService;
 
@@ -30,6 +33,14 @@ namespace myfoodapp.Hub.Controllers
             return View(await db.ProductionUnits.ToListAsync());
         }
 
+        public ActionResult Details(int id)
+        {
+            ViewBag.Title = "Production Unit Detail Page";
+
+            productionUnitId = id;
+
+            return View();
+        }
 
         public ActionResult Editing_Read([DataSourceRequest] DataSourceRequest request)
         {
@@ -120,11 +131,78 @@ namespace myfoodapp.Hub.Controllers
             ViewData["owners"] = owners;
         }
 
-        protected override void Dispose(bool disposing)
+        public ActionResult PHMeasure_Read([DataSourceRequest] DataSourceRequest request)
         {
-            productionUnitService.Dispose();
-            base.Dispose(disposing);
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            return Json(measureService.Read(SensorTypeEnum.ph, productionUnitId), JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult TempMeasure_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            return Json(measureService.Read(SensorTypeEnum.waterTemperature, productionUnitId), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ORPMeasure_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            return Json(measureService.Read(SensorTypeEnum.orp, productionUnitId), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DissolvedOxyMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
+        {
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            return Json(measureService.Read(SensorTypeEnum.dissolvedOxygen, productionUnitId), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetProductionUnitDetail()
+        {
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            var rslt = db.ProductionUnits.Include("owner.user")
+                                         .Include("productionUnitType")
+                                         .Where(p => p.Id == productionUnitId).FirstOrDefault();
+
+            return Json(new
+            {
+                PioneerCitizenName = rslt.owner.pioneerCitizenName,
+                PioneerCitizenNumber = rslt.owner.pioneerCitizenNumber,
+                ProductionUnitVersion = rslt.version,
+                ProductionUnitStartDate = rslt.startDate,
+                ProductionUnitType = rslt.productionUnitType.name,
+                PicturePath = rslt.picturePath,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Option_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            if (measureService == null)
+                measureService = new MeasureService(db);
+
+            var rslt = db.OptionLists.Include("productionUnit")
+                                    .Include("option")
+                                    .Where(p => p.productionUnit.Id == productionUnitId)
+                                    .Select(p => p.option);
+
+            return Json(rslt.ToDataSourceResult(request));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if(productionUnitService != null)
+            {
+                productionUnitService.Dispose();
+                base.Dispose(disposing);
+            }
+        }
     }
 }

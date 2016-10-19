@@ -46,15 +46,12 @@ namespace myfoodapp.Views
                 LocalDataContextExtension.EnsureSeedData(db);
             }
 
-            txtInfo.Text = "Log Init";
-
-            var taskLogFile = Task.Run(async () => { await LogModel.GetInstance.InitFileFolder(); });
-            taskLogFile.Wait();
-
             txtInfo.Text = "User Settings Init";
 
             var taskUserFile = Task.Run(async () => { await UserSettingsModel.GetInstance.InitFileFolder(); });
             taskUserFile.Wait();
+
+            Task.Delay(5000);
 
             txtInfo.Text = "Background Service Init";
 

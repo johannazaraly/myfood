@@ -1,0 +1,218 @@
+﻿@model IEnumerable<myfoodapp.Hub.Models.ProductionUnit>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="main-section-header" class="row">
+    <h2 id="team-efficiency" class="col-xs-3">Production Unit Details</h2>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="productionUnits-grid" class="main-section-content row">
+    <div id="productionUnits-details" class="col-xs-2">
+        <div>
+            <h2>EST. PROD. PER MONTH: 23kg</h2>
+            <h2>CO2 NOT RELEASED PER MONTH: 21kg</h2>
+        </div>
+        <br />
+        <h2 id="PioneerCitizenName"></h2>
+        <div id="PioneerCitizenNumber"><span></span></div>
+        <div id="ProductionUnitType"><span></span></div>
+        <div id="ProductionUnitVersion"><span></span></div>
+        <div id="ProductionUnitStartDate"><span></span></div>
+        <h3 class="section-header">OPTIONS</h3>
+        @(Html.Kendo().ListView<myfoodapp.Hub.Models.Option>()
+            .Name("OptionList")
+            .TagName("div")
+            .ClientTemplateId("templateOption")
+            .DataSource(dataSource => dataSource
+              .Read(read => read.Action("Option_Read", "ProductionUnits"))
+            )
+        )
+    </div>
+
+    <div id="measures-container" class="col-xs-10">
+        <div id="pHContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">pH - Last week</h3>
+            <span id="pHLabel"></span>
+            <div class="sparkline-container">
+             @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("PHMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .Events(e => e.DataBound("onPHMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("PHMeasure_Read", "ProductionUnits")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
+                            })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#"))
+                )
+                <div id="PHMeasureNoData" class="overlay">
+                    <div>No data available</div>
+                </div>
+            </div>
+        </div>
+        <div id="TempContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">Temperature - Last week</h3>
+            <span id="TemperatureLabel"></span>
+            <div class="sparkline-container">
+                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("TempMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .Events(e => e.DataBound("onTempMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("TempMeasure_Read", "ProductionUnits")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
+                            })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false).Format("{0}°C"))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}°C', data.value)#"))
+                )
+                <div id="TempMeasureNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+        <div id="ORPContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">ORP - Last week</h3>
+            <span id="ORPLabel"></span>
+            <div class="sparkline-container">
+                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("ORPMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .Events(e => e.DataBound("onORPMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("ORPMeasure_Read", "ProductionUnits")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
+                            })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false).Format("{0}mV"))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}mV', data.value)#"))
+                )
+                <div id="ORPMeasureNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+        <div id="DissolvedOxyContainer" class="col-xs-3 stats-graph">
+            <h3 class="section-header">Dissolved Oxygen - Last week</h3>
+            <span id="DissolvedOxyLabel"></span>
+            <div class="sparkline-container">
+                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
+            .Name("DissolvedOxyMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(false)
+                .Position(ChartLegendPosition.Top)
+            )
+            .Events(e => e.DataBound("onDissolvedOxyMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("DissolvedOxyMeasure_Read", "ProductionUnits")))
+                            .Series(series =>
+                            {
+                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
+                            })
+            .CategoryAxis(axis => axis
+                .Date()
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Width(0))
+                .Labels(l => l.Visible(false))
+            )
+            .ValueAxis(axis => axis.Numeric()
+                .MajorUnit(1)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(false).Format("{0}%"))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}mg/L', data.value)#"))
+                )
+                <div id="DissolvedOxyNoData" class="overlay"><div>No data available</div></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var measure = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        measure += this + "\n";
+                    });
+                }
+            });
+            alert(measure);
+        }
+    }
+</script>
+

@@ -43,7 +43,6 @@ namespace myfoodapp
                         App.TryShowNewWindow<MainPage>();
                 }
             });
-
         }
 
         /// <summary>

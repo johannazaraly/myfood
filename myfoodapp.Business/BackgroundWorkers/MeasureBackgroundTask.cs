@@ -68,8 +68,6 @@ namespace myfoodapp.Business
                     ConnectionProfileFilter filter = new ConnectionProfileFilter();
                     filter.IsWlanConnectionProfile = true;
 
-                    //var connectedProfile = NetworkInformation.GetInternetConnectionProfile();
-
                     var profile = await NetworkInformation.FindConnectionProfilesAsync(filter);
 
                     var connectedProfile = profile.FirstOrDefault();
@@ -207,7 +205,7 @@ namespace myfoodapp.Business
 
                             TimeSpan t = TimeSpan.FromMilliseconds(elapsedMs);
 
-                            string logDescription = string.Format("[ {0:d} | {0:t} ] Service running since {1:D2}d:{2:D2}h:{3:D2}m:{4:D2}s",
+                            string logDescription = string.Format("[ {0:d} - {0:t} ] Service running since {1:D2}d:{2:D2}h:{3:D2}m:{4:D2}s",
                                                     captureDateTime,
                                                     t.Days,
                                                     t.Hours,

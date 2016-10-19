@@ -142,7 +142,7 @@ namespace myfoodapp.Business.Sensor
                 UInt32 bytesWritten = await storeAsyncTask;
                 if (bytesWritten > 0)
                 {
-                logModel.AppendLog(Log.CreateLog(String.Format("Mess. sent : {0}", command), Log.LogType.Message));
+                logModel.AppendLog(Log.CreateLog(String.Format("Mess. sent : {0}", command), Log.LogType.Information));
             }
         }
 
@@ -196,7 +196,7 @@ namespace myfoodapp.Business.Sensor
             UInt32 bytesRead = await loadAsyncTask;
             if (bytesRead > 0)
             {
-                logModel.AppendLog(Log.CreateLog(String.Format("Mess. received : {0}", dataReaderObject.ReadString(bytesRead)), Log.LogType.Message));
+                logModel.AppendLog(Log.CreateLog(String.Format("Mess. received : {0}", dataReaderObject.ReadString(bytesRead)), Log.LogType.Information));
             }
         }
 

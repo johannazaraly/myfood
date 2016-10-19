@@ -57,6 +57,12 @@ namespace myfoodapp.Hub.Services
                                        m.productionUnit.locationLongitude == productionUnitLong).Take(24);
         }
 
+        public IEnumerable<MeasureViewModel> Read(SensorTypeEnum sensorType, int currentProductionUnitId)
+        {
+            return GetAll().Where(m => m.sensorId == (int)sensorType &&
+                                       m.productionUnit.Id == currentProductionUnitId).Take(6 * 24 * 7);
+        }
+
         public void Create(MeasureViewModel measure)
         {
             var entity = new Measure();
