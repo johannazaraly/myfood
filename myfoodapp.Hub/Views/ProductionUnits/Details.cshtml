@@ -5,6 +5,72 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script type="text/javascript">
+    window.onload = function onLoad(e) {
+
+        var Measures = $("#Measures").data("kendoChart");
+        var AdvancedMeasures = $("#AdvancedMeasures").data("kendoChart");
+
+        var OptionList = $("#OptionList").data("kendoListView");
+
+        var productionUnitId = $('#routeDataId').val();
+
+        $.ajax({
+            url: "@Url.Action("GetProductionUnitDetail", "ProductionUnits")",
+            dataType: "json",
+            data: {id: productionUnitId},
+            type: "POST",
+            success: function (response) {
+                $("#PioneerCitizenName").text('NAME: ' + response.PioneerCitizenName);
+                $("#PioneerCitizenNumber").text('NUMBER: ' + response.PioneerCitizenNumber);
+                $("#ProductionUnitType").text('TYPE: ' + response.ProductionUnitType);
+                $("#ProductionUnitVersion").text('VERSION: ' + response.ProductionUnitVersion);
+                $("#ProductionUnitStartDate").text('START DATE: ' + kendo.toString(kendo.parseDate(response.ProductionUnitStartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy'));            
+
+                if (response.PicturePath === null)
+                {
+                    $("#ProductionUnitPicture").hide();
+                    $("#PerfChart").hide();  
+                }
+                else
+                {     
+                    $("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
+                    $("#ProductionUnitPicture").show();
+                    $("#PerfChart").show();
+                }
+                $("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
+            }
+        });
+        
+        Measures.dataSource.read({ id: productionUnitId });
+        AdvancedMeasures.dataSource.read({ id: productionUnitId });
+
+        OptionList.dataSource.read({id: productionUnitId});
+    }
+
+    function onMeasuresDataBound() {
+        var Measures = $("#Measures").data("kendoChart");
+
+        var items = Measures.dataSource.data().length;
+        $("#MeasureNoData").toggle(items === 0);
+    }
+
+    function onAdvancedMeasuresDataBound() {
+        var Measures = $("#AdvancedMeasures").data("kendoChart");
+
+        var items = Measures.dataSource.data().length;
+        $("#AdvancedMeasureNoData").toggle(items === 0);
+    }
+</script>
+
+<script type="text/x-kendo-tmpl" id="templateOption">
+    <div class="option">
+        <span>&bull; #:name#</span>
+    </div>
+</script>
+
+<input type="hidden" value='@ViewContext.RouteData.Values["id"]' id="routeDataId" />
+
 <div id="main-section-header" class="row">
     <h2 id="team-efficiency" class="col-xs-3">Production Unit Details</h2>
     <div style="clear:both;"></div>
@@ -12,6 +78,7 @@
 
 <div id="productionUnits-grid" class="main-section-content row">
     <div id="productionUnits-details" class="col-xs-2">
+        </br>
         <div>
             <h2>EST. PROD. PER MONTH: 23kg</h2>
             <h2>CO2 NOT RELEASED PER MONTH: 21kg</h2>
@@ -28,177 +95,145 @@
             .TagName("div")
             .ClientTemplateId("templateOption")
             .DataSource(dataSource => dataSource
-              .Read(read => read.Action("Option_Read", "ProductionUnits"))
+              .Read(read => read.Action("Option_Read", "ProductionUnits", new { id = Url.RequestContext.RouteData.Values["id"] }))
             )
         )
     </div>
 
-    <div id="measures-container" class="col-xs-10">
-        <div id="pHContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">pH - Last week</h3>
-            <span id="pHLabel"></span>
-            <div class="sparkline-container">
-             @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
-            .Name("PHMeasures")
+    
+<div id="measures-container" class="col-xs-10">
+    <h3 class="section-header">Last week measures</h3>
+    <span id="graphLabel"></span>
+    <div class="sparkline-container">
+        @(Html.Kendo().Chart<myfoodapp.Hub.Models.GroupedMeasure>()
+            .Name("Measures")
             .Theme("metro")
             .AutoBind(false)
             .Legend(legend => legend
-                .Visible(false)
-                .Position(ChartLegendPosition.Top)
+                .Visible(true)
+                .Position(ChartLegendPosition.Bottom)
             )
-            .Events(e => e.DataBound("onPHMeasuresDataBound"))
+            .Events(e => e.DataBound("onMeasuresDataBound"))
             .ChartArea(ch => ch.Background("#eeeeee"))
             .DataSource(ds => ds
-                .Read(read => read.Action("PHMeasure_Read", "ProductionUnits")))
+                .Read(read => read.Action("Measures_Read", "ProductionUnits", new { id = Url.RequestContext.RouteData.Values["id"] })))
                             .Series(series =>
                             {
-                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
+                                series.Line(model => model.pHvalue, categoryExpression: model => model.captureDate).Color("#FF0914").Name("pH [&deg;]").Axis("pH");
+                                series.Line(model => model.humidityvalue, categoryExpression: model => model.captureDate).Color("#ffae00").Name("Humidity [%]").Axis("hum");
+                                series.Area(model => model.waterTempvalue, categoryExpression: model => model.captureDate).Color("#3E7F2B").Name("Water Temp. [&deg;C]").Axis("water").Stack(true);
+                                series.Area(model => model.airTempvalue, categoryExpression: model => model.captureDate).Color("#73c100").Name("Air Temp. [&deg;C]").Axis("air").Stack(true);
                             })
             .CategoryAxis(axis => axis
                 .Date()
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Width(0))
-                .Labels(l => l.Visible(false))
+                .BaseUnit(ChartAxisBaseUnit.Fit)
+                .Justify(true)
+                .AxisCrossingValue(0, 0, 355, 355)
             )
-            .ValueAxis(axis => axis.Numeric()
+
+            .ValueAxis(axis => axis.Numeric("pH")
                 .MajorUnit(1)
                 .MajorTicks(x => x.Visible(false))
                 .MajorGridLines(m => m.Visible(false))
                 .Line(l => l.Visible(false))
-                .Labels(l => l.Visible(false))
+                .Labels(l => l.Visible(true))
+                .Min(0).Max(10)
             )
-            .Tooltip(tooltip => tooltip
+            .ValueAxis(axis => axis.Numeric("water")
+                .Visible(false)
+                .MajorUnit(10)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(true))
+                .Min(0).Max(50)
+            )
+            .ValueAxis(axis => axis.Numeric("air")
+                .MajorUnit(10)
+                .MajorTicks(x => x.Visible(false))
+                .MajorGridLines(m => m.Visible(false))
+                .Line(l => l.Visible(false))
+                .Labels(l => l.Visible(true))
+                .Min(0).Max(50)
+            )
+             .ValueAxis(axis => axis.Numeric("hum")
+                 .Visible(false)
+                 .MajorUnit(10)
+                 .MajorTicks(x => x.Visible(false))
+                 .MajorGridLines(m => m.Visible(false))
+                 .Line(l => l.Visible(false))
+                 .Labels(l => l.Visible(true))
+                 .Min(0).Max(100)
+             )
+             .Tooltip(tooltip => tooltip
                 .Visible(true)
                 .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#"))
-                )
-                <div id="PHMeasureNoData" class="overlay">
-                    <div>No data available</div>
-                </div>
-            </div>
-        </div>
-        <div id="TempContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">Temperature - Last week</h3>
-            <span id="TemperatureLabel"></span>
-            <div class="sparkline-container">
-                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
-            .Name("TempMeasures")
-            .Theme("metro")
-            .AutoBind(false)
-            .Legend(legend => legend
-                .Visible(false)
-                .Position(ChartLegendPosition.Top)
-            )
-            .Events(e => e.DataBound("onTempMeasuresDataBound"))
-            .ChartArea(ch => ch.Background("#eeeeee"))
-            .DataSource(ds => ds
-                .Read(read => read.Action("TempMeasure_Read", "ProductionUnits")))
-                            .Series(series =>
-                            {
-                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
-                            })
-            .CategoryAxis(axis => axis
-                .Date()
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Width(0))
-                .Labels(l => l.Visible(false))
-            )
-            .ValueAxis(axis => axis.Numeric()
-                .MajorUnit(1)
-                .MajorTicks(x => x.Visible(false))
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Visible(false))
-                .Labels(l => l.Visible(false).Format("{0}°C"))
-            )
-            .Tooltip(tooltip => tooltip
-                .Visible(true)
-                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}°C', data.value)#"))
-                )
-                <div id="TempMeasureNoData" class="overlay"><div>No data available</div></div>
-            </div>
-        </div>
-        <div id="ORPContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">ORP - Last week</h3>
-            <span id="ORPLabel"></span>
-            <div class="sparkline-container">
-                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
-            .Name("ORPMeasures")
-            .Theme("metro")
-            .AutoBind(false)
-            .Legend(legend => legend
-                .Visible(false)
-                .Position(ChartLegendPosition.Top)
-            )
-            .Events(e => e.DataBound("onORPMeasuresDataBound"))
-            .ChartArea(ch => ch.Background("#eeeeee"))
-            .DataSource(ds => ds
-                .Read(read => read.Action("ORPMeasure_Read", "ProductionUnits")))
-                            .Series(series =>
-                            {
-                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
-                            })
-            .CategoryAxis(axis => axis
-                .Date()
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Width(0))
-                .Labels(l => l.Visible(false))
-            )
-            .ValueAxis(axis => axis.Numeric()
-                .MajorUnit(1)
-                .MajorTicks(x => x.Visible(false))
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Visible(false))
-                .Labels(l => l.Visible(false).Format("{0}mV"))
-            )
-            .Tooltip(tooltip => tooltip
-                .Visible(true)
-                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}mV', data.value)#"))
-                )
-                <div id="ORPMeasureNoData" class="overlay"><div>No data available</div></div>
-            </div>
-        </div>
-        <div id="DissolvedOxyContainer" class="col-xs-3 stats-graph">
-            <h3 class="section-header">Dissolved Oxygen - Last week</h3>
-            <span id="DissolvedOxyLabel"></span>
-            <div class="sparkline-container">
-                @(Html.Kendo().Chart<myfoodapp.Hub.Models.MeasureViewModel>()
-            .Name("DissolvedOxyMeasures")
-            .Theme("metro")
-            .AutoBind(false)
-            .Legend(legend => legend
-                .Visible(false)
-                .Position(ChartLegendPosition.Top)
-            )
-            .Events(e => e.DataBound("onDissolvedOxyMeasuresDataBound"))
-            .ChartArea(ch => ch.Background("#eeeeee"))
-            .DataSource(ds => ds
-                .Read(read => read.Action("DissolvedOxyMeasure_Read", "ProductionUnits")))
-                            .Series(series =>
-                            {
-                                series.Line(model => model.value, categoryExpression: model => model.captureDate).Color("#018001");
-                            })
-            .CategoryAxis(axis => axis
-                .Date()
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Width(0))
-                .Labels(l => l.Visible(false))
-            )
-            .ValueAxis(axis => axis.Numeric()
-                .MajorUnit(1)
-                .MajorTicks(x => x.Visible(false))
-                .MajorGridLines(m => m.Visible(false))
-                .Line(l => l.Visible(false))
-                .Labels(l => l.Visible(false).Format("{0}%"))
-            )
-            .Tooltip(tooltip => tooltip
-                .Visible(true)
-                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}mg/L', data.value)#"))
-                )
-                <div id="DissolvedOxyNoData" class="overlay"><div>No data available</div></div>
-            </div>
+        )
+        <div id="MeasureNoData" class="overlay">
+            <div>No data available</div>
         </div>
     </div>
-
+    <div class="sparkline-container">
+        @(Html.Kendo().Chart<myfoodapp.Hub.Models.GroupedMeasure>()
+            .Name("AdvancedMeasures")
+            .Theme("metro")
+            .AutoBind(false)
+            .Legend(legend => legend
+                .Visible(true)
+                .Position(ChartLegendPosition.Bottom)
+            )
+            .Events(e => e.DataBound("onAdvancedMeasuresDataBound"))
+            .ChartArea(ch => ch.Background("#eeeeee"))
+            .DataSource(ds => ds
+                .Read(read => read.Action("AdvancedMeasures_Read", "ProductionUnits", new { id = Url.RequestContext.RouteData.Values["id"] })))
+                            .Series(series =>
+                            {
+                                series.Column(model => model.ORPvalue, categoryExpression: model => model.captureDate).Color("#3E7F2B").Name("ORP [mV]").Axis("orp");
+                                series.Column(model => model.DOvalue, categoryExpression: model => model.captureDate).Color("#73c100").Name("Dissolved Oxy [mg/L]").Axis("do");
+                            })
+            .CategoryAxis(axis => axis
+                .Date()
+                .BaseUnit(ChartAxisBaseUnit.Fit)
+                .Justify(true)
+                .Reverse(true)
+                .AxisCrossingValue(0, 355)
+            )
+             .ValueAxis(axis => axis.Numeric("do")
+                 .MajorUnit(10)
+                 .MajorTicks(x => x.Visible(true))
+                 .MajorGridLines(m => m.Visible(false))
+                 .Line(l => l.Visible(false))
+                 .Labels(l => l.Visible(true))
+             )
+             .ValueAxis(axis => axis.Numeric("orp")
+                 .MajorUnit(100)
+                 .MajorTicks(x => x.Visible(true))
+                 .MajorGridLines(m => m.Visible(false))
+                 .Line(l => l.Visible(false))
+                 .Labels(l => l.Visible(true))
+             )
+             .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#"))
+        )
+        <div id="AdvancedMeasureNoData" class="overlay">
+            <div>No data available</div>
+        </div>
+    </div>  
 </div>
+</div>
+
+<style>
+        #OptionList {
+        background: transparent;
+        border-color: transparent;
+        color: #333      
+    }
+
+        .k-loading-mask {
+        opacity: 0;
+    }
+</style>
 
 <script type="text/javascript">
     function error_handler(e) {

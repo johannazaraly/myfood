@@ -16,27 +16,25 @@ namespace myfoodapp.Hub.Controllers
 {
     public class MeasuresController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-        private MeasureService measureService;
-
         // GET: Measures
         public async Task<ActionResult> Index()
         {
             PopulateSensorsTypes();
             PopulateProductionUnit();
 
-            measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
+            
             return View(await db.Measures.ToListAsync());
         }
 
         public ActionResult Editing_Read([DataSourceRequest] DataSourceRequest request)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             JsonResult result = Json(measureService.Read().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
-            result.MaxJsonLength = 8675309;
+            result.MaxJsonLength = Int32.MaxValue;
 
             return result;
         }
@@ -44,8 +42,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Create([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MeasureViewModel> measures)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             var results = new List<MeasureViewModel>();
 
@@ -64,8 +62,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Update([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MeasureViewModel> messages)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             if (messages != null && ModelState.IsValid)
             {
@@ -81,8 +79,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Destroy([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MeasureViewModel> measures)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             if (measures.Any())
             {
@@ -97,6 +95,8 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateSensorsTypes()
         {
+            var db = new ApplicationDbContext();
+
             var sensorTypes = db.SensorTypes
                         .Select(m => new SensorTypeViewModel
                         {
@@ -110,6 +110,8 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateProductionUnit()
         {
+            var db = new ApplicationDbContext();
+
             var productionUnits = db.ProductionUnits
                         .Select(m => new ProductionUnitViewModel
                         {
@@ -123,7 +125,6 @@ namespace myfoodapp.Hub.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            measureService.Dispose();
             base.Dispose(disposing);
         }
     }

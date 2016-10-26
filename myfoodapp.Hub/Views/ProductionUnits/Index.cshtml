@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <div id="main-section-header" class="row">
     <h2 id="team-efficiency" class="col-xs-3">Production Units Management</h2>
     <div style="clear:both;"></div>
@@ -28,6 +27,7 @@
             columns.Bound(c => c.locationLongitude).Width(80).Title("long.").HtmlAttributes(new { style = "text-align:center" }).HeaderHtmlAttributes(new { style = "text-align:center" });
             columns.Bound(c => c.version).Width(80).HtmlAttributes(new { style = "text-align:right" }).HeaderHtmlAttributes(new { style = "text-align:right" });
             columns.Bound(c => c.reference).Width(80).Title("ref.").HtmlAttributes(new { style = "text-align:right" }).HeaderHtmlAttributes(new { style = "text-align:right" });
+            columns.Command(command => command.Custom("View Details").Click("showDetails")).Width(180);
             //columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
             //columns.Command(command => { command.Destroy(); }).Width(250);
         })
@@ -39,8 +39,6 @@
         .HtmlAttributes(new { style = "height: 700px;" })
         //.Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("ProductionUnitEditTemplate"))
         //.Editable(editable => editable.Mode(GridEditMode.InCell))
-        .Navigatable()
-        .Sortable()
         .Scrollable()
         .Filterable()
         .Groupable()
@@ -91,5 +89,19 @@
             alert(measure);
         }
     }
+
+    function showDetails(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));        
+        window.location = window.location.origin + "/ProductionUnits/Details/" + dataItem.Id;
+    }
 </script>
 
+<style>
+        .k-button {
+        color: #018001;
+        background-color: #018001;
+        }
+</style>
+   

@@ -12,15 +12,12 @@ namespace myfoodapp.Hub.Controllers
 {
     public class HomeController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-        private MeasureService measureService;
-
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
 
-            measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             var listMarker = new List<Marker>();
 
@@ -44,40 +41,39 @@ namespace myfoodapp.Hub.Controllers
 
         public ActionResult PHMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             return Json(measureService.Read(SensorTypeEnum.ph, SelectedProductionUnitLat, SelectedProductionUnitLong), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TempMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             return Json(measureService.Read(SensorTypeEnum.waterTemperature, SelectedProductionUnitLat, SelectedProductionUnitLong), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ORPMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             return Json(measureService.Read(SensorTypeEnum.orp, SelectedProductionUnitLat, SelectedProductionUnitLong), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult DissolvedOxyMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
+            var measureService = new MeasureService(db);
 
             return Json(measureService.Read(SensorTypeEnum.dissolvedOxygen, SelectedProductionUnitLat, SelectedProductionUnitLong), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetProductionUnitDetail(double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
 
             var rslt = db.ProductionUnits.Include("owner.user")
                                          .Include("productionUnitType")
@@ -95,8 +91,7 @@ namespace myfoodapp.Hub.Controllers
 
         public ActionResult Option_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            var db = new ApplicationDbContext();
 
             var rslt = db.OptionLists.Include("productionUnit")
                                     .Include("option")

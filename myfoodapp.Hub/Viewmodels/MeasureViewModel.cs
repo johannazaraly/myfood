@@ -26,4 +26,18 @@ namespace myfoodapp.Hub.Models
         public DateTime? lastCalibration { get; set; }
     }
 
+    public class GroupedMeasure
+    {
+        public Int64 Id { get; set; }
+        public DateTime captureDate { get; set; }
+        public decimal pHvalue { get; set; }
+        public decimal waterTempvalue { get; set; }
+        public decimal ORPvalue { get; set; }
+        public decimal DOvalue { get; set; }
+        public decimal airTempvalue { get; set; }
+        public decimal humidityvalue { get; set; }
+
+    }
+
+
 }

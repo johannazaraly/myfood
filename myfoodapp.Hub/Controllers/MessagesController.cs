@@ -16,24 +16,22 @@ namespace myfoodapp.Hub.Controllers
 {
     public class MessagesController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-        private MessageService messageService;
-
         // GET: Messages
         public async Task<ActionResult> Index()
         {
             PopulateMessageTypes();
 
-            messageService = new MessageService(db);
+            var db = new ApplicationDbContext();
+            var messageService = new MessageService(db);
+
             return View(await db.Messages.ToListAsync());
         }
 
 
         public ActionResult Editing_Read([DataSourceRequest] DataSourceRequest request)
         {
-            if(messageService == null)
-                 messageService = new MessageService(db);
+            var db = new ApplicationDbContext();
+            var messageService = new MessageService(db);
 
             return Json(messageService.Read().ToDataSourceResult(request));
         }
@@ -41,8 +39,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Create([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MessageViewModel> messages)
         {
-            if (messageService == null)
-                messageService = new MessageService(db);
+            var db = new ApplicationDbContext();
+            var messageService = new MessageService(db);
 
             var results = new List<MessageViewModel>();
 
@@ -61,8 +59,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Update([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MessageViewModel> messages)
         {
-            if (messageService == null)
-                messageService = new MessageService(db);
+            var db = new ApplicationDbContext();
+            var messageService = new MessageService(db);
 
             if (messages != null && ModelState.IsValid)
             {
@@ -78,8 +76,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Destroy([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<MessageViewModel> messages)
         {
-            if (messageService == null)
-                messageService = new MessageService(db);
+            var db = new ApplicationDbContext();
+            var messageService = new MessageService(db);
 
             if (messages.Any())
             {
@@ -94,6 +92,8 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateMessageTypes()
         {
+            var db = new ApplicationDbContext();
+
             var messageTypes = db.MessageTypes
                         .Select(m => new MessageTypeViewModel
                         {
@@ -107,7 +107,6 @@ namespace myfoodapp.Hub.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            messageService.Dispose();
             base.Dispose(disposing);
         }
 

@@ -8,6 +8,7 @@ namespace myfoodapp.Business
 {
     public class Log
     {
+        public int Id { get; set; }
         public DateTime date { get; set; }
         public string description { get; set; }
         public string stackCall { get; set; }

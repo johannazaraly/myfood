@@ -28,8 +28,6 @@ namespace myfoodapp.Views
     /// </summary>
     public sealed partial class LoadingPage : Page
     {
-        //private HTTPServer webServer;
-
         public LoadingPage()
         {
             this.InitializeComponent();

@@ -856,7 +856,7 @@ namespace myfoodapp.Hub.Migrations
 
                 foreach (ProductionUnit productionUnit in productionUnitList)
                 {
-                    for (int i = 0; i < 20; i++)
+                    for (int i = 0; i < 6 * 24; i++)
                     {
                         Random rnd = new Random();
                         var currentDate = DateTime.Now;
@@ -880,6 +880,9 @@ namespace myfoodapp.Hub.Migrations
 
                         decimal airTemperatureValue = Convert.ToDecimal(Math.Round(20 + Math.Sin(0.001 * i) + 0.5 * rnd.Next(-1, 1), 3));
                         context.Measures.Add(new Measure() { captureDate = currentDate, value = airTemperatureValue, sensor = airTemperatureSensor, productionUnit = productionUnit });
+
+                        decimal humidityValue = Convert.ToDecimal(Math.Round(50 + Math.Sin(0.001 * i) + 0.5 * rnd.Next(-1, 1), 3));
+                        context.Measures.Add(new Measure() { captureDate = currentDate, value = humidityValue, sensor = airHumidity, productionUnit = productionUnit });
                     };
 
                 }

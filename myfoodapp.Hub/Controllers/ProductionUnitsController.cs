@@ -16,36 +16,26 @@ namespace myfoodapp.Hub.Controllers
 {
     public class ProductionUnitsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-        private MeasureService measureService;
-
-        private int productionUnitId;
-
-        private ProductionUnitService productionUnitService;
-
         // GET: ProductionUnits
         public async Task<ActionResult> Index()
         {
             PopulateProductionUnitTypes();
             PopulateOwners();
 
-            productionUnitService = new ProductionUnitService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
             return View(await db.ProductionUnits.ToListAsync());
         }
 
         public ActionResult Details(int id)
         {
             ViewBag.Title = "Production Unit Detail Page";
-
-            productionUnitId = id;
-
             return View();
         }
 
         public ActionResult Editing_Read([DataSourceRequest] DataSourceRequest request)
         {
-            if (productionUnitService == null)
-                productionUnitService = new ProductionUnitService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            ProductionUnitService productionUnitService = new ProductionUnitService(db);
 
             return Json(productionUnitService.Read().ToDataSourceResult(request));
         }
@@ -53,8 +43,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Create([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<ProductionUnitViewModel> productionUnits)
         {
-            if (productionUnitService == null)
-                productionUnitService = new ProductionUnitService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            ProductionUnitService productionUnitService = new ProductionUnitService(db);
 
             var results = new List<ProductionUnitViewModel>();
 
@@ -73,8 +63,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Update([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<ProductionUnitViewModel> productionUnits)
         {
-            if (productionUnitService == null)
-                productionUnitService = new ProductionUnitService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            ProductionUnitService productionUnitService = new ProductionUnitService(db);
 
             if (productionUnits != null && ModelState.IsValid)
             {
@@ -90,8 +80,8 @@ namespace myfoodapp.Hub.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Editing_Destroy([DataSourceRequest] DataSourceRequest request, [Bind(Prefix = "models")]IEnumerable<ProductionUnitViewModel> productionUnits)
         {
-            if (productionUnitService == null)
-                productionUnitService = new ProductionUnitService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            ProductionUnitService productionUnitService = new ProductionUnitService(db);
 
             if (productionUnits.Any())
             {
@@ -106,7 +96,9 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateProductionUnitTypes()
         {
-            var productionUnitTypes = db.ProductionUnitTypes
+             ApplicationDbContext db = new ApplicationDbContext();
+
+             var productionUnitTypes = db.ProductionUnitTypes
                         .Select(m => new ProductionUnitTypeViewModel
                         {
                             Id = m.Id,
@@ -119,6 +111,8 @@ namespace myfoodapp.Hub.Controllers
 
         private void PopulateOwners()
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+
             var owners = db.ProductionUnitOwners
                         .Select(m => new OwnerViewModel
                         {
@@ -131,46 +125,74 @@ namespace myfoodapp.Hub.Controllers
             ViewData["owners"] = owners;
         }
 
-        public ActionResult PHMeasure_Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult Measures_Read([DataSourceRequest] DataSourceRequest request, int id)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            MeasureService measureService = new MeasureService(db);
 
-            return Json(measureService.Read(SensorTypeEnum.ph, productionUnitId), JsonRequestBehavior.AllowGet);
+            var groupedValue = new List<GroupedMeasure>();
+            var rslt = measureService.Read(id);
+
+            var groupedRslt = rslt.GroupBy(m => m.captureDate);
+
+            groupedRslt.ToList().ForEach(gr => 
+            {
+                var newMeas = new GroupedMeasure() { captureDate = gr.Key };
+
+                gr.ToList().ForEach(meas => 
+                {
+                    if (meas.sensorId == 1)
+                        newMeas.pHvalue = meas.value;
+                    if (meas.sensorId == 2)
+                        newMeas.waterTempvalue = meas.value;
+                    if (meas.sensorId == 5)
+                        newMeas.airTempvalue = meas.value;
+                    if (meas.sensorId == 6)
+                        newMeas.humidityvalue = meas.value;
+                });
+
+                groupedValue.Add(newMeas);
+            });
+
+            return Json(groupedValue, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult TempMeasure_Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult AdvancedMeasures_Read([DataSourceRequest] DataSourceRequest request, int id)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            MeasureService measureService = new MeasureService(db);
 
-            return Json(measureService.Read(SensorTypeEnum.waterTemperature, productionUnitId), JsonRequestBehavior.AllowGet);
+            var groupedValue = new List<GroupedMeasure>();
+            var rslt = measureService.Read(id);
+
+            var groupedRslt = rslt.GroupBy(m => m.captureDate);
+
+            groupedRslt.ToList().ForEach(gr =>
+            {
+                var newMeas = new GroupedMeasure() { captureDate = gr.Key };
+
+                gr.ToList().ForEach(meas =>
+                {
+                    if (meas.sensorId == 3)
+                        newMeas.DOvalue = meas.value;
+                    if (meas.sensorId == 4)
+                        newMeas.ORPvalue = meas.value;
+                });
+
+                groupedValue.Add(newMeas);
+            });
+
+            return Json(groupedValue, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ORPMeasure_Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult GetProductionUnitDetail(int id)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
-
-            return Json(measureService.Read(SensorTypeEnum.orp, productionUnitId), JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult DissolvedOxyMeasure_Read([DataSourceRequest] DataSourceRequest request, double SelectedProductionUnitLat, double SelectedProductionUnitLong)
-        {
-            if (measureService == null)
-                measureService = new MeasureService(db);
-
-            return Json(measureService.Read(SensorTypeEnum.dissolvedOxygen, productionUnitId), JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetProductionUnitDetail()
-        {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            MeasureService measureService = new MeasureService(db);
 
             var rslt = db.ProductionUnits.Include("owner.user")
                                          .Include("productionUnitType")
-                                         .Where(p => p.Id == productionUnitId).FirstOrDefault();
+                                         .Where(p => p.Id == id).FirstOrDefault();
 
             return Json(new
             {
@@ -183,14 +205,14 @@ namespace myfoodapp.Hub.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Option_Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult Option_Read([DataSourceRequest] DataSourceRequest request, int id)
         {
-            if (measureService == null)
-                measureService = new MeasureService(db);
+            ApplicationDbContext db = new ApplicationDbContext();
+            MeasureService measureService = new MeasureService(db);
 
             var rslt = db.OptionLists.Include("productionUnit")
                                     .Include("option")
-                                    .Where(p => p.productionUnit.Id == productionUnitId)
+                                    .Where(p => p.productionUnit.Id == id)
                                     .Select(p => p.option);
 
             return Json(rslt.ToDataSourceResult(request));
@@ -198,11 +220,7 @@ namespace myfoodapp.Hub.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if(productionUnitService != null)
-            {
-                productionUnitService.Dispose();
                 base.Dispose(disposing);
-            }
         }
     }
 }

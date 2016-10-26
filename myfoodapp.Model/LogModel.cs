@@ -82,6 +82,7 @@ namespace myfoodapp.Model
                                 if (l.Split('|')[2].Contains("ERROR"))
                                     newLog.type = Log.LogType.Error;
 
+                                newLog.Id = int.Parse(l.Split('|')[0]);
                                 newLog.date = DateTime.Parse(l.Split('|')[1]);
                                 newLog.description = l.Split('|')[5];
 
@@ -92,9 +93,9 @@ namespace myfoodapp.Model
                     catch (Exception ex)
                     {
                         throw;
-                    }            
+                    }
 
-                    return logs;
+                    return logs.OrderByDescending(l => l.Id).ToList();
                 }
                 return null;
             }
