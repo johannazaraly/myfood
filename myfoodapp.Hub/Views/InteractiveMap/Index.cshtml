@@ -1,0 +1,213 @@
+﻿<script type="text/javascript">
+    function onShow(e) {
+
+        var OptionList = $("#OptionList").data("kendoListView");
+
+        var currentProductionUnitLat = this.marker.options.location[0];
+        var currentProductionUnitLong = this.marker.options.location[1];
+
+        $.ajax({
+            url: "@Url.Action("GetProductionUnitDetail", "Home")",
+            dataType: "json",
+            data: { SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong },
+        type: "POST",
+        success: function (response) {
+            $("#PioneerCitizenName").text('NAME: ' + response.PioneerCitizenName);
+            $("#PioneerCitizenNumber").text('NUMBER: ' + response.PioneerCitizenNumber);
+            $("#ProductionUnitType").text('TYPE: ' + response.ProductionUnitType);
+            $("#ProductionUnitVersion").text('VERSION: ' + response.ProductionUnitVersion);
+            $("#ProductionUnitStartDate").text('START DATE: ' + kendo.toString(kendo.parseDate(response.ProductionUnitStartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy'));            
+
+            if (response.PicturePath === null)
+            {
+                $("#ProductionUnitPicture").hide();
+                $("#PerfChart").hide();  
+            }
+            else
+            {     
+                $("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
+                $("#ProductionUnitPicture").show();
+                $("#PerfChart").show();
+            }
+            //$("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
+        }
+    });
+        
+        OptionList.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
+    }
+
+    function onShapeCreated(e) {
+        var shape = e.shape;
+        var users = shape.dataItem.properties.users;
+        if (users) {
+            var color = scale(users).hex();
+            shape.options.fill.set("color", color);
+        }
+    }
+
+    function onShapeMouseEnter(e) {
+        e.shape.options.set("fill.opacity", 1);
+    }
+
+    function onShapeMouseLeave(e) {
+        e.shape.options.set("fill.opacity", 0.7);
+    }
+
+</script>
+
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<script type="text/x-kendo-tmpl" id="templateOption">
+    <div class="option">
+        <h2>&bull; #:name#</h2>
+    </div>
+</script>
+
+<div id="pioneer-network" class="main-section-content">
+    <div id="map-wrapper" class="row">
+        <div id="picturesContainer" class="col-xs-4">
+            <h3 class="section-header">Picture</h3>
+            <img id="ProductionUnitPicture" width="400" />
+        </div>
+        <div id="map-container" class="col-xs-8">
+            <h3 font-size="36" class="section-header">Pioneer Citizen Map</h3>
+            @model myfoodapp.Hub.Models.Map
+
+            @(Html.Kendo().Map()
+            .Name(Model.Name)
+            .Center(Model.CenterLatitude, Model.CenterLongitude)
+            .Zoom(Model.Zoom)
+            .Zoomable(false)
+            .Layers(layers =>
+                    {
+                        layers.Add()
+                            .Style(style => style
+                                .Fill(fill => fill.Color("#018001").Opacity(0.7))
+                                .Stroke(stroke => stroke.Color("#FFFFFF"))
+                            )
+                            .Type(MapLayerType.Shape)
+                            .DataSource(dataSource => dataSource
+                                .GeoJson()
+                                .Read(read => read.Url(Url.Content("~/Content/countries.geo.txt")))
+                            );
+                    })
+            .Markers(markers =>
+            {
+                foreach (var marker in Model.Markers)
+                {
+                    markers.Add()
+                    .Location(marker.latlng)
+                    .Shape(marker.shape)
+                    .Tooltip(t => t.ShowOn(TooltipShowOnEvent.MouseEnter))
+                    .Tooltip(t => t.Events(e => e.Show("onShow")))
+                    .Title(marker.name);
+                }
+            })
+            .Events(events => events
+                              .ShapeCreated("onShapeCreated")
+                              .ShapeMouseEnter("onShapeMouseEnter")
+                              .ShapeMouseLeave("onShapeMouseLeave")
+                )
+            )
+        </div>
+    </div>
+    <div id="map-wrapper" class="row">
+        <div id="map-info" class="col-xs-4">
+            <h3 class="section-header">Network Info</h3>
+            <div>
+                <h2>TOTAL CONNECTED: 20</h2>
+                <h2>TOTAL EST. PROD. PER MONTH: 450kg</h2>
+                <h2>TOTAL CO2 NOT RELEASED PER MONTH: 57kg</h2>
+            </div>
+        </div>
+        <div id="map-details" class="col-xs-4">
+            <h3 class="section-header">Details</h3>
+            <h2 id="PioneerCitizenName"></h2>
+            <h2 id="PioneerCitizenNumber"><span></span></h2>
+            <h2 id="ProductionUnitType"><span></span></h2>
+            <h2 id="ProductionUnitVersion"><span></span></h2>
+            <h2 id="ProductionUnitStartDate"><span></span></h2>
+        </div>
+        <div id="map-options" class="col-xs-4">
+            <h2 class="section-header">Options</h2>
+            @(Html.Kendo().ListView<myfoodapp.Hub.Models.Option>()
+            .Name("OptionList")
+            .TagName("div")
+            .ClientTemplateId("templateOption")
+            .DataSource(dataSource => dataSource
+              .Read(read => read.Action("Option_Read", "Home"))
+            )
+            )
+        </div>
+    </div>
+</div>
+<style>
+
+
+    h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans';
+}
+    .section-header{
+    font-size: 30px;
+    color: #35373d;
+    text-transform: uppercase;
+    padding-bottom: 1.091em;
+    padding: 15px 0;
+}
+
+    h2 {
+    display: block;
+    font-size: 1.3em;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+    #OptionList {
+        background: transparent;
+        border-color: transparent;
+        color: #333      
+    }
+
+    .k-listview:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .k-map .k-marker-red-marker {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoMDSM0TTMGvAAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAHUlEQVQ4y2M8Iy7OQC5gYqAAjGoe1TyqeVQz5ZoBCogBIhwXVIUAAAAASUVORK5CYII=');
+        width: 10px;
+        height: 10px;
+        margin: -5px 0 0 -5px;
+    }
+
+    .k-map .k-marker-green-marker {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoMDSQlaMKwiQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAHUlEQVQ4y2OUSFNnIBcwMVAARjWPah7VPKqZcs0AdTwAzRyc6rgAAAAASUVORK5CYII=');
+        width: 10px;
+        height: 10px;
+        margin: -5px 0 0 -5px;
+    }
+
+    .k-tooltip-content {
+        background-color:#018001;
+        stroke:black;  
+    }
+
+    .k-widget.k-tooltip {
+        background-color:#018001;
+        stroke:black;  
+    }
+
+    .k-loading-mask {
+        opacity: 0;
+    }
+
+</style>
+
+
+
+

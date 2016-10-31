@@ -145,6 +145,10 @@ namespace myfoodapp.Hub.Controllers
                         newMeas.pHvalue = meas.value;
                     if (meas.sensorId == 2)
                         newMeas.waterTempvalue = meas.value;
+                    if (meas.sensorId == 3)
+                        newMeas.DOvalue = meas.value;
+                    if (meas.sensorId == 4)
+                        newMeas.ORPvalue = meas.value;
                     if (meas.sensorId == 5)
                         newMeas.airTempvalue = meas.value;
                     if (meas.sensorId == 6)

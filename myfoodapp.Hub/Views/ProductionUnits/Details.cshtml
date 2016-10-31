@@ -9,7 +9,6 @@
     window.onload = function onLoad(e) {
 
         var Measures = $("#Measures").data("kendoChart");
-        var AdvancedMeasures = $("#AdvancedMeasures").data("kendoChart");
 
         var OptionList = $("#OptionList").data("kendoListView");
 
@@ -53,13 +52,6 @@
 
         var items = Measures.dataSource.data().length;
         $("#MeasureNoData").toggle(items === 0);
-    }
-
-    function onAdvancedMeasuresDataBound() {
-        var Measures = $("#AdvancedMeasures").data("kendoChart");
-
-        var items = Measures.dataSource.data().length;
-        $("#AdvancedMeasureNoData").toggle(items === 0);
     }
 </script>
 
@@ -109,26 +101,60 @@
             .Name("Measures")
             .Theme("metro")
             .AutoBind(false)
+            .Panes(panes =>
+            {
+                panes.Add().Title("Basic sensors");
+                panes.Add("advancedPane").Title("Advanced sensors").Height(150);
+            })
             .Legend(legend => legend
                 .Visible(true)
                 .Position(ChartLegendPosition.Bottom)
             )
+            .HtmlAttributes(new { style = "height: 700px;" })
             .Events(e => e.DataBound("onMeasuresDataBound"))
             .ChartArea(ch => ch.Background("#eeeeee"))
             .DataSource(ds => ds
                 .Read(read => read.Action("Measures_Read", "ProductionUnits", new { id = Url.RequestContext.RouteData.Values["id"] })))
                             .Series(series =>
                             {
-                                series.Line(model => model.pHvalue, categoryExpression: model => model.captureDate).Color("#FF0914").Name("pH [&deg;]").Axis("pH");
-                                series.Line(model => model.humidityvalue, categoryExpression: model => model.captureDate).Color("#ffae00").Name("Humidity [%]").Axis("hum");
-                                series.Area(model => model.waterTempvalue, categoryExpression: model => model.captureDate).Color("#3E7F2B").Name("Water Temp. [&deg;C]").Axis("water").Stack(true);
-                                series.Area(model => model.airTempvalue, categoryExpression: model => model.captureDate).Color("#73c100").Name("Air Temp. [&deg;C]").Axis("air").Stack(true);
+                                series.Line(model => model.pHvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#FF0914").Name("pH [&deg;]").Axis("pH")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
+                                      .Tooltip(tooltip => tooltip.Template("ph - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#&deg;"));
+                                series.Line(model => model.humidityvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#ffae00").Name("Humidity [%]").Axis("hum")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
+                                      .Tooltip(tooltip => tooltip.Template("hum - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#%"));
+                                series.Area(model => model.waterTempvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#3E7F2B").Name("Water Temp. [&deg;C]").Axis("water").Stack(true)
+                                      .Tooltip(tooltip => tooltip.Template("water - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#&deg;C"));
+                                series.Area(model => model.airTempvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#73c100").Name("Air Temp. [&deg;C]").Axis("air").Stack(true)
+                                      .Tooltip(tooltip => tooltip.Template("air - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#&deg;C"));
+                                series.Line(model => model.ORPvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#7F385A").Name("ORP [mV]").Axis("orp")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
+                                      .Tooltip(tooltip => tooltip.Template("orp - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#mV"));
+                                series.Line(model => model.DOvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#CC0060").Name("Dissolved Oxy [mg/L]").Axis("do")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
+                                      .Tooltip(tooltip => tooltip.Template("dissolved oxy - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#mg/L"));
                             })
+            .CategoryAxis(axis => axis.Pane("advancedPane")
+                .Date()
+                .Labels(l => l.Visible(false).Step(60))
+                .BaseUnit(ChartAxisBaseUnit.Minutes)
+                .BaseUnitStep(10)
+                .Justify(true)
+                .AxisCrossingValue(0, 9000)
+            )
             .CategoryAxis(axis => axis
                 .Date()
-                .BaseUnit(ChartAxisBaseUnit.Fit)
+                .Labels(l => l.Visible(true).Step(60))
+                .BaseUnit(ChartAxisBaseUnit.Minutes)
+                .BaseUnitStep(10)
                 .Justify(true)
-                .AxisCrossingValue(0, 0, 355, 355)
+                .AxisCrossingValue(9000, 0, 0, 9000, 0, 9000)
             )
 
             .ValueAxis(axis => axis.Numeric("pH")
@@ -165,47 +191,14 @@
                  .Labels(l => l.Visible(true))
                  .Min(0).Max(100)
              )
-             .Tooltip(tooltip => tooltip
-                .Visible(true)
-                .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#"))
-        )
-        <div id="MeasureNoData" class="overlay">
-            <div>No data available</div>
-        </div>
-    </div>
-    <div class="sparkline-container">
-        @(Html.Kendo().Chart<myfoodapp.Hub.Models.GroupedMeasure>()
-            .Name("AdvancedMeasures")
-            .Theme("metro")
-            .AutoBind(false)
-            .Legend(legend => legend
-                .Visible(true)
-                .Position(ChartLegendPosition.Bottom)
-            )
-            .Events(e => e.DataBound("onAdvancedMeasuresDataBound"))
-            .ChartArea(ch => ch.Background("#eeeeee"))
-            .DataSource(ds => ds
-                .Read(read => read.Action("AdvancedMeasures_Read", "ProductionUnits", new { id = Url.RequestContext.RouteData.Values["id"] })))
-                            .Series(series =>
-                            {
-                                series.Column(model => model.ORPvalue, categoryExpression: model => model.captureDate).Color("#3E7F2B").Name("ORP [mV]").Axis("orp");
-                                series.Column(model => model.DOvalue, categoryExpression: model => model.captureDate).Color("#73c100").Name("Dissolved Oxy [mg/L]").Axis("do");
-                            })
-            .CategoryAxis(axis => axis
-                .Date()
-                .BaseUnit(ChartAxisBaseUnit.Fit)
-                .Justify(true)
-                .Reverse(true)
-                .AxisCrossingValue(0, 355)
-            )
-             .ValueAxis(axis => axis.Numeric("do")
+             .ValueAxis(axis => axis.Numeric("do").Pane("advancedPane")
                  .MajorUnit(10)
                  .MajorTicks(x => x.Visible(true))
                  .MajorGridLines(m => m.Visible(false))
                  .Line(l => l.Visible(false))
                  .Labels(l => l.Visible(true))
              )
-             .ValueAxis(axis => axis.Numeric("orp")
+             .ValueAxis(axis => axis.Numeric("orp").Pane("advancedPane")
                  .MajorUnit(100)
                  .MajorTicks(x => x.Visible(true))
                  .MajorGridLines(m => m.Visible(false))
@@ -216,10 +209,11 @@
                 .Visible(true)
                 .Template("#= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#"))
         )
-        <div id="AdvancedMeasureNoData" class="overlay">
+        <div id="MeasureNoData" class="overlay">
             <div>No data available</div>
         </div>
-    </div>  
+    </div>
+
 </div>
 </div>
 

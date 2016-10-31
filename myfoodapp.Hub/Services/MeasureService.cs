@@ -65,7 +65,7 @@ namespace myfoodapp.Hub.Services
 
         public IEnumerable<MeasureViewModel> Read(int currentProductionUnitId)
         {
-            return GetAll().Where(m => m.productionUnit.Id == currentProductionUnitId).Take(6 * 24 * 7);
+            return GetAll().Where(m => m.productionUnit.Id == currentProductionUnitId).Take(6 * 24 * 7 * 6);
         }
 
         public void Create(MeasureViewModel measure)
