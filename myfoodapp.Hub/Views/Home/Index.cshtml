@@ -1,8 +1,16 @@
 ﻿<script type="text/javascript">
-    function resizeMap() {
-        var map = $("#map").data("kendoMap");
-        map.resize();
-        map.center([50.000, 0]);
+    window.onload = function onLoad(e) {
+
+        $.ajax({
+            url: "@Url.Action("GetNetworkStats", "Home")",
+            dataType: "json",
+        type: "POST",
+        success: function (response) {
+            $("#ProductionUnitNumber").text('TOTAL CONNECTED: ' + response.ProductionUnitNumber);
+            $("#TotalMonthlyProduction").text('TOTAL EST. PROD. PER MONTH: ' + response.TotalMonthlyProduction + 'kg');
+            $("#TotalMonthlySparedCO2").text('TOTAL CO2 NOT RELEASED PER MONTH: ' + response.TotalMonthlySparedCO2 + 'kg');
+        }
+    });
     }
 
     function onShow(e) {
@@ -115,9 +123,9 @@
     <div id="map-wrapper" class="row">
         <div id="map-details" class="col-xs-4">
             <div>
-                <h2>TOTAL CONNECTED: 20</h2>
-                <h2>TOTAL EST. PROD. PER MONTH: 450kg</h2>
-                <h2>TOTAL CO2 NOT RELEASED PER MONTH: 57kg</h2>
+                <h2 id="ProductionUnitNumber"></h2>
+                <h2 id="TotalMonthlyProduction"></h2>
+                <h2 id="TotalMonthlySparedCO2"></h2>
             </div>
             <br/>
             <h2 id="PioneerCitizenName"></h2>
@@ -386,7 +394,6 @@
         )
         )*@
     </div>
-
 </div>
 
 <style>

@@ -198,6 +198,31 @@ namespace myfoodapp.Hub.Controllers
                                          .Include("productionUnitType")
                                          .Where(p => p.Id == id).FirstOrDefault();
 
+            var averageMonthlyProduction = 0;
+
+            switch (rslt.productionUnitType.Id)
+            {
+                case 1:
+                    averageMonthlyProduction = 5;
+                    break;
+                case 2:
+                    averageMonthlyProduction = 10;
+                    break;
+                case 3:
+                    averageMonthlyProduction = 15;
+                    break;
+                case 4:
+                    averageMonthlyProduction = 25;
+                    break;
+                case 5:
+                    averageMonthlyProduction = 50;
+                    break;
+                default:
+                    break;
+            }
+
+            var averageMonthlySparedCO2 = averageMonthlyProduction * 0.3;
+
             return Json(new
             {
                 PioneerCitizenName = rslt.owner.pioneerCitizenName,
@@ -206,6 +231,8 @@ namespace myfoodapp.Hub.Controllers
                 ProductionUnitStartDate = rslt.startDate,
                 ProductionUnitType = rslt.productionUnitType.name,
                 PicturePath = rslt.picturePath,
+                AverageMonthlyProduction = averageMonthlyProduction,
+                AverageMonthlySparedCO2 = averageMonthlySparedCO2,
             }, JsonRequestBehavior.AllowGet);
         }
 

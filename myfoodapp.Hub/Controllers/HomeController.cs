@@ -101,5 +101,32 @@ namespace myfoodapp.Hub.Controllers
 
             return Json(rslt.ToDataSourceResult(request));
         }
+
+        public ActionResult GetNetworkStats()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            MeasureService measureService = new MeasureService(db);
+
+            var rslt = db.ProductionUnits.Include("productionUnitType")
+                                         .Where(p => p.productionUnitType.Id <= 5);
+
+            var productionUnitNumber = rslt.Count();
+
+            var totalBalcony = rslt.Where(p => p.productionUnitType.Id == 1).Count();
+            var totalCity = rslt.Where(p => p.productionUnitType.Id == 2).Count();
+            var totalFamily14 = rslt.Where(p => p.productionUnitType.Id == 3).Count();
+            var totalFamily22 = rslt.Where(p => p.productionUnitType.Id == 4).Count();
+            var totalFarm = rslt.Where(p => p.productionUnitType.Id == 5).Count();
+
+            var totalMonthlyProduction = totalBalcony * 5 + totalCity * 10 + totalFamily14 * 15 + totalFamily22 * 25 + totalFarm * 50;
+            var totalMonthlySparedCO2 = totalMonthlyProduction * 0.3;
+
+            return Json(new
+            {
+                ProductionUnitNumber = productionUnitNumber,
+                TotalMonthlyProduction = totalMonthlyProduction,
+                TotalMonthlySparedCO2 = totalMonthlySparedCO2,
+            }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

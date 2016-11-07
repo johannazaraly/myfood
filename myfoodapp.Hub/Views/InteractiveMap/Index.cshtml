@@ -1,4 +1,18 @@
 ﻿<script type="text/javascript">
+window.onload = function onLoad(e) {
+
+        $.ajax({
+            url: "@Url.Action("GetNetworkStats", "InteractiveMap")",
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+                $("#ProductionUnitNumber").text('TOTAL CONNECTED: ' + response.ProductionUnitNumber);
+                $("#TotalMonthlyProduction").text('TOTAL EST. PROD. PER MONTH: ' + response.TotalMonthlyProduction + 'kg');
+                $("#TotalMonthlySparedCO2").text('TOTAL CO2 NOT RELEASED PER MONTH: ' + response.TotalMonthlySparedCO2 + 'kg');
+            }
+        });
+    }
+
     function onShow(e) {
 
         var OptionList = $("#OptionList").data("kendoListView");
@@ -7,7 +21,7 @@
         var currentProductionUnitLong = this.marker.options.location[1];
 
         $.ajax({
-            url: "@Url.Action("GetProductionUnitDetail", "Home")",
+            url: "@Url.Action("GetProductionUnitDetail", "InteractiveMap")",
             dataType: "json",
             data: { SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong },
         type: "POST",
@@ -16,15 +30,15 @@
             $("#PioneerCitizenNumber").text('NUMBER: ' + response.PioneerCitizenNumber);
             $("#ProductionUnitType").text('TYPE: ' + response.ProductionUnitType);
             $("#ProductionUnitVersion").text('VERSION: ' + response.ProductionUnitVersion);
-            $("#ProductionUnitStartDate").text('START DATE: ' + kendo.toString(kendo.parseDate(response.ProductionUnitStartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy'));            
+            $("#ProductionUnitStartDate").text('START DATE: ' + kendo.toString(kendo.parseDate(response.ProductionUnitStartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy'));
 
             if (response.PicturePath === null)
             {
                 $("#ProductionUnitPicture").hide();
-                $("#PerfChart").hide();  
+                $("#PerfChart").hide();
             }
             else
-            {     
+            {
                 $("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
                 $("#ProductionUnitPicture").show();
                 $("#PerfChart").show();
@@ -32,7 +46,7 @@
             //$("#ProductionUnitPicture").attr("src", "/Content/Pictures/" + response.PicturePath);
         }
     });
-        
+
         OptionList.dataSource.read({ SelectedProductionUnitLat: currentProductionUnitLat, SelectedProductionUnitLong: currentProductionUnitLong });
     }
 
@@ -65,7 +79,7 @@
     </div>
 </script>
 
-<div id="pioneer-network" class="main-section-content">
+<div id="pioneer-network" style="height:660px" class="main-section-content">
     <div id="map-wrapper" class="row">
         <div id="picturesContainer" class="col-xs-4">
             <h3 class="section-header">Picture</h3>
@@ -117,9 +131,9 @@
         <div id="map-info" class="col-xs-4">
             <h3 class="section-header">Network Info</h3>
             <div>
-                <h2>TOTAL CONNECTED: 20</h2>
-                <h2>TOTAL EST. PROD. PER MONTH: 450kg</h2>
-                <h2>TOTAL CO2 NOT RELEASED PER MONTH: 57kg</h2>
+                <h2 id="ProductionUnitNumber"></h2>
+                <h2 id="TotalMonthlyProduction"></h2>
+                <h2 id="TotalMonthlySparedCO2"></h2>
             </div>
         </div>
         <div id="map-details" class="col-xs-4">
@@ -137,11 +151,14 @@
             .TagName("div")
             .ClientTemplateId("templateOption")
             .DataSource(dataSource => dataSource
-              .Read(read => read.Action("Option_Read", "Home"))
+              .Read(read => read.Action("Option_Read", "InteractiveMap"))
             )
             )
         </div>
-    </div>
+    </div>   
+</div>
+<div style="text-align: center">
+    <h4>.:myfoodapphub is licensed under a <a style="color:forestgreen" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> Attribution-NonCommercial-ShareAlike 4.0 International</a> licence:.</h4>
 </div>
 <style>
 
@@ -152,9 +169,6 @@
     .section-header{
     font-size: 30px;
     color: #35373d;
-    text-transform: uppercase;
-    padding-bottom: 1.091em;
-    padding: 15px 0;
 }
 
     h2 {
