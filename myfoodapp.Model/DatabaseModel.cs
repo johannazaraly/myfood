@@ -250,7 +250,7 @@ namespace myfoodapp.Model
             using (await asyncLock.LockAsync())
             {
                 return await (from m in db.Measures.OrderByDescending(m => m.Id)
-                              select m).Take(7 * 24 * 6).ToListAsync();
+                              select m).Take(4 * 7 * 24 * 6 * 6).ToListAsync();
             }
         }
 

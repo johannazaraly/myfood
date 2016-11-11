@@ -22,12 +22,6 @@
             <Image x:Name="image" Margin="2" Source="Assets/logoMyFoodapp.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
             <TextBlock x:Uid="smartGreenhouseManager" Style="{StaticResource TitleText}" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Smart Greenhouse Manager"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock x:Uid="poweredBy" Margin="5,0,0,5" Grid.Column="1" Style="{StaticResource DetailText}" HorizontalAlignment="Right" Text="powered by"/>
-                <Image Margin="2" Source="Assets/logoACD.png" Width="40" Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <TextBlock x:Uid="and" Margin="5,0,0,5" Grid.Column="1" Style="{StaticResource DetailText}" HorizontalAlignment="Right" Text="and"/>
-                <Image Margin="2" Width="40" Height="40" Source="Assets/logoBrightAgrotech.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </StackPanel>
 
             <Grid HorizontalAlignment="Stretch" Margin="5" Grid.Row="1" VerticalAlignment="Stretch" Grid.ColumnSpan="2">
 

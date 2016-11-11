@@ -11,10 +11,11 @@
     <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/jquery.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.all.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2015.3.1111/js/kendo.aspnetmvc.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/fonts/font-awesome/css/font-awesome.css">
     <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 </head>
 <body>
+    @using Microsoft.AspNet.Identity
     <!-- Google Tag Manager -->
     <noscript>
         <iframe src="//www.googletagmanager.com/ns.html?id=GTM-6X92" height="0" width="0" style="display: none; visibility: hidden"></iframe>
@@ -34,16 +35,34 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                <h1 id="dash-logo" class="center-block"><a href="@(Url.Action("Index", "Home"))">myfood&#183;IOT&#183;Hub</a></h1>
+                <h1 id="dash-logo" class="center-block" style="font-size:20px"><a href="@(Url.Action("Index", "Home"))">myfood&#183;IOT&#183;Hub</a></h1>
                 <div class="collapse navbar-collapse" id="sidebar-nav" role="navigation">
                     <ul class="nav">
-                        <li id="DashboardView"><a href="@(Url.Action("Index", "Messages"))"><span class="icon icon-chart-column"></span>Messages</a></li>
-                        <li id="ProductsAndOrders"><a href="@(Url.Action("Index", "Measures"))"><span class="icon icon-star-empty"></span>Measures</a></li>
-                        <li id="TeamEfficiency"><a href="@(Url.Action("Index", "ProductionUnits"))"><span class="icon icon-faves"></span>Production Units</a></li>
-                        <li id="About"><a href="@(Url.Action("About", "Home"))"><span class="icon icon-info"></span>About</a></li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li><a href="@(Url.Action("Index", "Messages"))"><i class="fa fa-comment" aria-hidden="true"></i>&nbsp; Messages</a></li>
+                            <li><a href="@(Url.Action("Index", "Measures"))"><i class="fa fa-thermometer-full" aria-hidden="true"></i>&nbsp; Measures</a></li>
+                            <li><a href="@(Url.Action("Index", "ProductionUnits"))"><i class="fa fa-building-o" aria-hidden="true"></i>&nbsp; Production Units</a></li>
+                            <li><a href="@(Url.Action("Index", "Home"))"><i class="fa fa-tachometer" aria-hidden="true"></i>&nbsp; Performances &amp; Health</a></li>
+                            <li><a href="@(Url.Action("Index", "Home"))"><i class="fa fa-book" aria-hidden="true"></i>&nbsp; Recipes</a></li>
+                            <li><a href="@(Url.Action("Update", "MyInfo"))"><i class="fa fa-id-card" aria-hidden="true"></i>&nbsp; My Information</a></li>
+                        }
+                        <li id="About"><a href="@(Url.Action("Index", "About"))"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp; About</a></li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav" }))
+                            {
+                                @Html.AntiForgeryToken()                          
+                                <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp; Log off</a></li>
+                            }
+                        }
+                        else
+                        {
+                                <li><a href="@Url.Action("Login", "Account")"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp; Login</a></li>
+                        }
                     </ul>
                     <div id="rights">
-                        <img src="~/Content/miniLogo.png"/>
+                        <img width="50" height="50" src="~/Content/miniLogo.png"/>
                         <p>Copyright &copy; 2016, myfood and/or its subsidiaries or affiliates. All Rights Reserved.</p>
                     </div>
                 </div>

@@ -27,7 +27,6 @@ namespace myfoodapp.Hub.Controllers
             return View(await db.Messages.ToListAsync());
         }
 
-
         public ActionResult Editing_Read([DataSourceRequest] DataSourceRequest request)
         {
             var db = new ApplicationDbContext();

@@ -127,11 +127,13 @@
                                       .Color("#ffae00").Name("Humidity [%]").Axis("hum")
                                       .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
                                       .Tooltip(tooltip => tooltip.Template("hum - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#%"));
-                                series.Area(model => model.waterTempvalue, categoryExpression: model => model.captureDate)
-                                      .Color("#3E7F2B").Name("Water Temp. [&deg;C]").Axis("water").Stack(false)
+                                series.Line(model => model.waterTempvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#3E7F2B").Name("Water Temp. [&deg;C]").Axis("water")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
                                       .Tooltip(tooltip => tooltip.Template("water - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#&deg;C"));
-                                series.Area(model => model.airTempvalue, categoryExpression: model => model.captureDate)
-                                      .Color("#73c100").Name("Air Temp. [&deg;C]").Axis("air").Stack(false)
+                                series.Line(model => model.airTempvalue, categoryExpression: model => model.captureDate)
+                                      .Color("#73c100").Name("Air Temp. [&deg;C]").Axis("air")
+                                      .Style(ChartLineStyle.Smooth).Markers(x => x.Visible(false))
                                       .Tooltip(tooltip => tooltip.Template("air - #= kendo.toString(category, 'd')# <br/> #= kendo.toString(category, 't')# : #=kendo.format('{0}', data.value)#&deg;C"));
                                 series.Line(model => model.ORPvalue, categoryExpression: model => model.captureDate)
                                       .Color("#7F385A").Name("ORP [mV]").Axis("orp")
@@ -146,7 +148,7 @@
                 .Date()
                 .Labels(l => l.Visible(false).Step(60))
                 .BaseUnit(ChartAxisBaseUnit.Minutes)
-                .BaseUnitStep(15)
+                .BaseUnitStep(10)
                 .Justify(true)
                 .AxisCrossingValue(0, 9000)
             )

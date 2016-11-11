@@ -358,8 +358,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\MyInfoController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\MessageController.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\InteractiveMapController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MeasuresController.cs" />
@@ -396,6 +398,7 @@
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Viewmodels\AccountViewModels.cs" />
     <Compile Include="Viewmodels\OwnerViewModel.cs" />
     <Compile Include="Viewmodels\ProductionUnitTypeViewModel.cs" />
     <Compile Include="Viewmodels\MessageTypeViewModel.cs" />
@@ -757,8 +760,13 @@
     <Content Include="Content\Pictures\TarragonaFamily14.JPG" />
     <Content Include="Content\Pictures\VillevaudeFamily22.jpg" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="fonts\OpenSans-Regular-webfont.svg" />
+    <Content Include="fonts\font-awesome\css\font-awesome.css" />
+    <Content Include="fonts\font-awesome\css\font-awesome.min.css" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\OpenSans\OpenSans-Regular-webfont.eot" />
+    <Content Include="fonts\OpenSans\OpenSans-Regular-webfont.svg" />
+    <Content Include="fonts\OpenSans\OpenSans-Regular-webfont.ttf" />
+    <Content Include="fonts\OpenSans\OpenSans-Regular-webfont.woff" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.19-build00125.js" />
     <Content Include="Scripts\ai.0.22.19-build00125.min.js" />
@@ -879,9 +887,11 @@
     <Content Include="Content\kendo\kendo.uniform.min.css.map" />
     <Content Include="Content\kendo\kendo.uniform.mobile.min.css.map" />
     <Content Include="Content\countries.geo.txt" />
-    <Content Include="fonts\OpenSans-Regular-webfont.eot" />
-    <Content Include="fonts\OpenSans-Regular-webfont.ttf" />
-    <Content Include="fonts\OpenSans-Regular-webfont.woff" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\font-awesome\fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\myfoodapphub - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -2141,15 +2151,16 @@
     <Content Include="Views\ProductionUnits\Details.cshtml" />
     <Content Include="Views\Shared\_EmptyLayout.cshtml" />
     <Content Include="Views\InteractiveMap\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\About\Index.cshtml" />
+    <Content Include="Views\MyInfo\Update.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Home\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
